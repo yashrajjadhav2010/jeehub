@@ -224,7 +224,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       
       <main className={cn(
         "relative z-10 flex-1",
-        !isQuizMode ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full" : ""
+        !isQuizMode ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 w-full" : ""
       )}>
         <AnimatePresence mode="wait">
           <motion.div

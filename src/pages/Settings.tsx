@@ -43,12 +43,12 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 pb-20">
-      <section>
-        <h1 className="text-4xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">
+    <div className="max-w-4xl mx-auto space-y-12 pb-20 px-4 md:px-0">
+      <section className="text-center md:text-left">
+        <h1 className="text-3xl sm:text-4xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">
           Terminal <span className="text-primary not-italic">Settings</span>
         </h1>
-        <p className="text-emerald-900/40 font-medium">Configure your operational environment and identity protocols.</p>
+        <p className="text-emerald-900/40 font-medium text-sm sm:text-base">Configure your operational environment and identity protocols.</p>
       </section>
 
       <div className="grid md:grid-cols-3 gap-8">

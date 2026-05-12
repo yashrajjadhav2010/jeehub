@@ -85,7 +85,7 @@ export default function Home() {
   return (
     <div className="space-y-12">
       <section className="relative py-10">
-        <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center text-center lg:text-left">
            <div className="flex-1 space-y-10">
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-6">
@@ -105,15 +105,15 @@ export default function Home() {
                 </h1>
               </div>
               
-              <p className="text-emerald-800/60 max-w-lg text-xl font-medium leading-relaxed">
+              <p className="text-emerald-800/60 max-w-lg text-lg md:text-xl font-medium leading-relaxed">
                 Welcome Commander. Your current readiness index is being analyzed. Engage with tactical sectors to populate your data radar.
               </p>
               
-              <div className="flex flex-wrap gap-5 pt-6">
-                 <Link to="/subjects" className="px-12 py-6 bg-primary text-white rounded-3xl font-black text-[12px] tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center gap-4 group">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4 md:pt-6">
+                 <Link to="/subjects" className="px-8 md:px-12 py-5 md:py-6 bg-primary text-white rounded-2xl md:rounded-3xl font-black text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center justify-center gap-4 group">
                     START NEW MISSION <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                  </Link>
-                 <Link to="/analytics" className="px-12 py-6 bg-white border border-emerald-100 text-emerald-950 rounded-3xl font-black text-[12px] tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center gap-4 shadow-xl shadow-emerald-950/5">
+                 <Link to="/analytics" className="px-8 md:px-12 py-5 md:py-6 bg-white border border-emerald-100 text-emerald-950 rounded-2xl md:rounded-3xl font-black text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center justify-center gap-4 shadow-xl shadow-emerald-950/5">
                     VIEW RADAR DATA <Activity size={20} />
                  </Link>
               </div>
@@ -202,10 +202,10 @@ export default function Home() {
       </div>
 
       <section>
-        <div className="flex items-center justify-between mb-10 px-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-10 px-2 gap-4">
            <div className="space-y-1">
-             <h2 className="text-3xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">Operational <span className="text-primary not-italic">Sectors</span></h2>
-             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-700/40">Select your field of engagement</p>
+             <h2 className="text-2xl md:text-3xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">Operational <span className="text-primary not-italic">Sectors</span></h2>
+             <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-emerald-700/40">Select your field of engagement</p>
            </div>
            <div className="flex gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-100" />
@@ -214,7 +214,7 @@ export default function Home() {
            </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {subjects.map((sub, i) => (
             <Link key={sub.id} to={`/subjects/${sub.id}`}>
                <motion.div 
@@ -222,7 +222,7 @@ export default function Home() {
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: i * 0.1 }}
                  whileHover={{ y: -10, scale: 1.02 }}
-                 className="bg-white rounded-[2.5rem] p-8 border border-emerald-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all flex flex-col h-[400px] relative overflow-hidden group"
+                 className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all flex flex-col h-[350px] md:h-[400px] relative overflow-hidden group"
                >
                   <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform", sub.color.replace('from-', 'bg-').replace('/30', '/10'))}>
                      <div className={sub.accent}>{sub.icon}</div>
@@ -253,31 +253,33 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 md:pb-20">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-12 bg-white rounded-[4rem] p-12 border border-emerald-100 shadow-sm relative overflow-hidden"
+          className="lg:col-span-12 bg-white rounded-3xl md:rounded-[4rem] p-8 md:p-12 border border-emerald-100 shadow-sm relative overflow-hidden"
         >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-12 relative z-10">
-             <div className="max-w-2xl">
-               <h2 className="text-4xl font-black heading-display mb-4 text-emerald-950 uppercase tracking-tight">System Recommendations</h2>
-               <p className="text-emerald-800/70 mb-10 text-lg leading-relaxed font-medium">Complete more assessments to receive AI-driven personalized study recommendations and focused practice targets.</p>
-               <div className="flex flex-wrap gap-4">
-                  <div className="px-8 py-4 bg-primary/10 border-2 border-primary/20 rounded-[2rem] flex items-center gap-4 opacity-50">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 relative z-10">
+             <div className="max-w-2xl text-center md:text-left">
+               <h2 className="text-2xl md:text-4xl font-black heading-display mb-4 text-emerald-950 uppercase tracking-tight">System Recommendations</h2>
+               <p className="text-emerald-800/70 mb-8 md:mb-10 text-base md:text-lg leading-relaxed font-medium">Complete more assessments to receive AI-driven personalized study recommendations and focused practice targets.</p>
+               <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                  <div className="px-6 md:px-8 py-3 md:py-4 bg-primary/10 border-2 border-primary/20 rounded-2xl md:rounded-[2rem] flex items-center gap-4 opacity-50">
                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs">?</div>
-                     <div>
-                        <p className="text-[10px] font-black uppercase text-primary/60 tracking-[0.1em]">Target Focus</p>
-                        <p className="text-sm font-bold text-emerald-950">Awaiting Data</p>
+                     <div className="text-left">
+                        <p className="text-[9px] md:text-[10px] font-black uppercase text-primary/60 tracking-[0.1em]">Target Focus</p>
+                        <p className="text-xs md:text-sm font-bold text-emerald-950">Awaiting Data</p>
                      </div>
                   </div>
                </div>
              </div>
-             <button className="h-48 w-48 rounded-full bg-emerald-950 text-white flex flex-col items-center justify-center gap-4 hover:scale-105 transition-transform shadow-2xl relative group">
-                <div className="absolute inset-0 border-4 border-dashed border-primary animate-[spin_20s_linear_infinite] rounded-full scale-110 opacity-20" />
-                <BrainCircuit size={48} className="text-primary" />
-                <span className="text-[10px] font-black tracking-[0.3em] uppercase">Enter Flow</span>
-             </button>
+             <div className="flex justify-center">
+               <button className="h-36 w-36 md:h-48 md:w-48 rounded-full bg-emerald-950 text-white flex flex-col items-center justify-center gap-4 hover:scale-105 transition-transform shadow-2xl relative group">
+                  <div className="absolute inset-0 border-4 border-dashed border-primary animate-[spin_20s_linear_infinite] rounded-full scale-110 opacity-20" />
+                  <BrainCircuit size={32} className="text-primary md:size-12 md:size-12" />
+                  <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] uppercase">Enter Flow</span>
+               </button>
+             </div>
           </div>
         </motion.div>
       </div>
@@ -287,13 +289,13 @@ export default function Home() {
 
 function StatsCard({ icon: Icon, label, value, color, bg }: any) {
   return (
-    <div className={cn("rounded-[2.5rem] p-10 border transition-all flex flex-col justify-between h-56 bg-white shadow-sm", bg)}>
-       <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center", bg)}>
-          <Icon size={28} className={color} />
+    <div className={cn("rounded-3xl md:rounded-[2.5rem] p-8 md:p-10 border transition-all flex flex-col justify-between h-48 md:h-56 bg-white shadow-sm", bg)}>
+       <div className={cn("w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center", bg)}>
+          <Icon size={24} className={color} />
        </div>
        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-700/50 mb-2">{label}</p>
-          <p className="text-4xl font-black heading-display text-emerald-950">{value}</p>
+          <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-emerald-700/50 mb-1 md:mb-2">{label}</p>
+          <p className="text-3xl md:text-4xl font-black heading-display text-emerald-950">{value}</p>
        </div>
     </div>
   );

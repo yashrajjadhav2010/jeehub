@@ -56,13 +56,13 @@ export default function Subjects() {
       <div className="relative">
         <div className="flex items-center gap-2 mb-4">
            <div className="w-8 h-[2px] bg-primary" />
-           <span className="text-xs font-black uppercase tracking-[0.3em] text-emerald-700/50">Curriculum v4.1</span>
+           <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-emerald-700/50">Curriculum v4.1</span>
         </div>
-        <h1 className="text-6xl font-black heading-display leading-tight mb-4 text-emerald-950 uppercase tracking-tight">The Mission <br /> <span className="text-primary italic">Catalog</span></h1>
-        <p className="text-emerald-800/70 max-w-xl text-lg font-medium">Select a core subject to explore advanced modules and competitive practice sets tailored for JEE excellence.</p>
+        <h1 className="text-4xl md:text-6xl font-black heading-display leading-tight mb-4 text-emerald-950 uppercase tracking-tight">The Mission <br /> <span className="text-primary italic">Catalog</span></h1>
+        <p className="text-emerald-800/70 max-w-xl text-base md:text-lg font-medium">Select a core subject to explore advanced modules and competitive practice sets tailored for JEE excellence.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
         {subjects.map((sub, idx) => (
           <Link key={sub.id} to={`/subjects/${sub.id}`}>
             <motion.div
@@ -70,7 +70,7 @@ export default function Subjects() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               className={cn(
-                "group relative h-[600px] bg-gradient-to-br rounded-[3rem] border border-white/5 p-10 flex flex-col transition-all duration-500 hover:border-primary/40",
+                "group relative h-[500px] md:h-[600px] bg-gradient-to-br rounded-[2rem] md:rounded-[3rem] border border-white/5 p-8 md:p-10 flex flex-col transition-all duration-500 hover:border-primary/40",
                 sub.color
               )}
             >
@@ -90,11 +90,11 @@ export default function Subjects() {
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-5xl font-black heading-display mb-6 tracking-tight text-white">{sub.title}</h3>
+                  <h3 className="text-4xl md:text-5xl font-black heading-display mb-4 md:mb-6 tracking-tight text-white">{sub.title}</h3>
                   
-                  <div className="flex flex-wrap gap-2 mb-10">
+                  <div className="flex flex-wrap gap-2 mb-6 md:mb-10">
                     {sub.topics.map(topic => (
-                      <span key={topic} className="px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-[10px] uppercase font-black tracking-widest text-white/70 border border-white/10">
+                      <span key={topic} className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 backdrop-blur-md rounded-full text-[9px] md:text-[10px] uppercase font-black tracking-widest text-white/70 border border-white/10">
                         {topic}
                       </span>
                     ))}

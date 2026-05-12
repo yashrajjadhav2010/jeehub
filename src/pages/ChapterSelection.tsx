@@ -36,35 +36,35 @@ export default function ChapterSelection() {
         </Link>
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 mb-8 md:mb-12">
         <div>
-           <h1 className="text-6xl font-black heading-display mb-4 capitalize text-emerald-950 uppercase tracking-tight">{subjectId} <span className="text-primary italic">Core</span></h1>
-           <p className="text-emerald-800/70 text-lg font-medium">Select a specialized module to begin intensive practice. Each set is designed for peak performance.</p>
+           <h1 className="text-4xl md:text-6xl font-black heading-display mb-4 capitalize text-emerald-950 uppercase tracking-tight">{subjectId} <span className="text-primary italic">Core</span></h1>
+           <p className="text-emerald-800/70 text-base md:text-lg font-medium">Select a specialized module to begin intensive practice. Each set is designed for peak performance.</p>
         </div>
         <div className="flex gap-4">
-           <div className="px-6 py-4 glass-premium rounded-2x border border-emerald-100 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700/50 bg-white">
+           <div className="px-4 md:px-6 py-3 md:py-4 glass-premium rounded-xl md:rounded-2x border border-emerald-100 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700/50 bg-white">
               {chapters.length} CHAPTERS
            </div>
-           <div className="px-6 py-4 bg-primary/10 rounded-2x border border-primary/20 text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+           <div className="px-4 md:px-6 py-3 md:py-4 bg-primary/10 rounded-xl md:rounded-2x border border-primary/20 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-primary">
               {chapters.reduce((acc, c) => acc + c.sets.length, 0)} TOTAL SETS
            </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 pb-20">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-10 pb-10 md:pb-20">
         {chapters.map((chapter) => (
-          <div key={chapter.id} className="glass-premium rounded-[3rem] border border-emerald-100 p-10 group overflow-hidden relative bg-white">
-            <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-10 transition-opacity pointer-events-none">
+          <div key={chapter.id} className="glass-premium rounded-[2rem] md:rounded-[3rem] border border-emerald-100 p-6 md:p-10 group overflow-hidden relative bg-white">
+            <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-10 transition-opacity pointer-events-none hidden md:block">
                <Layers size={140} className="text-primary" />
             </div>
 
-            <div className="flex items-center gap-6 mb-10 relative z-10">
-               <div className="w-16 h-16 rounded-[1.5rem] bg-emerald-50 text-primary flex items-center justify-center shadow-sm">
-                  <Layers size={32} />
+            <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-10 relative z-10">
+               <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-[1.5rem] bg-emerald-50 text-primary flex items-center justify-center shadow-sm shrink-0">
+                  <Layers size={24} className="md:size-32" />
                </div>
                <div>
-                  <h3 className="text-3xl font-black heading-display tracking-tight text-emerald-950">{chapter.title}</h3>
-                  <p className="text-xs text-emerald-700/50 font-black uppercase tracking-widest mt-1">{chapter.sets.length} Specialized Sets</p>
+                  <h3 className="text-2xl md:text-3xl font-black heading-display tracking-tight text-emerald-950">{chapter.title}</h3>
+                  <p className="text-[9px] md:text-xs text-emerald-700/50 font-black uppercase tracking-widest mt-1">{chapter.sets.length} Specialized Sets</p>
                </div>
             </div>
 
@@ -73,20 +73,20 @@ export default function ChapterSelection() {
                 <Link 
                   key={set.id} 
                   to={`/quiz/${subjectId}/${chapter.id}/${set.id}`}
-                  className="group flex items-center justify-between p-6 bg-emerald-50/50 rounded-[2rem] border border-transparent hover:border-primary/40 hover:bg-emerald-50 transition-all duration-300"
+                  className="group flex items-center justify-between p-4 md:p-6 bg-emerald-50/50 rounded-2xl md:rounded-[2rem] border border-transparent hover:border-primary/40 hover:bg-emerald-50 transition-all duration-300"
                 >
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-white border border-emerald-100 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-sm">
-                       <Play size={20} className="fill-primary" />
+                  <div className="flex items-center gap-4 md:gap-6">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white border border-emerald-100 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-sm shrink-0">
+                       <Play size={18} className="fill-primary md:size-20" />
                     </div>
                     <div>
-                       <h4 className="text-xl font-bold group-hover:text-primary transition-colors text-emerald-900">{set.title}</h4>
-                       <div className="flex items-center gap-6 mt-2">
-                          <span className="flex items-center gap-2 text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">
-                            <Binary size={12} className="text-primary" /> {set.itemCount} QUESTIONS
+                       <h4 className="text-lg md:text-xl font-bold group-hover:text-primary transition-colors text-emerald-900 leading-tight">{set.title}</h4>
+                       <div className="flex flex-wrap items-center gap-3 md:gap-6 mt-1 md:mt-2">
+                          <span className="flex items-center gap-2 text-[8px] md:text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">
+                            <Binary size={10} className="text-primary md:size-12" /> {set.itemCount} Qs
                           </span>
-                          <span className="flex items-center gap-2 text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">
-                            <Clock size={12} className="text-primary" /> {set.itemCount * 1.5} MINS
+                          <span className="flex items-center gap-2 text-[8px] md:text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">
+                            <Clock size={10} className="text-primary md:size-12" /> {set.itemCount * 1.5} M
                           </span>
                        </div>
                     </div>

@@ -61,35 +61,35 @@ export default function Analytics() {
         </Link>
       </div>
 
-      <section>
-        <h1 className="text-4xl font-bold mb-2 uppercase text-emerald-950">Personal <span className="text-primary italic">Insights</span></h1>
-        <p className="text-emerald-700/50 font-medium">Deep dive into your performance and learning patterns.</p>
+      <section className="px-4 md:px-0">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2 uppercase text-emerald-950">Personal <span className="text-primary italic">Insights</span></h1>
+        <p className="text-emerald-700/50 font-medium text-sm sm:text-base">Deep dive into your performance and learning patterns.</p>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 px-4 md:px-0">
         {/* Main Performance Chart */}
-        <div className="lg:col-span-2 bg-white rounded-[3rem] p-12 border border-emerald-100 shadow-sm relative overflow-hidden group/chart">
-          <div className="flex items-center justify-between mb-12">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-black heading-display text-emerald-950 uppercase italic">Activity <span className="text-primary not-italic">Radar</span></h2>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-700/40">Questions Solved: Last 7 Days</p>
+        <div className="lg:col-span-2 bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 border border-emerald-100 shadow-sm relative overflow-hidden group/chart">
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-12 gap-6">
+            <div className="space-y-1 text-center sm:text-left">
+              <h2 className="text-xl sm:text-2xl font-black heading-display text-emerald-950 uppercase italic">Activity <span className="text-primary not-italic">Radar</span></h2>
+              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-emerald-700/40">Questions Solved: Last 7 Days</p>
             </div>
-            <div className="flex gap-6">
+            <div className="flex gap-4 sm:gap-6">
                <div className="flex items-center gap-2">
-                 <div className="w-3 h-3 rounded-full bg-primary" />
-                 <span className="text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">Physics</span>
+                 <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-primary" />
+                 <span className="text-[9px] sm:text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">Physics</span>
                </div>
                <div className="flex items-center gap-2">
-                 <div className="w-3 h-3 rounded-full bg-[#e64a19]" />
-                 <span className="text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">Chemistry</span>
+                 <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-[#e64a19]" />
+                 <span className="text-[9px] sm:text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">Chemistry</span>
                </div>
             </div>
           </div>
 
-          <div className="h-[350px] flex items-end justify-between gap-4 px-4 relative">
+          <div className="h-[250px] sm:h-[350px] flex items-end justify-between gap-2 sm:gap-4 px-0 sm:px-4 relative">
              {chartData.map((val, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-6 group">
-                   <div className="w-full relative flex items-end justify-center h-[280px]">
+                <div key={i} className="flex-1 flex flex-col items-center gap-4 sm:gap-6 group">
+                   <div className="w-full relative flex items-end justify-center h-[200px] sm:h-[280px]">
                       <motion.div 
                         initial={{ height: 0 }}
                         animate={{ height: `${val}%` }}
@@ -107,7 +107,7 @@ export default function Analytics() {
                          </div>
                       </motion.div>
                    </div>
-                   <span className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-800/40">{dayLabels[i]}</span>
+                   <span className="text-[11px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] text-emerald-800/40">{dayLabels[i]}</span>
                 </div>
              ))}
 
@@ -160,20 +160,20 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-         <div className="bg-white rounded-[2.5rem] p-10 border border-emerald-100 shadow-sm">
-           <h2 className="text-xl font-bold mb-8 text-emerald-950 uppercase tracking-tight">Subject Mastery</h2>
-           <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 md:px-0">
+         <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm">
+           <h2 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 text-emerald-950 uppercase tracking-tight">Subject Mastery</h2>
+           <div className="space-y-6 sm:space-y-8">
              <MasteryBar label="Physics" value={physicsProgress} color="bg-primary" />
              <MasteryBar label="Chemistry" value={chemistryProgress} color="bg-[#e64a19]" />
              <MasteryBar label="Mathematics" value={mathsProgress} color="bg-[#ef5350]" />
            </div>
          </div>
 
-         <div className="bg-white rounded-[2.5rem] p-10 border border-emerald-100 shadow-sm">
-            <h2 className="text-xl font-bold mb-8 text-emerald-950 uppercase tracking-tight">Concept Heatmap</h2>
-            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-               {Array.from({ length: 24 }).map((_, i) => {
+         <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 text-emerald-950 uppercase tracking-tight">Concept Heatmap</h2>
+            <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 sm:gap-3">
+               {Array.from({ length: 30 }).map((_, i) => {
                  return (
                    <motion.div 
                      key={i}

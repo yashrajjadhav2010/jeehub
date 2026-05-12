@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ChevronLeft, ChevronRight, Calculator, HelpCircle, Info, Activity, BrainCircuit } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -19,12 +19,13 @@ export default function Quiz() {
   const [answers, setAnswers] = useState<Record<string, number | null>>({});
   const [markedForReview, setMarkedForReview] = useState<Record<string, boolean>>({});
   const [visited, setVisited] = useState<Record<number, boolean>>({ 0: true });
-  const [timeLeft, setTimeLeft] = useState(0);
+   const [timeLeft, setTimeLeft] = useState(0);
   const [questionTime, setQuestionTime] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showSolution, setShowSolution] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -230,43 +231,50 @@ export default function Quiz() {
       <div className="noise-overlay" />
       
       {/* CBT Header */}
-      <div className="bg-white border-b border-emerald-100 px-8 py-4 flex items-center justify-between z-30 shadow-[0_10px_30px_rgba(0,0,0,0.02)] relative">
-        <div className="flex items-center gap-6">
+      <div className="bg-white border-b border-emerald-100 flex items-center justify-between z-[60] shadow-[0_10px_30px_rgba(0,0,0,0.02)] relative shrink-0">
+        <div className="flex items-center flex-1">
           <button 
             onClick={handleExit}
-            className="group flex items-center gap-3 text-emerald-950 hover:text-primary transition-all pr-6 border-r border-emerald-100"
+            className="group flex items-center gap-2 md:gap-3 text-emerald-950 hover:text-primary transition-all p-4 md:px-8 md:py-6 border-r border-emerald-100"
           >
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <ChevronLeft size={20} />
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <ChevronLeft size={18} className="md:size-20" />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Exit Test</span>
+            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] hidden sm:inline">Exit Test</span>
           </button>
           
-          <div className="flex items-center gap-4">
-             <div className="px-4 py-1.5 bg-emerald-950 text-white text-[10px] font-black rounded-xl uppercase tracking-[0.2em] shadow-lg shadow-emerald-950/20">JEE MAIN</div>
-             <div className="flex flex-col">
-                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1">Mission Identifier</span>
-                <h1 className="text-sm font-black text-emerald-950 tracking-tight leading-none uppercase">{quizSet.title}</h1>
+          <div className="flex items-center gap-3 md:gap-4 px-4 md:px-8">
+             <div className="px-2 md:px-4 py-1 md:py-1.5 bg-emerald-950 text-white text-[8px] md:text-[10px] font-black rounded-lg md:rounded-xl uppercase tracking-[0.1em] md:tracking-[0.2em] shadow-lg shadow-emerald-950/20 whitespace-nowrap">JEE MAIN</div>
+             <div className="flex flex-col min-w-0">
+                <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 hidden md:block">Mission Identifier</span>
+                <h1 className="text-[10px] md:text-sm font-black text-emerald-950 tracking-tight leading-tight uppercase truncate max-w-[120px] md:max-w-none">{quizSet.title}</h1>
              </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-12">
-          <div className="flex flex-col items-end">
-             <span className="text-[9px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-2">T-Minus Remaining</span>
-             <div className="flex items-center gap-3 bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 shadow-inner">
-               <Clock size={16} className="text-primary animate-pulse" />
-               <span className="text-xl font-black text-emerald-950 heading-display tabular-nums tracking-tighter">{formatTime(timeLeft)}</span>
+        <div className="flex items-center gap-4 md:gap-12 pr-4 md:pr-10">
+          <div className="flex flex-col items-center sm:items-end">
+             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 md:mb-2 hidden md:block">T-Minus Remaining</span>
+             <div className="flex items-center gap-2 md:gap-3 bg-emerald-50 px-3 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl border border-emerald-100 shadow-inner">
+               <Clock size={14} className="md:size-16 text-primary animate-pulse" />
+               <span className="text-sm md:text-xl font-black text-emerald-950 heading-display tabular-nums tracking-tighter leading-none">{formatTime(timeLeft)}</span>
              </div>
           </div>
           
-          <div className="flex items-center gap-4 pl-8 border-l border-emerald-100">
+          <div className="hidden lg:flex items-center gap-4 pl-8 border-l border-emerald-100">
              <div className="text-right">
                 <p className="text-[9px] text-emerald-700/40 font-black uppercase tracking-widest leading-none mb-1">Aspirant</p>
                 <p className="text-sm font-black text-emerald-950 leading-none uppercase">{operatorName}</p>
              </div>
              <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-black text-sm shadow-xl shadow-primary/20 border border-white/10 ring-4 ring-emerald-50">{initial}</div>
           </div>
+
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden w-10 h-10 rounded-xl bg-emerald-950 text-white flex items-center justify-center shadow-lg shrink-0"
+          >
+             <LayoutGrid size={20} />
+          </button>
         </div>
       </div>
 
@@ -274,20 +282,15 @@ export default function Quiz() {
         {/* Main Section */}
         <div className="flex-1 flex flex-col bg-white overflow-hidden">
            {/* Section Tabs */}
-           <div className="flex bg-emerald-50/30 border-b border-emerald-100 p-2 gap-2">
-              <button className="px-10 py-3 bg-emerald-950 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-emerald-950/20 flex items-center gap-3 border border-white/5">
-                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-[pulse_2s_infinite]" />
+           <div className="flex bg-emerald-50/30 border-b border-emerald-100 p-2 gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              <button className="px-4 md:px-10 py-2.5 md:py-3 bg-emerald-950 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-xl md:rounded-2xl shadow-xl shadow-emerald-950/20 flex items-center gap-2 md:gap-3 border border-white/5 shrink-0">
+                 <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 animate-[pulse_2s_infinite]" />
                  SECTOR: {subjectId}
               </button>
               <div className="flex-1" />
-              <div className="flex items-center gap-2 px-6">
-                 <div className="w-2 h-2 rounded-full bg-emerald-200" />
-                 <div className="w-2 h-2 rounded-full bg-emerald-200" />
-                 <div className="w-2 h-2 rounded-full bg-emerald-200" />
-              </div>
            </div>
            
-           <div className="flex-1 p-6 md:p-8 overflow-y-auto bg-white/50 backdrop-blur-sm relative">
+           <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-white/50 backdrop-blur-sm relative">
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={currentIdx}
@@ -297,24 +300,24 @@ export default function Quiz() {
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   className="max-w-4xl mx-auto"
                 >
-                   <div className="flex items-center justify-between mb-10 border-b border-emerald-50 pb-6">
-                      <div className="flex items-center gap-6">
+                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-10 border-b border-emerald-50 pb-4 md:pb-6 gap-4">
+                      <div className="flex items-center gap-3 md:gap-6">
                         <div className="flex flex-col">
-                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-800/40 mb-1">Current Sector</span>
-                          <h2 className="text-2xl font-black heading-display text-emerald-950 uppercase italic">Question {currentIdx + 1}<span className="text-primary not-italic">.0</span></h2>
+                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-emerald-800/40 mb-1">Current Sector</span>
+                          <h2 className="text-xl md:text-2xl font-black heading-display text-emerald-950 uppercase italic">Question {currentIdx + 1}<span className="text-primary not-italic">.0</span></h2>
                         </div>
-                        <div className="flex items-center gap-2 bg-emerald-950 px-3 py-1.5 rounded-xl text-[10px] font-black text-white border border-white/10 shadow-lg shadow-emerald-950/20">
+                        <div className="flex items-center gap-2 bg-emerald-950 px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black text-white border border-white/10 shadow-lg shadow-emerald-950/20">
                           <Clock size={12} className="text-emerald-400" />
                           TIME: {formatShortTime(questionTime)}
                         </div>
                       </div>
-                      <div className="flex gap-4">
-                         <button className="w-10 h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Info size={20} /></button>
-                         <button className="w-10 h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Calculator size={20} /></button>
+                      <div className="flex gap-2 md:gap-4">
+                         <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Info size={18} className="md:size-20" /></button>
+                         <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Calculator size={18} className="md:size-20" /></button>
                       </div>
                    </div>
 
-                   <div className="text-2xl text-emerald-950 font-black heading-display mb-16 leading-relaxed whitespace-pre-wrap tracking-tight">
+                   <div className="text-xl md:text-2xl text-emerald-950 font-black heading-display mb-8 md:mb-16 leading-relaxed whitespace-pre-wrap tracking-tight">
                       <ReactMarkdown 
                         remarkPlugins={[remarkMath]} 
                         rehypePlugins={[rehypeKatex]}
@@ -323,14 +326,14 @@ export default function Quiz() {
                       </ReactMarkdown>
                    </div>
 
-                   <div className="grid grid-cols-1 gap-6">
+                   <div className="grid grid-cols-1 gap-4 md:gap-6">
                       {currentQuestion.options.map((option, idx) => {
                         const isCorrect = idx === currentQuestion.answer;
                         const isSelected = answers[currentQuestion.id] === idx;
                         
                         return (
                           <label key={idx} className={cn(
-                            "flex items-center gap-8 p-8 rounded-[2.5rem] cursor-pointer transition-all border-2 relative overflow-hidden group",
+                            "flex items-center gap-4 md:gap-8 p-4 md:p-8 rounded-2xl md:rounded-[2.5rem] cursor-pointer transition-all border-2 relative overflow-hidden group",
                             answers[currentQuestion.id] === idx 
                               ? "border-primary bg-white shadow-2xl shadow-primary/10 -translate-y-1" 
                               : "border-emerald-50 hover:bg-white hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-900/5",
@@ -338,7 +341,7 @@ export default function Quiz() {
                             showSolution && isSelected && !isCorrect && "border-red-500 bg-red-50/50"
                           )}>
                             <div className={cn(
-                              "w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition-all font-black text-base shadow-sm",
+                              "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border-2 flex items-center justify-center transition-all font-black text-sm md:text-base shadow-sm shrink-0",
                               answers[currentQuestion.id] === idx 
                                 ? "border-primary bg-primary text-white scale-110 shadow-primary/20" 
                                 : "border-emerald-100 text-emerald-300 group-hover:border-emerald-300 group-hover:text-emerald-500",
@@ -347,7 +350,7 @@ export default function Quiz() {
                             )}>
                               {idx + 1}
                             </div>
-                            <span className="text-xl font-bold text-emerald-950 group-hover:translate-x-1 transition-transform tracking-tight">
+                            <span className="text-base md:text-xl font-bold text-emerald-950 group-hover:translate-x-1 transition-transform tracking-tight flex-1">
                               <ReactMarkdown 
                                 remarkPlugins={[remarkMath]} 
                                 rehypePlugins={[rehypeKatex]}
@@ -379,11 +382,11 @@ export default function Quiz() {
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-16 p-10 bg-emerald-950 rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
+                        className="mt-8 md:mt-16 p-6 md:p-10 bg-emerald-950 rounded-3xl md:rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
                       >
                          <div className="relative z-10 markdown-body">
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mb-6 border-b border-white/5 pb-4">Tactical Solution Analysis</p>
-                            <div className="text-white/90 leading-relaxed font-medium text-lg italic">
+                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Tactical Solution Analysis</p>
+                            <div className="text-white/90 leading-relaxed font-medium text-sm md:text-lg italic">
                                 <ReactMarkdown 
                                   remarkPlugins={[remarkMath]} 
                                   rehypePlugins={[rehypeKatex]}
@@ -392,7 +395,7 @@ export default function Quiz() {
                                 </ReactMarkdown>
                             </div>
                          </div>
-                         <div className="absolute top-0 right-0 p-10 opacity-[0.03]">
+                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] hidden md:block">
                             <HelpCircle size={200} />
                          </div>
                       </motion.div>
@@ -402,18 +405,18 @@ export default function Quiz() {
            </div>
 
            {/* Controls Footer */}
-           <div className="bg-white/80 backdrop-blur-2xl px-6 py-4 flex flex-wrap items-center justify-between gap-4 z-50 relative border-t border-emerald-50 shadow-[0_-10px_50px_rgba(0,0,0,0.02)]">
-              <div className="flex gap-2 flex-wrap items-center">
+           <div className="bg-white/95 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row items-center justify-between gap-4 z-50 relative border-t border-emerald-50 shadow-[0_-10px_50px_rgba(0,0,0,0.02)] shrink-0">
+              <div className="flex gap-2 items-center w-full md:w-auto">
                  <button 
                   onClick={handleMarkReviewNext}
-                  className="px-6 py-3.5 bg-white text-emerald-900 border-2 border-emerald-50 text-[10px] font-black uppercase rounded-xl hover:bg-emerald-50 hover:border-emerald-100 transition-all flex items-center gap-3 group"
+                  className="flex-1 md:flex-none px-4 md:px-6 py-3 md:py-3.5 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[10px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2 md:gap-3 group"
                  >
                    <div className="w-2 h-2 rounded-full bg-orange-500 ring-2 ring-orange-500/10 group-hover:scale-125 transition-transform" />
-                   Mark for Review
+                   <span className="truncate">Mark Review</span>
                  </button>
                  <button 
                   onClick={handleClear}
-                  className="px-6 py-3.5 bg-white text-emerald-900 border-2 border-emerald-50 text-[10px] font-black uppercase rounded-xl hover:bg-emerald-50 hover:border-emerald-100 transition-all font-black"
+                  className="px-4 md:px-6 py-3 md:py-3.5 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[10px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all"
                  >
                    Clear
                  </button>
@@ -421,74 +424,86 @@ export default function Quiz() {
                  {answers[currentQuestion.id] !== null && (
                    <button 
                     onClick={() => setShowSolution(!showSolution)}
-                    className="px-6 py-3.5 bg-emerald-500 text-white text-[10px] font-black uppercase rounded-xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center gap-3 border-2 border-emerald-400"
+                    className="px-4 md:px-6 py-3 md:py-3.5 bg-emerald-500 text-white text-[9px] md:text-[10px] font-black uppercase rounded-xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 border-2 border-emerald-400"
                    >
-                      <BrainCircuit size={16} />
-                      {showSolution ? 'Hide Intel' : 'Analyze'}
+                      <BrainCircuit size={14} className="md:size-16" />
+                      <span className="hidden sm:inline">{showSolution ? 'Hide Intel' : 'Analyze'}</span>
                    </button>
                 )}
               </div>
               
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
                 <button 
                   disabled={currentIdx === 0}
                   onClick={() => selectIdx(currentIdx - 1)}
-                  className="px-8 py-3.5 bg-white text-emerald-950 border-2 border-emerald-50 text-[10px] font-black uppercase rounded-xl hover:bg-emerald-100 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+                  className="flex-1 md:flex-none px-6 md:px-8 py-3 md:py-3.5 bg-white text-emerald-950 border-2 border-emerald-50 text-[9px] md:text-[10px] font-black uppercase rounded-xl hover:bg-emerald-100 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
                 >
-                  Previous
+                  Prev
                 </button>
                 <button 
                   onClick={handleSaveNext}
-                  className="px-10 py-3.5 bg-emerald-950 text-white text-[10px] font-black uppercase rounded-xl shadow-[0_10px_30px_rgba(6,78,59,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group border-2 border-emerald-800"
+                  className="flex-[2] md:flex-none px-8 md:px-10 py-3 md:py-3.5 bg-emerald-950 text-white text-[9px] md:text-[10px] font-black uppercase rounded-xl shadow-[0_10px_30px_rgba(6,78,59,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 md:gap-3 group border-2 border-emerald-800"
                 >
-                  Save & Next <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  Save & Next <ChevronRight size={16} className="md:size-18 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
            </div>
         </div>
 
         {/* Palette Section */}
-        <div className="w-[400px] border-l border-emerald-100 flex flex-col bg-white overflow-hidden shadow-[-10px_0_30px_rgba(0,0,0,0.02)]">
-           <div className="p-8 bg-emerald-50/30">
-              <div className="flex items-center gap-3 mb-8">
-                 <div className="w-2 h-8 bg-primary rounded-full" />
-                 <h3 className="text-sm font-black text-emerald-950 uppercase tracking-[0.3em]">Mission Telemetry</h3>
+        <div 
+          className={cn(
+            "fixed inset-y-0 right-0 z-[100] w-[85%] sm:w-[400px] bg-white lg:static lg:w-[400px] lg:z-0 border-l border-emerald-100 flex flex-col overflow-hidden shadow-[20px_0_50px_rgba(0,0,0,0.5)] lg:shadow-[-10px_0_30px_rgba(0,0,0,0.02)] transition-transform duration-300 ease-out",
+            isMenuOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+          )}
+        >
+           <div className="lg:hidden flex items-center justify-between p-4 bg-emerald-950 text-white shrink-0">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Tactical Palette</span>
+              <button onClick={() => setIsMenuOpen(false)} className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                 <X size={20} />
+              </button>
+           </div>
+           
+           <div className="p-6 md:p-8 shrink-0 bg-emerald-50/30">
+              <div className="flex items-center gap-3 mb-6 md:mb-8">
+                 <div className="w-1.5 md:w-2 h-6 md:h-8 bg-primary rounded-full" />
+                 <h3 className="text-[11px] md:text-sm font-black text-emerald-950 uppercase tracking-[0.3em]">Telemetry</h3>
               </div>
               
-              <div className="bg-white rounded-[2.5rem] p-8 border border-emerald-100 shadow-sm space-y-8">
+              <div className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm space-y-6 md:space-y-8">
                 <div className="flex justify-between items-center">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40">Engagement</p>
-                    <p className="text-3xl font-black heading-display text-emerald-950">{stats.answered}<span className="text-sm text-emerald-300">/{quizSet.questions.length}</span></p>
+                    <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-emerald-800/40">Engagement</p>
+                    <p className="text-2xl md:text-3xl font-black heading-display text-emerald-950">{stats.answered}<span className="text-xs md:text-sm text-emerald-300">/{quizSet.questions.length}</span></p>
                   </div>
-                  <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center">
-                    <Activity size={24} className="text-primary animate-pulse" />
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-emerald-50 flex items-center justify-center">
+                    <Activity size={20} className="md:size-24 text-primary animate-pulse" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
-                    <p className="text-[9px] font-black uppercase text-emerald-700/50 mb-1">Reviewed</p>
-                    <p className="text-xl font-black text-orange-600">{stats.marked}</p>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-emerald-50/50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-emerald-100/50">
+                    <p className="text-[8px] md:text-[9px] font-black uppercase text-emerald-700/50 mb-1">Reviewed</p>
+                    <p className="text-lg md:text-xl font-black text-orange-600">{stats.marked}</p>
                   </div>
-                  <div className="bg-red-50/50 p-4 rounded-2xl border border-red-100/50">
-                    <p className="text-[9px] font-black uppercase text-red-700/50 mb-1">Skipped</p>
-                    <p className="text-xl font-black text-red-600">{stats.notAnswered}</p>
+                  <div className="bg-red-50/50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-red-100/50">
+                    <p className="text-[8px] md:text-[9px] font-black uppercase text-red-700/50 mb-1">Skipped</p>
+                    <p className="text-lg md:text-xl font-black text-red-600">{stats.notAnswered}</p>
                   </div>
                 </div>
               </div>
            </div>
 
-           <div className="p-8 flex-1 overflow-y-auto">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-[10px] font-black text-emerald-800/40 tracking-[0.4em] uppercase">Tactical Palette</h2>
+           <div className="p-6 md:p-8 flex-1 overflow-y-auto">
+              <div className="flex items-center justify-between mb-6 md:mb-8">
+                <h2 className="text-[9px] md:text-[10px] font-black text-emerald-800/40 tracking-[0.3em] md:tracking-[0.4em] uppercase">Tactical Palette</h2>
                 <div className="flex gap-1">
                    <div className="w-1 h-1 rounded-full bg-emerald-200" />
                    <div className="w-1 h-1 rounded-full bg-emerald-200" />
-                   <div className="w-5 h-1 rounded-full bg-primary" />
+                   <div className="w-4 md:w-5 h-1 rounded-full bg-primary" />
                 </div>
               </div>
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-5 gap-3 md:gap-4">
                  {quizSet.questions.map((q, idx) => {
                     const isAnswered = answers[q.id] !== null;
                     const isMarked = markedForReview[q.id];
@@ -505,11 +520,14 @@ export default function Quiz() {
                         key={idx} 
                         whileHover={{ scale: 1.1, y: -2 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => selectIdx(idx)}
+                        onClick={() => {
+                           selectIdx(idx);
+                           setIsMenuOpen(false);
+                        }}
                         className={cn(
-                          "palette-btn w-full aspect-square text-sm font-black transition-all duration-300", 
+                          "palette-btn w-full aspect-square text-xs md:text-sm font-black transition-all duration-300", 
                           statusClass,
-                          currentIdx === idx && "current scale-110 ring-8 ring-primary/5"
+                          currentIdx === idx && "current scale-110 ring-4 md:ring-8 ring-primary/5"
                         )}
                       >
                         {idx + 1}
@@ -519,21 +537,34 @@ export default function Quiz() {
               </div>
            </div>
 
-           <div className="p-8 bg-white border-t border-emerald-100 grid grid-cols-2 gap-4">
+           <div className="p-6 md:p-8 bg-white border-t border-emerald-100 grid grid-cols-2 gap-3 md:gap-4">
               <button 
                 onClick={handleExit}
-                className="bg-white border-2 border-emerald-100 text-emerald-950 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-emerald-50 transition-all"
+                className="bg-white border-2 border-emerald-100 text-emerald-950 py-3.5 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-xl md:rounded-2xl hover:bg-emerald-50 transition-all font-black"
               >
-                 Question Paper
+                 Exit
               </button>
               <button 
                 onClick={handleFinish}
-                className="bg-emerald-950 text-white py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all shadow-xl shadow-emerald-950/20"
+                className="bg-emerald-950 text-white py-3.5 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-xl md:rounded-2xl hover:bg-black transition-all shadow-xl shadow-emerald-950/20 font-black"
               >
                  Submit
               </button>
            </div>
         </div>
+
+        {/* Mobile Overlay */}
+        <AnimatePresence>
+           {isMenuOpen && (
+              <motion.div 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 exit={{ opacity: 0 }}
+                 onClick={() => setIsMenuOpen(false)}
+                 className="fixed inset-0 bg-emerald-950/60 backdrop-blur-sm z-[90] lg:hidden"
+              />
+           )}
+        </AnimatePresence>
       </div>
     </div>
   );
