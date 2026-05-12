@@ -7,7 +7,7 @@ export default function Documentation() {
     {
       title: 'Getting Started',
       icon: Zap,
-      content: 'JEE Master is a high-performance training terminal designed for JEE Advanced aspirants. Our modular system allows you to tackle specific chapters with precision-guided micro-tests.'
+      content: 'JEE TAPASYA is a high-performance training terminal designed for JEE Advanced aspirants. Our modular system allows you to tackle specific chapters with precision-guided micro-tests.'
     },
     {
       title: 'Practice Modules',
@@ -37,7 +37,7 @@ export default function Documentation() {
           Operator <span className="text-primary not-italic">Documentation</span>
         </h1>
         <p className="text-emerald-900/40 font-medium max-w-xl mx-auto">
-          Operational guide for the JEE Master training environment. Standardized procedures for maximum efficiency.
+          Operational guide for the JEE TAPASYA training environment. Standardized procedures for maximum efficiency.
         </p>
       </section>
 

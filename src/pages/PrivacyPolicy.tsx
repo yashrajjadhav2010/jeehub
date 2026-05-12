@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
     {
       title: 'Data Collection',
       icon: Eye,
-      content: 'JEE Master operates primarily as a client-side terminal. Most of your training data, including session scores and progress, is stored locally in your browser storage. We do not track personal identity unless explicitly provided for system synchronization.'
+      content: 'JEE TAPASYA operates primarily as a client-side terminal. Most of your training data, including session scores and progress, is stored locally in your browser storage. We do not track personal identity unless explicitly provided for system synchronization.'
     },
     {
       title: 'Security Protocols',
@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
     {
       title: 'Consent',
       icon: Shield,
-      content: 'By operating the JEE Master terminal, you consent to our localized data persistence protocols. You may purge your system history at any time via the Settings terminal.'
+      content: 'By operating the JEE TAPASYA terminal, you consent to our localized data persistence protocols. You may purge your system history at any time via the Settings terminal.'
     }
   ];
 
@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
           Privacy <span className="text-primary not-italic">Policy</span>
         </h1>
         <p className="text-emerald-900/40 font-medium max-w-xl mx-auto">
-          Ensuring operational secrecy and data integrity for all operators within the JEE Master network.
+          Ensuring operational secrecy and data integrity for all operators within the JEE TAPASYA network.
         </p>
       </section>
 

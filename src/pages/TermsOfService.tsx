@@ -6,7 +6,7 @@ export default function TermsOfService() {
     {
       title: 'Operator Licensing',
       icon: Scale,
-      content: 'By accessing JEE Master, you are granted a non-exclusive license to use the training terminal for educational purposes. Commercial redistribution of the system components is strictly prohibited.'
+      content: 'By accessing JEE TAPASYA, you are granted a non-exclusive license to use the training terminal for educational purposes. Commercial redistribution of the system components is strictly prohibited.'
     },
     {
       title: 'Operational Conduct',
@@ -21,7 +21,7 @@ export default function TermsOfService() {
     {
       title: 'System Modifications',
       icon: Gavel,
-      content: 'JEE Master Command reserves the right to modify system parameters, update module sets, and adjust operational thresholds without prior notice to ensure optimal training performance.'
+      content: 'JEE TAPASYA Command reserves the right to modify system parameters, update module sets, and adjust operational thresholds without prior notice to ensure optimal training performance.'
     }
   ];
 
@@ -36,7 +36,7 @@ export default function TermsOfService() {
           Terms of <span className="text-primary not-italic">Service</span>
         </h1>
         <p className="text-emerald-900/40 font-medium max-w-xl mx-auto">
-          The legal framework governing the interaction between operators and the JEE Master network.
+          The legal framework governing the interaction between operators and the JEE TAPASYA network.
         </p>
       </section>
 
@@ -62,7 +62,7 @@ export default function TermsOfService() {
 
       <div className="text-center">
         <p className="text-xs font-black text-emerald-900/20 uppercase tracking-widest">
-          © 2026 JEE Master Command • All Protocols Enforced
+          © 2026 JEE TAPASYA Command • All Protocols Enforced
         </p>
       </div>
     </div>

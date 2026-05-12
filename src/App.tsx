@@ -38,7 +38,7 @@ function Navbar() {
                 <Zap className="text-white fill-white" size={20} />
               </div>
               <span className="text-2xl font-black heading-display tracking-tighter text-emerald-950 uppercase italic">
-                JEE <span className="text-primary not-italic">Master</span>
+                JEE <span className="text-primary not-italic">TAPASYA</span>
               </span>
             </Link>
 
@@ -249,7 +249,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                   <Zap className="text-primary fill-primary" size={16} />
                 </div>
                 <span className="text-lg font-black heading-display tracking-tight text-emerald-950 uppercase italic">
-                  JEE <span className="text-primary not-italic">Master</span>
+                  JEE <span className="text-primary not-italic">TAPASYA</span>
                 </span>
               </div>
               <div className="flex gap-10">
@@ -257,7 +257,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                 <Link to="/privacy" className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/30 hover:text-primary transition-colors">Privacy Policy</Link>
                 <a href="mailto:yaashh.tech@gmaiil.com" className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/30 hover:text-primary transition-colors">Contact Terminal</a>
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/20">© 2026 JEE Master Command</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/20">© 2026 JEE TAPASYA Command</p>
             </div>
             
             <div className="flex items-center gap-2 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 shadow-sm">
