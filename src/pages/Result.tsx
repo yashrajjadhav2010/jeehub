@@ -46,11 +46,19 @@ export default function Result() {
         totalSolved: 0,
         correctAnswers: 0,
         streak: 1,
-        subjectProgress: { physics: 0, chemistry: 0, maths: 0 }
+        missionsCompleted: 0,
+        subjectProgress: { physics: 0, chemistry: 0, maths: 0 },
+        dailyActivity: {}
       };
 
       stats.totalSolved += quizSet.questions.length;
       stats.correctAnswers += correct;
+      stats.missionsCompleted = (stats.missionsCompleted || 0) + 1;
+      
+      // Update daily activity radar data
+      const today = new Date().toISOString().split('T')[0];
+      stats.dailyActivity = stats.dailyActivity || {};
+      stats.dailyActivity[today] = (stats.dailyActivity[today] || 0) + quizSet.questions.length;
       
       // Update subject specific progress (increment by 5% per set for demo purposes)
       const subId = parsed.subjectId as keyof typeof stats.subjectProgress;

@@ -30,6 +30,9 @@ export default function Home() {
 
   const accuracy = Math.round((stats.correctAnswers / (stats.totalSolved || 1)) * 100);
 
+  const operatorName = localStorage.getItem('operatorName') || 'Candidate';
+  const initial = operatorName.substring(0, 2).toUpperCase();
+
   const subjects = [
     { 
       id: 'physics' as SubjectId, 
@@ -157,10 +160,10 @@ export default function Home() {
                     </div>
                     
                     <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-                        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center font-bold text-emerald-400 border border-white/10">YR</div>
+                        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center font-bold text-emerald-400 border border-white/10">{initial}</div>
                         <div>
                           <p className="text-[10px] font-black uppercase tracking-widest text-white/30">System Operator</p>
-                          <p className="text-sm font-black uppercase tracking-tight">Active Duty</p>
+                          <p className="text-sm font-black uppercase tracking-tight">{operatorName}</p>
                         </div>
                     </div>
                  </div>

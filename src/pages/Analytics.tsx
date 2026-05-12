@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords } from 'lucide-react';
 import { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -13,13 +13,41 @@ export default function Analytics() {
     if (saved) setStats(JSON.parse(saved));
   }, []);
 
-  const chartData = [15, 30, 45, 20, 60, 40, 75]; // Demo trend data
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const { chartData, rawData, dayLabels } = useMemo(() => {
+    const labels = [];
+    const data = [];
+    const today = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+      
+      labels.push(dayName);
+      data.push(stats?.dailyActivity?.[dateStr] || 0);
+    }
+    
+    // Normalize data for height % (max questions solve in day or 50 as min ceiling)
+    const maxVal = Math.max(...data, 20);
+    const normalizedData = data.map(v => (v / maxVal) * 100);
+    
+    return { chartData: normalizedData, rawData: data, dayLabels: labels };
+  }, [stats]);
 
   const accuracy = stats ? Math.round((stats.correctAnswers / (stats.totalSolved || 1)) * 100) : 0;
   const physicsProgress = stats?.subjectProgress.physics || 0;
   const chemistryProgress = stats?.subjectProgress.chemistry || 0;
   const mathsProgress = stats?.subjectProgress.maths || 0;
+
+  const calculateRank = () => {
+    const missions = stats?.missionsCompleted || 0;
+    if (missions === 0) return 'UNRANKED';
+    const acc = stats?.totalSolved > 0 ? (stats.correctAnswers / stats.totalSolved) : 0;
+    const baseRank = 1402345;
+    const predictedRank = Math.max(1, baseRank - (missions * 25000) - Math.floor(acc * 500000));
+    return `#${predictedRank.toLocaleString()}`;
+  };
 
   return (
     <div className="space-y-10">
@@ -43,8 +71,8 @@ export default function Analytics() {
         <div className="lg:col-span-2 bg-white rounded-[3rem] p-12 border border-emerald-100 shadow-sm relative overflow-hidden group/chart">
           <div className="flex items-center justify-between mb-12">
             <div className="space-y-1">
-              <h2 className="text-2xl font-black heading-display text-emerald-950 uppercase italic">Accuracy <span className="text-primary not-italic">Trend</span></h2>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-700/40">Neural Performance Radar</p>
+              <h2 className="text-2xl font-black heading-display text-emerald-950 uppercase italic">Activity <span className="text-primary not-italic">Radar</span></h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-700/40">Questions Solved: Last 7 Days</p>
             </div>
             <div className="flex gap-6">
                <div className="flex items-center gap-2">
@@ -74,12 +102,12 @@ export default function Analytics() {
                         )}
                       >
                          <div className="absolute inset-0 bg-white/5" />
-                         <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            {val}%
+                         <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            {rawData[i]} SOLVED
                          </div>
                       </motion.div>
                    </div>
-                   <span className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-800/40">{days[i]}</span>
+                   <span className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-800/40">{dayLabels[i]}</span>
                 </div>
              ))}
 
@@ -97,6 +125,19 @@ export default function Analytics() {
 
         {/* Breakdown Stats */}
         <div className="space-y-6">
+           <div className="bg-emerald-950 rounded-[2rem] p-8 border border-emerald-100 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
+                 <Swords size={60} className="text-white" />
+              </div>
+              <div className="relative z-10 space-y-4">
+                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Predicted Rank</p>
+                 <div>
+                   <p className="text-4xl font-black text-white heading-display italic tracking-tighter">{calculateRank()}</p>
+                   <p className="text-[9px] font-black uppercase tracking-widest text-emerald-100/30 mt-1">Based on tactical performance</p>
+                 </div>
+              </div>
+           </div>
+
            <div className="bg-white rounded-[2rem] p-8 border border-emerald-100 shadow-sm">
               <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-emerald-900">
                  <Award className="text-[#e64a19]" size={20} /> Accomplishments

@@ -37,11 +37,13 @@ export interface UserStats {
   correctAnswers: number;
   totalTime: number; // in seconds
   streak: number;
+  missionsCompleted?: number;
   lastPracticeDate: string | null;
   subjectProgress: Record<SubjectId, number>; // total questions solved per subject
   chapterAccuracy: Record<string, number>; // accuracy per chapter
   weakTopics: string[];
   strongTopics: string[];
+  dailyActivity?: Record<string, number>;
 }
 
 export interface QuizResult {
