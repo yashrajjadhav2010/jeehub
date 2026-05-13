@@ -16,7 +16,6 @@ import TermsOfService from './pages/TermsOfService';
 import { cn } from './lib/utils';
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const operatorName = localStorage.getItem('operatorName') || 'Candidate';
   const initial = operatorName.substring(0, 2).toUpperCase();
@@ -24,106 +23,113 @@ function Navbar() {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: BookOpen, label: 'Catalog', path: '/subjects' },
-    { icon: BarChart3, label: 'Radar', path: '/analytics' },
     { icon: Trophy, label: 'Challenges', path: '/challenges' },
+    { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-emerald-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
-          <div className="flex items-center gap-10">
-            <Link to="/" className="flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                <Zap className="text-white fill-white" size={20} />
+    <>
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-emerald-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 sm:h-20">
+            <div className="flex items-center gap-10">
+              <Link to="/" className="flex items-center gap-3 shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                  <Zap className="text-white fill-white" size={18} />
+                </div>
+                <span className="text-lg sm:text-2xl font-black heading-display tracking-tighter text-emerald-950 uppercase italic">
+                  JEE <span className="text-primary not-italic">TAPASYA</span>
+                </span>
+              </Link>
+
+              <div className="hidden lg:flex items-center gap-1">
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2",
+                      location.pathname === item.path
+                        ? "bg-primary text-white shadow-lg shadow-primary/20"
+                        : "text-emerald-900/40 hover:text-primary hover:bg-emerald-50"
+                    )}
+                  >
+                    <item.icon size={16} />
+                    {item.label}
+                  </Link>
+                ))}
               </div>
-              <span className="text-2xl font-black heading-display tracking-tighter text-emerald-950 uppercase italic">
-                JEE <span className="text-primary not-italic">TAPASYA</span>
-              </span>
-            </Link>
-
-            <div className="hidden lg:flex items-center gap-1">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2",
-                    location.pathname === item.path
-                      ? "bg-primary text-white shadow-lg shadow-primary/20"
-                      : "text-emerald-900/40 hover:text-primary hover:bg-emerald-50"
-                  )}
-                >
-                  <item.icon size={16} />
-                  {item.label}
-                </Link>
-              ))}
             </div>
-          </div>
 
-          <div className="hidden lg:flex items-center gap-4">
-            <div className="h-10 w-[1px] bg-emerald-100 mx-2" />
-            <div className="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100">
+            <div className="hidden lg:flex items-center gap-4">
+              <div className="h-10 w-[1px] bg-emerald-100 mx-2" />
+              <div className="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100">
+                <div className="text-right">
+                  <p className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Operator</p>
+                  <p className="text-xs font-black text-emerald-900 uppercase">{operatorName}</p>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
+                  {initial}
+                </div>
+              </div>
+              <Link to="/settings" className="p-3 text-emerald-900/40 hover:text-primary hover:bg-emerald-50 rounded-xl transition-colors">
+                <Settings size={20} />
+              </Link>
+            </div>
+
+            <div className="flex items-center lg:hidden gap-3">
               <div className="text-right">
-                <p className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Operator</p>
-                <p className="text-xs font-black text-emerald-900 uppercase">{operatorName}</p>
+                <p className="text-[8px] font-black text-emerald-900/40 uppercase tracking-widest leading-none mb-1">Sector</p>
+                <p className="text-[10px] font-black text-emerald-950 uppercase leading-none">{location.pathname === '/' ? 'DASHBOARD' : location.pathname.split('/')[1].toUpperCase()}</p>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
-                {initial}
-              </div>
+              <Link to="/settings" className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-950">
+                <User size={18} />
+              </Link>
             </div>
-            <Link to="/settings" className="p-3 text-emerald-900/40 hover:text-primary hover:bg-emerald-50 rounded-xl transition-colors">
-              <Settings size={20} />
-            </Link>
-          </div>
-
-          <div className="flex items-center lg:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-3 text-emerald-900 hover:bg-emerald-50 rounded-xl transition-colors"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
           </div>
         </div>
-      </div>
+      </nav>
+    </>
+  );
+}
 
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t border-emerald-100 overflow-hidden"
-          >
-            <div className="px-4 py-6 space-y-2">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className={cn(
-                    "flex items-center gap-4 px-6 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all",
-                    location.pathname === item.path
-                      ? "bg-primary text-white shadow-xl shadow-primary/20"
-                      : "text-emerald-900/60 hover:text-primary hover:bg-emerald-50"
-                  )}
-                >
-                  <item.icon size={20} />
-                  {item.label}
-                </Link>
-              ))}
-              <div className="pt-4 mt-4 border-t border-emerald-50">
-                <button className="flex items-center gap-4 w-full px-6 py-4 rounded-2xl text-emerald-900/60 hover:text-primary hover:bg-emerald-50 transition-all font-black text-[12px] uppercase tracking-widest">
-                  <Settings size={20} />
-                  Settings
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+function BottomNav() {
+  const location = useLocation();
+  const menuItems = [
+    { icon: LayoutDashboard, label: 'Home', path: '/' },
+    { icon: BookOpen, label: 'Catalog', path: '/subjects' },
+    { icon: Trophy, label: 'Missions', path: '/challenges' },
+    { icon: BarChart3, label: 'Radar', path: '/analytics' },
+  ];
+
+  return (
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-white border-t border-emerald-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+      <div className="flex items-center justify-around h-16 px-2">
+        {menuItems.map((item) => {
+          const isActive = item.path === '/' 
+            ? location.pathname === '/' 
+            : location.pathname.startsWith(item.path);
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "flex flex-col items-center justify-center gap-1 w-full h-full transition-all relative",
+                isActive ? "text-primary" : "text-emerald-900/40"
+              )}
+            >
+              <item.icon size={20} className={cn(isActive ? "fill-primary/5" : "")} />
+              <span className="text-[9px] font-black uppercase tracking-widest">{item.label}</span>
+              {isActive && (
+                <motion.div 
+                  layoutId="bottomNavDot"
+                  className="absolute top-0 w-8 h-0.5 bg-primary rounded-b-full"
+                />
+              )}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }
@@ -215,16 +221,17 @@ function Layout({ children }: { children: React.ReactNode }) {
   };
   
   return (
-    <div className="min-h-screen bg-[#fbfdfb] text-emerald-900 relative flex flex-col">
+    <div className="min-h-screen bg-[#fbfdfb] text-emerald-900 relative flex flex-col overflow-x-hidden">
       <AnimatePresence>
         {showNameModal && <NameModal onComplete={handleNameComplete} />}
       </AnimatePresence>
 
       {!isQuizMode && <Navbar key={key} />}
+      {!isQuizMode && <BottomNav />}
       
       <main className={cn(
         "relative z-10 flex-1",
-        !isQuizMode ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 w-full" : ""
+        !isQuizMode ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 pb-32 sm:pb-10 w-full" : ""
       )}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -241,7 +248,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       </main>
       
       {!isQuizMode && (
-        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-emerald-50 w-full">
+        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-32 sm:pb-16 border-t border-emerald-50 w-full">
           <div className="flex flex-col items-center gap-12">
             <div className="flex flex-col md:flex-row justify-between items-center w-full gap-8">
               <div className="flex items-center gap-3">

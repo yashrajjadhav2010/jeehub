@@ -92,50 +92,50 @@ export default function Home() {
                    <div className="w-12 h-[2px] bg-primary animate-pulse" />
                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">Neural Mission Control</span>
                 </div>
-                <h1 className="text-7xl font-black heading-display leading-[0.9] text-emerald-950 uppercase tracking-tighter">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-black heading-display leading-[0.9] text-emerald-950 uppercase tracking-tighter">
                   Tactical <br /> 
                   <span className="text-primary italic relative">
                     Intelligence
                     <motion.span 
                       initial={{ width: 0 }}
                       animate={{ width: '100%' }}
-                      className="absolute left-0 -bottom-2 h-2 bg-primary/10 rounded-full"
+                      className="absolute left-0 -bottom-1 md:-bottom-2 h-1 md:h-2 bg-primary/10 rounded-full"
                     />
                   </span>
                 </h1>
               </div>
               
-              <p className="text-emerald-800/60 max-w-lg text-lg md:text-xl font-medium leading-relaxed">
+              <p className="text-emerald-800/60 max-w-lg text-base sm:text-lg md:text-xl font-medium leading-relaxed">
                 Welcome Commander. Your current readiness index is being analyzed. Engage with tactical sectors to populate your data radar.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4 md:pt-6">
-                 <Link to="/subjects" className="px-8 md:px-12 py-5 md:py-6 bg-primary text-white rounded-2xl md:rounded-3xl font-black text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center justify-center gap-4 group">
+                 <Link to="/subjects" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-primary text-white rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center justify-center gap-4 group">
                     START NEW MISSION <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                  </Link>
-                 <Link to="/analytics" className="px-8 md:px-12 py-5 md:py-6 bg-white border border-emerald-100 text-emerald-950 rounded-2xl md:rounded-3xl font-black text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center justify-center gap-4 shadow-xl shadow-emerald-950/5">
+                 <Link to="/analytics" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-white border border-emerald-100 text-emerald-950 rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center justify-center gap-4 shadow-xl shadow-emerald-950/5">
                     VIEW RADAR DATA <Activity size={20} />
                  </Link>
               </div>
            </div>
            
-           <div className="w-full lg:w-[480px] perspective-1000">
+           <div className="w-full lg:w-[480px]">
               <motion.div 
-                initial={{ opacity: 0, x: 50, rotateY: -10 }}
-                animate={{ opacity: 1, x: 0, rotateY: 10 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="bg-emerald-950 rounded-[4rem] p-12 text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.4)] border border-white/5"
+                className="bg-emerald-950 rounded-[2rem] sm:rounded-[4rem] p-6 sm:p-12 text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.4)] border border-white/5"
               >
-                 <div className="relative z-10 space-y-12">
+                 <div className="relative z-10 space-y-8 sm:space-y-12">
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mb-8 border-b border-white/5 pb-4">Mission Status Report</p>
-                      <div className="space-y-10">
+                      <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/30 mb-6 sm:mb-8 border-b border-white/5 pb-4">Mission Status Report</p>
+                      <div className="space-y-8 sm:space-y-10">
                          <div className="group cursor-help">
-                            <div className="flex justify-between items-end mb-4">
-                               <span className="text-[11px] font-black uppercase tracking-widest text-white/50 group-hover:text-primary transition-colors">Mastery Index</span>
-                               <span className="text-4xl font-black heading-display">{accuracy}%</span>
+                            <div className="flex justify-between items-end mb-3 sm:mb-4">
+                               <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-white/50 group-hover:text-primary transition-colors">Mastery Index</span>
+                               <span className="text-3xl sm:text-4xl font-black heading-display">{accuracy}%</span>
                             </div>
-                            <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-1.5 sm:h-2 bg-white/5 rounded-full overflow-hidden">
                                <motion.div 
                                   initial={{ width: 0 }}
                                   animate={{ width: `${accuracy}%` }}
@@ -144,11 +144,11 @@ export default function Home() {
                             </div>
                          </div>
                          <div className="group cursor-help">
-                            <div className="flex justify-between items-end mb-4">
-                               <span className="text-[11px] font-black uppercase tracking-widest text-white/50 group-hover:text-emerald-400 transition-colors">Solve Velocity</span>
-                               <span className="text-4xl font-black heading-display">{stats.totalSolved} <span className="text-sm font-bold text-white/20">Total</span></span>
+                            <div className="flex justify-between items-end mb-3 sm:mb-4">
+                               <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-white/50 group-hover:text-emerald-400 transition-colors">Solve Velocity</span>
+                               <span className="text-3xl sm:text-4xl font-black heading-display">{stats.totalSolved} <span className="text-xs sm:text-sm font-bold text-white/20">Total</span></span>
                             </div>
-                            <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-1.5 sm:h-2 bg-white/5 rounded-full overflow-hidden">
                                <motion.div 
                                   initial={{ width: 0 }}
                                   animate={{ width: `${Math.min(100, (stats.totalSolved / 500) * 100)}%` }}
@@ -177,7 +177,7 @@ export default function Home() {
       </section>
 
       {/* Quick Access Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
          <StatsCard 
             label="Current Streak" 
             value={`${stats.streak} Days`} 
@@ -193,11 +193,12 @@ export default function Home() {
             bg="bg-emerald-50 border-primary/10" 
          />
          <StatsCard 
-            label="Time Engaged" 
+            label="Engaged" 
             value="0.0 Hrs" 
             icon={Calendar} 
             color="text-[#ef5350]" 
             bg="bg-red-50 border-red-100" 
+            className="col-span-2 lg:col-span-1"
          />
       </div>
 
@@ -287,15 +288,15 @@ export default function Home() {
   );
 }
 
-function StatsCard({ icon: Icon, label, value, color, bg }: any) {
+function StatsCard({ icon: Icon, label, value, color, bg, className }: any) {
   return (
-    <div className={cn("rounded-3xl md:rounded-[2.5rem] p-8 md:p-10 border transition-all flex flex-col justify-between h-48 md:h-56 bg-white shadow-sm", bg)}>
-       <div className={cn("w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center", bg)}>
-          <Icon size={24} className={color} />
+    <div className={cn("rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 border transition-all flex flex-col justify-between h-40 sm:h-48 md:h-56 bg-white shadow-sm", bg, className)}>
+       <div className={cn("w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center", bg)}>
+          <Icon size={20} className={cn("sm:size-[24px]", color)} />
        </div>
        <div>
-          <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-emerald-700/50 mb-1 md:mb-2">{label}</p>
-          <p className="text-3xl md:text-4xl font-black heading-display text-emerald-950">{value}</p>
+          <p className="text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] md:tracking-[0.3em] text-emerald-700/50 mb-1 md:mb-2">{label}</p>
+          <p className="text-2xl sm:text-3xl md:text-4xl font-black heading-display text-emerald-950">{value}</p>
        </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ChevronLeft, ChevronRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, ArrowRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -252,12 +252,19 @@ export default function Quiz() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-12 pr-4 md:pr-10">
+        <div className="flex items-center gap-3 md:gap-8 pr-4 md:pr-10">
+          <button 
+            onClick={handleFinish}
+            className="md:hidden bg-primary text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg shadow-primary/20 border border-white/10"
+          >
+            Submit
+          </button>
+
           <div className="flex flex-col items-center sm:items-end">
              <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 md:mb-2 hidden md:block">T-Minus Remaining</span>
-             <div className="flex items-center gap-2 md:gap-3 bg-emerald-50 px-3 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl border border-emerald-100 shadow-inner">
-               <Clock size={14} className="md:size-16 text-primary animate-pulse" />
-               <span className="text-sm md:text-xl font-black text-emerald-950 heading-display tabular-nums tracking-tighter leading-none">{formatTime(timeLeft)}</span>
+             <div className="flex items-center gap-2 md:gap-2 bg-emerald-50 px-3 md:px-2 py-2 md:py-1 rounded-xl md:rounded-xl border border-emerald-100 shadow-inner">
+               <Clock size={14} className="md:size-10 text-primary animate-pulse" />
+               <span className="text-sm md:text-sm font-black text-emerald-950 heading-display tabular-nums tracking-tighter leading-none">{formatTime(timeLeft)}</span>
              </div>
           </div>
           
@@ -409,14 +416,14 @@ export default function Quiz() {
               <div className="flex gap-2 items-center w-full md:w-auto">
                  <button 
                   onClick={handleMarkReviewNext}
-                  className="flex-1 md:flex-none px-4 md:px-6 py-3 md:py-3.5 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[10px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2 md:gap-3 group"
+                  className="flex-1 md:flex-none px-4 md:px-5 py-2 md:py-2 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[9px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2 md:gap-3 group"
                  >
                    <div className="w-2 h-2 rounded-full bg-orange-500 ring-2 ring-orange-500/10 group-hover:scale-125 transition-transform" />
                    <span className="truncate">Mark Review</span>
                  </button>
                  <button 
                   onClick={handleClear}
-                  className="px-4 md:px-6 py-3 md:py-3.5 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[10px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all"
+                  className="px-3 md:px-5 py-2 md:py-2 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[9px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all shrink-0"
                  >
                    Clear
                  </button>
@@ -424,27 +431,27 @@ export default function Quiz() {
                  {answers[currentQuestion.id] !== null && (
                    <button 
                     onClick={() => setShowSolution(!showSolution)}
-                    className="px-4 md:px-6 py-3 md:py-3.5 bg-emerald-500 text-white text-[9px] md:text-[10px] font-black uppercase rounded-xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 border-2 border-emerald-400"
+                    className="px-2 md:px-4 py-1.5 md:py-1 bg-emerald-500 text-white text-[8px] md:text-[8px] font-black uppercase rounded-lg md:rounded-lg shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-1.5 border-2 border-emerald-400 shrink-0"
                    >
-                      <BrainCircuit size={14} className="md:size-16" />
+                      <BrainCircuit size={10} className="md:size-10" />
                       <span className="hidden sm:inline">{showSolution ? 'Hide Intel' : 'Analyze'}</span>
                    </button>
-                )}
+                 )}
               </div>
               
               <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
                 <button 
                   disabled={currentIdx === 0}
                   onClick={() => selectIdx(currentIdx - 1)}
-                  className="flex-1 md:flex-none px-6 md:px-8 py-3 md:py-3.5 bg-white text-emerald-950 border-2 border-emerald-50 text-[9px] md:text-[10px] font-black uppercase rounded-xl hover:bg-emerald-100 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+                  className="flex-1 md:flex-none px-6 md:px-6 py-2 md:py-2 bg-white text-emerald-950 border-2 border-emerald-50 text-[9px] md:text-[9px] font-black uppercase rounded-xl hover:bg-emerald-100 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
                 >
                   Prev
                 </button>
                 <button 
                   onClick={handleSaveNext}
-                  className="flex-[2] md:flex-none px-8 md:px-10 py-3 md:py-3.5 bg-emerald-950 text-white text-[9px] md:text-[10px] font-black uppercase rounded-xl shadow-[0_10px_30px_rgba(6,78,59,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 md:gap-3 group border-2 border-emerald-800"
+                  className="flex-[2] md:flex-none px-8 md:px-4 py-3 md:py-1.5 bg-emerald-950 text-white text-[9px] md:text-[9px] font-black uppercase rounded-xl shadow-[0_10px_30px_rgba(6,78,59,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 md:gap-2 group border-2 border-emerald-800 shrink-0"
                 >
-                  Save & Next <ChevronRight size={16} className="md:size-18 group-hover:translate-x-1 transition-transform" />
+                  Save & Next <ChevronRight size={16} className="md:size-14 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
            </div>

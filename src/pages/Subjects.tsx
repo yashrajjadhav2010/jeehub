@@ -58,8 +58,8 @@ export default function Subjects() {
            <div className="w-8 h-[2px] bg-primary" />
            <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-emerald-700/50">Curriculum v4.1</span>
         </div>
-        <h1 className="text-4xl md:text-6xl font-black heading-display leading-tight mb-4 text-emerald-950 uppercase tracking-tight">The Mission <br /> <span className="text-primary italic">Catalog</span></h1>
-        <p className="text-emerald-800/70 max-w-xl text-base md:text-lg font-medium">Select a core subject to explore advanced modules and competitive practice sets tailored for JEE excellence.</p>
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-black heading-display leading-tight mb-4 text-emerald-950 uppercase tracking-tight">The Mission <br /> <span className="text-primary italic">Catalog</span></h1>
+        <p className="text-emerald-800/70 max-w-xl text-sm sm:text-base md:text-lg font-medium">Select a core subject to explore advanced modules and competitive practice sets tailored for JEE excellence.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
@@ -85,16 +85,16 @@ export default function Subjects() {
               </div>
 
               <div className="relative h-full flex flex-col">
-                <div className={cn("w-16 h-16 rounded-[1.5rem] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center mb-8 shadow-2xl", sub.accent)}>
-                    <sub.icon size={32} />
+                <div className={cn("w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-[1.5rem] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center mb-6 sm:mb-8 shadow-2xl", sub.accent)}>
+                    <sub.icon size={24} className="sm:size-[32px]" />
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-4xl md:text-5xl font-black heading-display mb-4 md:mb-6 tracking-tight text-white">{sub.title}</h3>
+                  <h3 className="text-3xl sm:text-4xl md:text-5xl font-black heading-display mb-4 md:mb-6 tracking-tight text-white">{sub.title}</h3>
                   
                   <div className="flex flex-wrap gap-2 mb-6 md:mb-10">
                     {sub.topics.map(topic => (
-                      <span key={topic} className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 backdrop-blur-md rounded-full text-[9px] md:text-[10px] uppercase font-black tracking-widest text-white/70 border border-white/10">
+                      <span key={topic} className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 backdrop-blur-md rounded-full text-[8px] sm:text-[9px] md:text-[10px] uppercase font-black tracking-widest text-white/70 border border-white/10">
                         {topic}
                       </span>
                     ))}
