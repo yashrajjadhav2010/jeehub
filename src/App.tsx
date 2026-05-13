@@ -13,6 +13,7 @@ import SettingsPage from './pages/Settings';
 import Documentation from './pages/Documentation';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import DeviceNotice from './components/DeviceNotice';
 import { cn } from './lib/utils';
 
 function Navbar() {
@@ -222,6 +223,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   
   return (
     <div className="min-h-screen bg-[#fbfdfb] text-emerald-900 relative flex flex-col overflow-x-hidden">
+      <DeviceNotice />
       <AnimatePresence>
         {showNameModal && <NameModal onComplete={handleNameComplete} />}
       </AnimatePresence>
