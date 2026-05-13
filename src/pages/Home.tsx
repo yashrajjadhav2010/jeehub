@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
-import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserStats, SubjectId } from '../types';
 import { cn } from '../lib/utils';
@@ -21,14 +21,25 @@ export default function Home() {
   useEffect(() => {
     const savedStats = localStorage.getItem('userStats');
     if (savedStats) {
+      const parsedStats = JSON.parse(savedStats);
       setStats(prev => ({
         ...prev,
-        ...JSON.parse(savedStats)
+        ...parsedStats
       }));
     }
   }, []);
 
   const accuracy = Math.round((stats.correctAnswers / (stats.totalSolved || 1)) * 100);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      scrollContainerRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
 
   const operatorName = localStorage.getItem('operatorName') || 'Candidate';
   const initial = operatorName.substring(0, 2).toUpperCase();
@@ -90,7 +101,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-6">
                    <div className="w-12 h-[2px] bg-primary animate-pulse" />
-                   <span className="text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">Neural Mission Control</span>
+                   <span className="text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">Mission Control Center</span>
                 </div>
                 <h1 className="text-4xl sm:text-5xl md:text-7xl font-black heading-display leading-[0.9] text-emerald-950 uppercase tracking-tighter">
                   Tactical <br /> 
@@ -208,22 +219,47 @@ export default function Home() {
              <h2 className="text-2xl md:text-3xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">Operational <span className="text-primary not-italic">Sectors</span></h2>
              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-emerald-700/40">Select your field of engagement</p>
            </div>
-           <div className="flex gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-100" />
-              <div className="w-8 h-2 rounded-full bg-primary" />
-              <div className="w-2 h-2 rounded-full bg-emerald-100" />
+           
+           <div className="flex items-center gap-4">
+              <div className="hidden md:flex gap-2">
+                 <div className="w-2 h-2 rounded-full bg-emerald-100" />
+                 <div className="w-8 h-2 rounded-full bg-primary" />
+                 <div className="w-2 h-2 rounded-full bg-emerald-100" />
+              </div>
+              
+              <div className="flex gap-2">
+                 <button 
+                  onClick={() => scroll('left')}
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-emerald-100 bg-white text-emerald-950 flex items-center justify-center hover:bg-emerald-50 transition-colors shadow-sm"
+                 >
+                    <ChevronRight size={20} className="rotate-180" />
+                 </button>
+                 <button 
+                  onClick={() => scroll('right')}
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-emerald-100 bg-white text-emerald-950 flex items-center justify-center hover:bg-emerald-50 transition-colors shadow-sm"
+                 >
+                    <ChevronRight size={20} />
+                 </button>
+              </div>
            </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div 
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto gap-6 md:gap-8 pb-10 hide-scrollbar snap-x snap-mandatory scroll-smooth"
+        >
           {subjects.map((sub, i) => (
-            <Link key={sub.id} to={`/subjects/${sub.id}`}>
+            <Link 
+              key={sub.id} 
+              to={`/subjects/${sub.id}`}
+              className="min-w-[280px] sm:min-w-[320px] md:min-w-[400px] snap-center first:ml-2 last:mr-2"
+            >
                <motion.div 
                  initial={{ opacity: 0, y: 20 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: i * 0.1 }}
                  whileHover={{ y: -10, scale: 1.02 }}
-                 className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all flex flex-col h-[350px] md:h-[400px] relative overflow-hidden group"
+                 className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all flex flex-col h-[350px] md:h-[400px] relative overflow-hidden group w-full"
                >
                   <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform", sub.color.replace('from-', 'bg-').replace('/30', '/10'))}>
                      <div className={sub.accent}>{sub.icon}</div>
@@ -254,36 +290,93 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 md:pb-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-12 bg-white rounded-3xl md:rounded-[4rem] p-8 md:p-12 border border-emerald-100 shadow-sm relative overflow-hidden"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 relative z-10">
-             <div className="max-w-2xl text-center md:text-left">
-               <h2 className="text-2xl md:text-4xl font-black heading-display mb-4 text-emerald-950 uppercase tracking-tight">System Recommendations</h2>
-               <p className="text-emerald-800/70 mb-8 md:mb-10 text-base md:text-lg leading-relaxed font-medium">Complete more assessments to receive AI-driven personalized study recommendations and focused practice targets.</p>
-               <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                  <div className="px-6 md:px-8 py-3 md:py-4 bg-primary/10 border-2 border-primary/20 rounded-2xl md:rounded-[2rem] flex items-center gap-4 opacity-50">
-                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs">?</div>
-                     <div className="text-left">
-                        <p className="text-[9px] md:text-[10px] font-black uppercase text-primary/60 tracking-[0.1em]">Target Focus</p>
-                        <p className="text-xs md:text-sm font-bold text-emerald-950">Awaiting Data</p>
-                     </div>
-                  </div>
+      {/* Feature Introduction: Core Capabilities */}
+      <section className="py-10 md:py-20 relative">
+        <div className="absolute inset-0 bg-emerald-50/30 rounded-[3rem] md:rounded-[5rem] -z-10" />
+        <div className="text-center mb-16 space-y-4">
+           <h2 className="text-3xl md:text-5xl font-black heading-display text-emerald-950 uppercase italic tracking-tighter">
+             Core <span className="text-primary not-italic">Capabilities</span>
+           </h2>
+           <p className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">The Tapasya intelligence Engine</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 md:px-0">
+           <FeatureCard 
+              icon={BrainCircuit}
+              title="Adaptive AI"
+              desc="Our tactical engine tracks your weak sectors and surfaces high-priority questions to bridge your intelligence gaps."
+              accent="text-emerald-500"
+              bg="bg-white shadow-sm"
+           />
+           <FeatureCard 
+              icon={BarChart3}
+              title="Radar Telemetry"
+              desc="Real-time visualizations of your accuracy, time-spent, and mastery across all JEE subjects and chapters."
+              accent="text-primary"
+              bg="bg-white shadow-xl shadow-emerald-950/5"
+           />
+           <FeatureCard 
+              icon={ShieldCheck}
+              title="Mission Ready"
+              desc="Simulate the actual JEE environment with pressurized timers, standard markings, and tactical dashboards."
+              accent="text-orange-500"
+              bg="bg-white shadow-sm"
+           />
+           <FeatureCard 
+              icon={Trophy}
+              title="Global Rank"
+              desc="Compare your telemetry with simulated candidate peers to identify where you stand in the competitive arena."
+              accent="text-red-500"
+              bg="bg-white shadow-sm"
+           />
+        </div>
+      </section>
+
+      {/* Numerical Roadmap / Workflow */}
+      <section className="py-10 md:py-20 px-4 md:px-0">
+         <div className="flex flex-col lg:flex-row gap-12 lg:items-center">
+            <div className="flex-1 space-y-10">
+               <div className="space-y-4">
+                  <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-primary">Mission Pipeline</span>
+                  <h2 className="text-4xl md:text-6xl font-black heading-display text-emerald-950 leading-tight uppercase italic">
+                    How We Achieve <br />
+                    <span className="text-primary not-italic">Victory.</span>
+                  </h2>
                </div>
-             </div>
-             <div className="flex justify-center">
-               <button className="h-36 w-36 md:h-48 md:w-48 rounded-full bg-emerald-950 text-white flex flex-col items-center justify-center gap-4 hover:scale-105 transition-transform shadow-2xl relative group">
-                  <div className="absolute inset-0 border-4 border-dashed border-primary animate-[spin_20s_linear_infinite] rounded-full scale-110 opacity-20" />
-                  <BrainCircuit size={32} className="text-primary md:size-12 md:size-12" />
-                  <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] uppercase">Enter Flow</span>
-               </button>
-             </div>
-          </div>
-        </motion.div>
-      </div>
+               <p className="text-emerald-800/60 text-lg md:text-xl font-medium leading-relaxed max-w-xl italic">
+                 "Practice is the tapasya that transforms a candidate into a top-ranker. Our workflow is designed for maximum mission-critical retention."
+               </p>
+               <div className="flex gap-4">
+                  <div className="w-12 h-[2px] bg-emerald-100" />
+                  <div className="w-12 h-[2px] bg-primary/20" />
+                  <div className="w-12 h-[2px] bg-emerald-100" />
+               </div>
+            </div>
+
+            <div className="flex-1 grid grid-cols-1 gap-6">
+               <WorkflowStep 
+                  number="01" 
+                  title="Target Acquisition" 
+                  desc="Select your subject and chapter to begin a tactical practice session." 
+                  icon={Crosshair} 
+               />
+               <WorkflowStep 
+                  number="02" 
+                  title="Tactical Engagement" 
+                  desc="Solve hand-picked questions with active timers and detailed telemetry." 
+                  icon={Zap} 
+               />
+               <WorkflowStep 
+                  number="03" 
+                  title="After-Action Review" 
+                  desc="Analyze your solution paths with AI-powered insights and visual data." 
+                  icon={Activity} 
+               />
+            </div>
+         </div>
+      </section>
+
+
     </div>
   );
 }
@@ -297,6 +390,43 @@ function StatsCard({ icon: Icon, label, value, color, bg, className }: any) {
        <div>
           <p className="text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] md:tracking-[0.3em] text-emerald-700/50 mb-1 md:mb-2">{label}</p>
           <p className="text-2xl sm:text-3xl md:text-4xl font-black heading-display text-emerald-950">{value}</p>
+       </div>
+    </div>
+  );
+}
+
+function FeatureCard({ icon: Icon, title, desc, accent, bg }: any) {
+  return (
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className={cn("p-8 rounded-[2.5rem] border border-emerald-100 flex flex-col gap-6 transition-all", bg)}
+    >
+       <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center bg-emerald-50 shadow-inner", accent)}>
+          <Icon size={28} />
+       </div>
+       <div className="space-y-3">
+          <h3 className="text-xl font-black heading-display text-emerald-950 uppercase italic tracking-tight">{title}</h3>
+          <p className="text-sm font-medium text-emerald-800/60 leading-relaxed">{desc}</p>
+       </div>
+    </motion.div>
+  );
+}
+
+function WorkflowStep({ number, title, desc, icon: Icon }: any) {
+  return (
+    <div className="flex gap-6 group">
+       <div className="flex flex-col items-center">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-950 text-primary flex items-center justify-center font-black text-xs heading-display shadow-xl shadow-emerald-950/20 group-hover:scale-110 transition-transform">
+             {number}
+          </div>
+          <div className="flex-1 w-px bg-emerald-100 my-2" />
+       </div>
+       <div className="pb-8 flex-1">
+          <div className="flex items-center gap-3 mb-2">
+             <Icon size={16} className="text-primary" />
+             <h3 className="text-lg font-black heading-display text-emerald-950 uppercase italic">{title}</h3>
+          </div>
+          <p className="text-sm font-medium text-emerald-800/60 leading-relaxed max-w-md">{desc}</p>
        </div>
     </div>
   );
