@@ -17,6 +17,7 @@ export interface QuizSet {
   chapterId: string;
   subjectId: SubjectId;
   questions: Question[];
+  difficulty?: Difficulty;
 }
 
 export interface Chapter {
@@ -30,6 +31,7 @@ export interface QuizSetMetadata {
   id: string;
   title: string;
   itemCount: number;
+  difficulty?: Difficulty;
 }
 
 export interface UserStats {

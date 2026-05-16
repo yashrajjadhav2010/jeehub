@@ -11,7 +11,7 @@ const quizSet: QuizSet = {
       question: 'If position x = 5t², what is the velocity v at any time t?',
       options: ['5t', '10t', '2.5t', '10t²'],
       answer: 1,
-      explanation: 'Using the power rule: d/dt(atⁿ) = antⁿ⁻¹. Here x = 5t², so v = dx/dt = 5(2)t¹ = 10t.',
+      explanation: 'Using the power rule: $d/dt(at^n) = ant^{n-1}$.\n\nHere $x = 5t^2$, so $v = dx/dt = 5(2)t^1 = 10t$.',
       difficulty: 'easy'
     },
     {
@@ -19,7 +19,7 @@ const quizSet: QuizSet = {
       question: 'The displacement of a particle is given by x = 2t + 5. Its velocity is:',
       options: ['2', '5', '0', '2t'],
       answer: 0,
-      explanation: 'v = dx/dt = d/dt(2t + 5). Derivative of 2t is 2, derivative of constant 5 is 0. So v = 2.',
+      explanation: '$v = dx/dt = d/dt(2t + 5)$.\n\nDerivative of $2t$ is 2, derivative of constant 5 is 0.\n\nSo $v = 2$.',
       difficulty: 'easy'
     },
     {
@@ -27,7 +27,7 @@ const quizSet: QuizSet = {
       question: 'If velocity v = 3t² + 2t, find the acceleration a at t = 1s.',
       options: ['5 m/s²', '8 m/s²', '6 m/s²', '3 m/s²'],
       answer: 1,
-      explanation: 'a = dv/dt = d/dt(3t² + 2t) = 6t + 2. At t = 1, a = 6(1) + 2 = 8 m/s².',
+      explanation: '$a = dv/dt = d/dt(3t^2 + 2t) = 6t + 2$.\n\nAt $t = 1$, $a = 6(1) + 2 = 8 \\text{ m/s}^2$.',
       difficulty: 'easy'
     },
     {
@@ -43,7 +43,7 @@ const quizSet: QuizSet = {
       question: 'If position x = A sin(ωt), what is the velocity v?',
       options: ['A cos(ωt)', 'Aω cos(ωt)', '-Aω cos(ωt)', 'ω sin(ωt)'],
       answer: 1,
-      explanation: 'Using the chain rule: d/dt(sin(ut)) = u cos(ut). So v = dx/dt = A * ω * cos(ωt) = Aω cos(ωt).',
+      explanation: 'Using the chain rule: $d/dt(\\sin(ut)) = u \\cos(ut)$.\n\nSo $v = dx/dt = A \\times \\omega \\times \\cos(\\omega t) = A\\omega \\cos(\\omega t)$.',
       difficulty: 'easy'
     },
     {
@@ -59,7 +59,7 @@ const quizSet: QuizSet = {
       question: 'If x = t³ - 3t, at what time t is the velocity zero?',
       options: ['0s', '1s', '2s', '3s'],
       answer: 1,
-      explanation: 'v = dx/dt = 3t² - 3. Setting v = 0: 3t² - 3 = 0 => 3t² = 3 => t² = 1 => t = 1s (time is positive).',
+      explanation: '$v = dx/dt = 3t^2 - 3$.\n\nSetting $v = 0$: $3t^2 - 3 = 0 \\implies 3t^2 = 3 \\implies t^2 = 1 \\implies t = 1 \\text{s}$ (time is positive).',
       difficulty: 'easy'
     },
     {
@@ -75,7 +75,7 @@ const quizSet: QuizSet = {
       question: 'If v = u + at (where u and a are constants), then dv/dt is:',
       options: ['u', 'at', 'a', '0'],
       answer: 2,
-      explanation: 'dv/dt = d/dt(u) + d/dt(at). Since u is constant, d/dt(u) = 0. Since a is constant, d/dt(at) = a.',
+      explanation: '$dv/dt = d/dt(u) + d/dt(at)$.\n\nSince $u$ is constant, $d/dt(u) = 0$.\n\nSince $a$ is constant, $d/dt(at) = a$.',
       difficulty: 'easy'
     },
     {
@@ -91,7 +91,7 @@ const quizSet: QuizSet = {
       question: 'If position x = 4t⁴, find acceleration a at any time t.',
       options: ['16t³', '48t²', '12t²', '48t'],
       answer: 1,
-      explanation: 'v = dx/dt = 16t³. a = dv/dt = d/dt(16t³) = 16(3)t² = 48t².',
+      explanation: '$v = dx/dt = 16t^3$.\n\n$a = dv/dt = d/dt(16t^3) = 16(3)t^2 = 48t^2$.',
       difficulty: 'easy'
     },
     {
@@ -107,7 +107,7 @@ const quizSet: QuizSet = {
       question: 'If x = cos(t), find the rate of change of x at t = π/2.',
       options: ['0', '1', '-1', '0.5'],
       answer: 2,
-      explanation: 'Rate of change = dx/dt = -sin(t). At t = π/2, dx/dt = -sin(π/2) = -1.',
+      explanation: 'Rate of change = $dx/dt = -\\sin(t)$.\n\nAt $t = \\pi/2$, $dx/dt = -\\sin(\\pi/2) = -1$.',
       difficulty: 'easy'
     },
     {
@@ -147,7 +147,7 @@ const quizSet: QuizSet = {
       question: 'Find d/dx (e⁻³ˣ).',
       options: ['e⁻³ˣ', '-3e⁻³ˣ', '3e⁻³ˣ', '-1/3 e⁻³ˣ'],
       answer: 1,
-      explanation: 'Using the chain rule: d/dx(eᵃˣ) = aeᵃˣ. Here a = -3, so the result is -3e⁻³ˣ.',
+      explanation: 'Using the chain rule: $d/dx(e^{ax}) = ae^{ax}$.\n\nHere $a = -3$, so the result is $-3e^{-3x}$.',
       difficulty: 'easy'
     },
     {
@@ -155,7 +155,7 @@ const quizSet: QuizSet = {
       question: 'If potential energy U = mgh and h varies with time, dU/dt is:',
       options: ['mg', 'mg * dh/dt', 'mgh', '0'],
       answer: 1,
-      explanation: 'dU/dt = d/dt(mgh). Since m and g are constants, dU/dt = mg * (dh/dt). Note that dh/dt is vertical velocity.',
+      explanation: '$dU/dt = d/dt(mgh)$.\n\nSince $m$ and $g$ are constants, $dU/dt = mg \\times (dh/dt)$.\n\nNote that $dh/dt$ is vertical velocity.',
       difficulty: 'easy'
     },
     {
@@ -179,7 +179,7 @@ const quizSet: QuizSet = {
       question: 'If x = t² - 4t + 4, what is the position of the particle when velocity is zero?',
       options: ['4', '2', '0', '-4'],
       answer: 2,
-      explanation: 'v = dx/dt = 2t - 4. v = 0 at t = 2s. At t = 2s, x = (2)² - 4(2) + 4 = 4 - 8 + 4 = 0.',
+      explanation: '$v = dx/dt = 2t - 4$.\n\n$v = 0$ at $t = 2\\text{s}$.\n\nAt $t = 2\\text{s}$, $x = (2)^2 - 4(2) + 4 = 4 - 8 + 4 = 0$.',
       difficulty: 'easy'
     },
     {
@@ -187,7 +187,7 @@ const quizSet: QuizSet = {
       question: 'Find d/dt (sin² t).',
       options: ['2 sin t', 'cos² t', '2 sin t cos t', 'sin 2t'],
       answer: 2,
-      explanation: 'd/dt(sin² t) = 2 sin t * d/dt(sin t) = 2 sin t cos t. This is also equal to sin (2t).',
+      explanation: '$d/dt(\\sin^2 t) = 2 \\sin t \\times d/dt(\\sin t) = 2 \\sin t \\cos t$.\n\nThis is also equal to $\\sin(2t)$.',
       difficulty: 'easy'
     },
     {
@@ -211,7 +211,7 @@ const quizSet: QuizSet = {
       question: 'If x = 5t + 10t², find deceleration if any.',
       options: ['-20', '0', '10', '20'],
       answer: 1,
-      explanation: 'v = 5 + 20t. a = dv/dt = 20. Acceleration is constant 20, so deceleration is 0.',
+      explanation: '$v = 5 + 20t$.\n\n$a = dv/dt = 20$.\n\nAcceleration is constant 20, so deceleration is 0.',
       difficulty: 'easy'
     },
     {
@@ -219,7 +219,7 @@ const quizSet: QuizSet = {
       question: 'Find d/dx (x * eˣ).',
       options: ['eˣ', 'xeˣ', 'eˣ(x+1)', 'eˣ(x-1)'],
       answer: 2,
-      explanation: 'Product rule: d/dx(uv) = u\'v + uv\'. So d/dx(x * eˣ) = 1 * eˣ + x * eˣ = eˣ(x+1).',
+      explanation: 'Product rule: $d/dx(uv) = u\'v + uv\'$.\n\nSo $d/dx(x \\times e^x) = 1 \\times e^x + x \\times e^x = e^x(x+1)$.',
       difficulty: 'easy'
     },
     {

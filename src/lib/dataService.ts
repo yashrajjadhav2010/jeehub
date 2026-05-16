@@ -55,7 +55,8 @@ export async function getAllData() {
     chapter.sets.push({
       id: quizSet.id,
       title: quizSet.title,
-      itemCount: quizSet.questions.length
+      itemCount: quizSet.questions.length,
+      difficulty: quizSet.difficulty
     });
   }
 

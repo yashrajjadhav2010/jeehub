@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { Trophy, ArrowRight, Home, RefreshCw, CheckCircle2, XCircle, Info, Timer, Target, BrainCircuit, TrendingUp, RefreshCcw } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Trophy, ArrowRight, Home, RefreshCw, CheckCircle2, XCircle, Info, Timer, Target, BrainCircuit, TrendingUp, RefreshCcw, X, MessageSquare } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -12,6 +12,7 @@ import { cn } from '../lib/utils';
 export default function Result() {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   useEffect(() => {
     const data = localStorage.getItem('lastQuizResult');
@@ -49,6 +50,7 @@ export default function Result() {
       const stats = existingStats ? JSON.parse(existingStats) : {
         totalSolved: 0,
         correctAnswers: 0,
+        totalTime: 0,
         streak: 1,
         missionsCompleted: 0,
         subjectProgress: { physics: 0, chemistry: 0, maths: 0 },
@@ -57,6 +59,7 @@ export default function Result() {
 
       stats.totalSolved += quizSet.questions.length;
       stats.correctAnswers += correct;
+      stats.totalTime = (stats.totalTime || 0) + parsed.timeTaken;
       stats.missionsCompleted = (stats.missionsCompleted || 0) + 1;
       
       // Update daily activity radar data
@@ -71,8 +74,19 @@ export default function Result() {
       }
 
       localStorage.setItem('userStats', JSON.stringify(stats));
+
+      // Trigger one-time feedback popup for first submission
+      const feedbackShown = localStorage.getItem('feedbackShown_v1');
+      if (stats.missionsCompleted === 1 && !feedbackShown) {
+        setTimeout(() => setShowFeedbackModal(true), 1500);
+      }
     }
   }, []);
+
+  const handleCloseFeedback = () => {
+    setShowFeedbackModal(false);
+    localStorage.setItem('feedbackShown_v1', 'true');
+  };
 
   if (!result) return <div className="flex items-center justify-center h-64"><div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>;
 
@@ -208,20 +222,82 @@ export default function Result() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 mt-20 px-4">
+      <div className="flex flex-col md:flex-row gap-6 mt-20 px-4">
          <button 
            onClick={() => navigate('/subjects')}
-           className="flex-1 py-6 bg-white border border-emerald-100 rounded-2xl font-bold text-sm text-emerald-700 hover:bg-emerald-50 transition-all flex items-center justify-center gap-2"
+           className="flex-1 py-6 bg-white border-2 border-emerald-950 text-emerald-950 rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-50 transition-all flex items-center justify-center gap-4 group"
          >
-           <RefreshCcw size={18} /> Review Catalog
+           <RefreshCcw size={18} className="group-hover:rotate-180 transition-transform duration-700" /> 
+           Return to Catalog
          </button>
          <button 
            onClick={() => navigate('/')}
-           className="flex-1 py-6 bg-primary text-white rounded-2xl font-bold text-sm hover:opacity-90 transition-all shadow-md flex items-center justify-center gap-2"
+           className="flex-1 py-6 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-900 transition-all shadow-2xl flex items-center justify-center gap-4 group"
          >
-           Back to Dashboard <Home size={18} />
+           Back to Command Center <Home size={18} className="group-hover:scale-110 transition-transform" />
          </button>
       </div>
+
+      <AnimatePresence>
+        {showFeedbackModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCloseFeedback}
+              className="absolute inset-0 bg-emerald-950/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 md:p-8 flex items-center justify-between border-b border-emerald-900/5">
+                <div className="flex items-center gap-4">
+                   <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
+                      <MessageSquare size={20} />
+                   </div>
+                   <div>
+                     <h3 className="text-lg font-black text-emerald-950 leading-none">FEEDBACK TERMINAL</h3>
+                     <span className="text-[10px] font-bold text-emerald-800/40 uppercase tracking-widest">Post-Mission Debriefing</span>
+                   </div>
+                </div>
+                <button 
+                  onClick={handleCloseFeedback}
+                  className="p-2 rounded-full hover:bg-emerald-50 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="h-[500px] md:h-[600px]">
+                 <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSeIWgZU25Yl_PcW-BkmR1I0NnzUNzjfNRa8ZImM48Z_bPiWmw/viewform?embedded=true" 
+                    width="100%" 
+                    height="100%" 
+                    className="border-none"
+                  >
+                    Loading…
+                  </iframe>
+              </div>
+
+              <div className="p-6 md:p-8 bg-emerald-50/50 border-t border-emerald-900/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                 <p className="text-[10px] font-bold text-emerald-800/40 uppercase tracking-widest max-w-[200px]">
+                    Your transmission helps us evolve. Thank you for your service.
+                 </p>
+                 <button 
+                    onClick={handleCloseFeedback}
+                    className="w-full md:w-auto px-10 py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl"
+                  >
+                    CLOSE TERMINAL
+                  </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
    );
 }

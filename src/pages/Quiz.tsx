@@ -177,6 +177,17 @@ export default function Quiz() {
              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Payload Size</span>
              <span className="text-sm font-bold uppercase">{quizSet.questions.length} Questions</span>
            </div>
+           {quizSet.difficulty && (
+             <div className="flex justify-between items-center border-b border-white/10 pb-4">
+               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Tactical Intensity</span>
+               <span className={cn(
+                 "text-sm font-black uppercase tracking-widest",
+                 quizSet.difficulty === 'hard' ? "text-red-400" :
+                 quizSet.difficulty === 'medium' ? "text-amber-400" :
+                 "text-green-400"
+               )}>{quizSet.difficulty === 'hard' ? 'Advanced' : quizSet.difficulty === 'medium' ? 'Moderate' : 'Easy'}</span>
+             </div>
+           )}
            <div className="flex justify-between items-center">
              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Estimated Duration</span>
              <span className="text-sm font-bold uppercase">{formatTime(quizSet.questions.length * 90)}</span>
@@ -393,7 +404,7 @@ export default function Quiz() {
                       >
                          <div className="relative z-10 markdown-body">
                             <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Tactical Solution Analysis</p>
-                            <div className="text-white/90 leading-relaxed font-medium text-sm md:text-lg italic">
+                            <div className="text-white/90 leading-relaxed font-medium text-sm md:text-lg italic whitespace-pre-wrap">
                                 <ReactMarkdown 
                                   remarkPlugins={[remarkMath]} 
                                   rehypePlugins={[rehypeKatex]}

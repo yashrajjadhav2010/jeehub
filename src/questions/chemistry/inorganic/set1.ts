@@ -16,7 +16,7 @@ const quizSet: QuizSet = {
         'F⁻ > O²⁻ > N³⁻ > Na⁺ > Mg²⁺'
       ],
       answer: 1,
-      explanation: 'For isoelectronic species, the ionic radius decreases as the nuclear charge (atomic number) increases. Nitrogen has the lowest atomic number (7), so it is the largest.',
+      explanation: 'For isoelectronic species, the ionic radius decreases as the nuclear charge (atomic number) increases.\n\nNitrogen has the lowest atomic number (7), so it is the largest.',
       difficulty: 'easy'
     },
     {
@@ -29,7 +29,7 @@ const quizSet: QuizSet = {
         'Be < B < C < O < N'
       ],
       answer: 0,
-      explanation: 'Generally, IE increases across a period. However, Be (2s²) is more stable than B (2s² 2p¹), and N (2p³) is more stable than O (2p⁴). Thus, B < Be < C < O < N.',
+      explanation: 'Generally, IE increases across a period.\n\nHowever, Be (2s²) is more stable than B (2s² 2p¹), and N (2p³) is more stable than O (2p⁴).\n\nThus, B < Be < C < O < N.',
       difficulty: 'easy'
     },
     {
@@ -45,7 +45,7 @@ const quizSet: QuizSet = {
       question: 'Based on VSEPR theory, the shape of XeF₄ is:',
       options: ['Tetrahedral', 'Square planar', 'See-saw', 'Octahedral'],
       answer: 1,
-      explanation: 'XeF₄ has 4 bond pairs and 2 lone pairs (steric number 6). The 2 lone pairs occupy axial positions to minimize repulsion, resulting in a square planar shape.',
+      explanation: 'XeF₄ has 4 bond pairs and 2 lone pairs (steric number 6).\n\nThe 2 lone pairs occupy axial positions to minimize repulsion, resulting in a square planar shape.',
       difficulty: 'easy'
     },
     {
@@ -53,7 +53,7 @@ const quizSet: QuizSet = {
       question: 'What is the hybridization of the central Iodine atom in I₃⁻?',
       options: ['sp³', 'sp³d', 'sp³d²', 'sp²'],
       answer: 1,
-      explanation: 'Central Iodine has 8 valence electrons (7+1 charge). It forms 2 bonds and has 3 lone pairs. Steric number = 5, corresponding to sp³d hybridization.',
+      explanation: 'Central Iodine has 8 valence electrons (7+1 charge).\n\nIt forms 2 bonds and has 3 lone pairs.\n\nSteric number = 5, corresponding to sp³d hybridization.',
       difficulty: 'easy'
     },
     {
@@ -61,7 +61,7 @@ const quizSet: QuizSet = {
       question: 'Comparison of dipole moments of NH₃ and NF₃ shows:',
       options: ['NH₃ > NF₃', 'NF₃ > NH₃', 'NH₃ = NF₃ = 0', 'NH₃ = NF₃ > 0'],
       answer: 0,
-      explanation: 'In NH₃, bond dipoles and lone pair dipole reinforce each other. In NF₃, the electronegative F atoms pull the dipole away from the lone pair, reducing the net moment.',
+      explanation: 'In NH₃, bond dipoles and lone pair dipole reinforce each other.\n\nIn NF₃, the electronegative F atoms pull the dipole away from the lone pair, reducing the net moment.',
       difficulty: 'easy'
     },
     {

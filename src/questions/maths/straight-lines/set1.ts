@@ -11,7 +11,7 @@ const quizSet: QuizSet = {
       question: 'What is the slope of a line whose inclination with the positive direction of the x-axis is 150°?',
       options: ['√3', '-1/√3', '-√3', '1/√3'],
       answer: 1,
-      explanation: 'Slope m = tan(150°) = tan(180° - 30°) = -tan(30°) = -1/√3.',
+      explanation: 'Slope m = tan(150°)\n= tan(180° - 30°)\n= -tan(30°)\n= -1/√3.',
       difficulty: 'easy'
     },
     {
@@ -19,7 +19,7 @@ const quizSet: QuizSet = {
       question: 'A line passes through (3, 4) and (5, -2). What is its slope?',
       options: ['-3', '3', '1/3', '-1/3'],
       answer: 0,
-      explanation: 'm = (y2 - y1) / (x2 - x1) = (-2 - 4) / (5 - 3) = -6 / 2 = -3.',
+      explanation: 'm = (y2 - y1) / (x2 - x1)\n= (-2 - 4) / (5 - 3)\n= -6 / 2\n= -3.',
       difficulty: 'easy'
     },
     {
@@ -27,7 +27,7 @@ const quizSet: QuizSet = {
       question: 'If the points (x, 2), (1, 4), and (3, 8) are collinear, what is the value of x?',
       options: ['0', '1', '-1', '2'],
       answer: 0,
-      explanation: 'Slopes must be equal: (4 - 2)/(1 - x) = (8 - 4)/(3 - 1) => 2/(1-x) = 4/2 = 2 => 1-x = 1 => x = 0.',
+      explanation: 'Slopes must be equal:\n(4 - 2)/(1 - x) = (8 - 4)/(3 - 1)\n2/(1-x) = 4/2 = 2\n1-x = 1\nx = 0.',
       difficulty: 'easy'
     },
     {
@@ -99,7 +99,7 @@ const quizSet: QuizSet = {
       question: 'What is the perpendicular distance from the origin to the line 3x - 4y = 10?',
       options: ['2', '-2', '10', '5'],
       answer: 0,
-      explanation: 'Distance d = |Ax1 + By1 + C| / √(A² + B²) = |0 - 0 - 10| / √(3² + (-4)²) = 10 / 5 = 2.',
+      explanation: 'Distance d = |Ax1 + By1 + C| / √(A² + B²)\n= |0 - 0 - 10| / √(3² + (-4)²)\n= 10 / 5\n= 2.',
       difficulty: 'easy'
     },
     {
@@ -107,7 +107,7 @@ const quizSet: QuizSet = {
       question: 'Reduce the equation √3x + y - 8 = 0 to normal form (x cosα + y sinα = p). What is p?',
       options: ['8', '4', '2', '4√3'],
       answer: 1,
-      explanation: 'Divide by √(√3)² + 1² = 2. We get (√3/2)x + (1/2)y = 4. Here p = 4.',
+      explanation: 'Divide by √(√3)² + 1² = 2.\n\nWe get (√3/2)x + (1/2)y = 4.\n\nHere p = 4.',
       difficulty: 'easy'
     },
     {
@@ -115,7 +115,7 @@ const quizSet: QuizSet = {
       question: 'Two lines a1x + b1y + c1 = 0 and a2x + b2y + c2 = 0 are perpendicular if:',
       options: ['a1a2 + b1b2 = 0', 'a1b2 - a2b1 = 0', 'a1/a2 = b1/b2', 'a1b1 + a2b2 = 0'],
       answer: 0,
-      explanation: 'Product of slopes is -1: (-a1/b1)(-a2/b2) = -1 => a1a2 = -b1b2 => a1a2 + b1b2 = 0.',
+      explanation: 'Product of slopes is -1:\n(-a1/b1)(-a2/b2) = -1\na1a2 = -b1b2\na1a2 + b1b2 = 0.',
       difficulty: 'easy'
     },
     {
@@ -211,7 +211,7 @@ const quizSet: QuizSet = {
       question: 'The equation of the line bisecting the line segment joining (3, -4) and (1, 2) perpendicularly is:',
       options: ['x - 3y - 5 = 0', 'x - 3y + 5 = 0', 'x + 3y + 5 = 0', '3x + y - 5 = 0'],
       answer: 0,
-      explanation: 'Midpoint: (2, -1). Slope: -3. Perpendicular slope: 1/3. y + 1 = 1/3(x - 2) => 3y + 3 = x - 2 => x - 3y - 5 = 0.',
+      explanation: 'Slope: -3.\nPerpendicular slope: 1/3.\n\nMidpoint: (2, -1).\n\ny + 1 = 1/3(x - 2)\n3y + 3 = x - 2\nx - 3y - 5 = 0.',
       difficulty: 'easy'
     },
     {

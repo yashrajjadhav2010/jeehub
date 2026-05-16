@@ -259,20 +259,29 @@ export default function Home() {
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: i * 0.1 }}
                  whileHover={{ y: -10, scale: 1.02 }}
-                 className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all flex flex-col h-[350px] md:h-[400px] relative overflow-hidden group w-full"
+                 className="bg-white rounded-[2.5rem] p-8 border border-emerald-900/5 shadow-sm hover:shadow-2xl hover:border-emerald-500/20 transition-all flex flex-col h-[380px] md:h-[450px] relative overflow-hidden group w-full"
                >
-                  <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform", sub.color.replace('from-', 'bg-').replace('/30', '/10'))}>
+                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                     <Layers size={140} />
+                  </div>
+
+                  <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-8 border border-emerald-900/5", sub.color.replace('from-', 'bg-').replace('/30', '/10'))}>
                      <div className={sub.accent}>{sub.icon}</div>
                   </div>
-                  <h3 className="text-3xl font-black heading-display mb-3 text-emerald-950 uppercase tracking-tight">{sub.title}</h3>
-                  <p className="text-emerald-800/60 font-medium text-sm leading-relaxed mb-6">{sub.desc}</p>
                   
-                  <div className="mt-auto space-y-4">
+                  <div className="mb-4">
+                    <span className="font-mono text-[9px] font-bold text-emerald-800/40 uppercase tracking-widest block mb-2">Subject Sector</span>
+                    <h3 className="text-3xl font-black heading-display text-emerald-950 uppercase tracking-tight">{sub.title}</h3>
+                  </div>
+
+                  <p className="text-emerald-800/60 font-medium text-sm leading-relaxed mb-8">{sub.desc}</p>
+                  
+                  <div className="mt-auto pt-6 border-t border-emerald-900/5 space-y-4">
                      <div className="flex justify-between items-end">
-                        <span className="text-[10px] font-black uppercase text-emerald-700/40 tracking-widest">Mastery Level</span>
-                        <span className="text-lg font-black heading-display text-emerald-950">{stats.subjectProgress[sub.id]}%</span>
+                        <span className="font-mono text-[9px] font-black uppercase text-emerald-700/40 tracking-widest">Mastery Readiness</span>
+                        <span className="text-xl font-black heading-display text-emerald-950">{stats.subjectProgress[sub.id]}%</span>
                      </div>
-                     <div className="h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                     <div className="h-1.5 bg-emerald-900/5 rounded-full overflow-hidden">
                         <motion.div 
                            initial={{ width: 0 }}
                            animate={{ width: `${stats.subjectProgress[sub.id]}%` }}
@@ -281,7 +290,7 @@ export default function Home() {
                      </div>
                   </div>
 
-                  <div className="absolute top-6 right-8 w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-300 group-hover:bg-primary group-hover:text-white transition-all opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0">
+                  <div className="absolute top-6 right-8 w-10 h-10 rounded-full bg-emerald-950 text-white flex items-center justify-center translate-x-12 group-hover:translate-x-0 transition-transform duration-500">
                     <ChevronRight size={20} />
                   </div>
                </motion.div>
@@ -372,6 +381,55 @@ export default function Home() {
                   desc="Analyze your solution paths with AI-powered insights and visual data." 
                   icon={Activity} 
                />
+            </div>
+         </div>
+      </section>
+
+      {/* Feedback Section */}
+      <section className="py-12 md:py-20">
+         <div className="bg-emerald-950 rounded-[3rem] md:rounded-[5rem] p-8 md:p-12 lg:p-20 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-12 opacity-[0.05] group-hover:opacity-10 transition-opacity pointer-events-none">
+               <BrainCircuit size={200} />
+            </div>
+            
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+               <div className="space-y-6 text-center lg:text-left">
+                  <div className="flex items-center gap-3 justify-center lg:justify-start">
+                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                        <Activity size={20} />
+                     </div>
+                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Transmission: Feedback Request</span>
+                  </div>
+                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-black heading-display text-white leading-tight uppercase tracking-tighter">
+                     Help Us Refine the <br />
+                     <span className="text-primary italic">Intelligence Engine</span>
+                  </h2>
+                  <p className="text-white/60 text-base md:text-lg font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
+                     Your field intelligence is vital. Help us optimize the Tapasya curriculum for 2026 success. Submit your report directly using the terminal.
+                  </p>
+                  
+                  <div className="pt-8 block lg:hidden">
+                    <a 
+                       href="https://docs.google.com/forms/d/e/1FAIpQLSeIWgZU25Yl_PcW-BkmR1I0NnzUNzjfNRa8ZImM48Z_bPiWmw/viewform?usp=sf_link" 
+                       target="_blank" 
+                       rel="noreferrer"
+                       className="inline-flex items-center gap-4 px-8 py-4 bg-white text-emerald-950 rounded-full font-black text-xs tracking-widest hover:bg-emerald-50 transition-all"
+                    >
+                       OPEN FEEDBACL FORM <ArrowRight size={18} />
+                    </a>
+                  </div>
+               </div>
+               
+               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] overflow-hidden hidden lg:block shadow-2xl h-[600px]">
+                  <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSeIWgZU25Yl_PcW-BkmR1I0NnzUNzjfNRa8ZImM48Z_bPiWmw/viewform?embedded=true" 
+                    width="100%" 
+                    height="100%" 
+                    className="border-none"
+                  >
+                    Loading…
+                  </iframe>
+               </div>
             </div>
          </div>
       </section>

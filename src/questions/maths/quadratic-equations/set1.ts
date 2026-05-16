@@ -11,7 +11,7 @@ const quizSet: QuizSet = {
       question: 'The roots of the quadratic equation $x^2 - 5x + 6 = 0$ are:',
       options: ['2, -3', '-2, -3', '2, 3', '-2, 3'],
       answer: 2,
-      explanation: '**Step-by-step Solution:**\nFactor the equation:\n$x^2 - 3x - 2x + 6 = 0$\n$x(x-3) - 2(x-3) = 0$\n$(x-2)(x-3) = 0$\nSo, $x = 2, 3$.',
+      explanation: '**Step-by-step Solution:**\n\nFactor the equation:\n$x^2 - 3x - 2x + 6 = 0$\n$x(x-3) - 2(x-3) = 0$\n$(x-2)(x-3) = 0$\n\nSo, $x = 2, 3$.',
       difficulty: 'easy'
     },
     {
@@ -19,7 +19,7 @@ const quizSet: QuizSet = {
       question: 'If $\\alpha$ and $\\beta$ are the roots of $2x^2 - 3x + 5 = 0$, what is the value of $\\alpha + \\beta$?',
       options: ['$3/2$', '$-3/2$', '$5/2$', '$-5/2$'],
       answer: 0,
-      explanation: '**Step-by-step Solution:**\nFor $ax^2 + bx + c = 0$, sum of roots $\\alpha + \\beta = -b/a$.\nHere $a=2, b=-3$.\nSum $= -(-3)/2 = 3/2$.',
+      explanation: '**Step-by-step Solution:**\n\nFor $ax^2 + bx + c = 0$, sum of roots $\\alpha + \\beta = -b/a$.\n\nHere $a=2, b=-3$.\n\nSum $= -(-3)/2 = 3/2$.',
       difficulty: 'easy'
     },
     {
@@ -27,7 +27,7 @@ const quizSet: QuizSet = {
       question: 'If $\\alpha$ and $\\beta$ are the roots of $4x^2 + 7x - 2 = 0$, the product of the roots $\\alpha\\beta$ is:',
       options: ['$7/4$', '$-7/4$', '$1/2$', '$-1/2$'],
       answer: 3,
-      explanation: '**Step-by-step Solution:**\nProduct of roots $\\alpha\\beta = c/a$.\nHere $c = -2, a = 4$.\n$\\alpha\\beta = -2/4 = -1/2$.',
+      explanation: '**Step-by-step Solution:**\n\nProduct of roots $\\alpha\\beta = c/a$.\n\nHere $c = -2, a = 4$.\n\n$\\alpha\\beta = -2/4 = -1/2$.',
       difficulty: 'easy'
     },
     {
@@ -35,7 +35,7 @@ const quizSet: QuizSet = {
       question: 'The quadratic equation whose roots are $4$ and $-3$ is:',
       options: ['$x^2 - x - 12 = 0$', '$x^2 + x - 12 = 0$', '$x^2 - 7x - 12 = 0$', '$x^2 + x + 12 = 0$'],
       answer: 0,
-      explanation: '**Step-by-step Solution:**\nEquation is $x^2 - (\\text{Sum})x + (\\text{Product}) = 0$.\nSum $= 4 + (-3) = 1$.\nProduct $= 4 \\times (-3) = -12$.\nEquation: $x^2 - 1x + (-12) = 0 \\implies x^2 - x - 12 = 0$.',
+      explanation: '**Step-by-step Solution:**\n\nEquation is $x^2 - (\\text{Sum})x + (\\text{Product}) = 0$.\n\nSum $= 4 + (-3) = 1$.\n\nProduct $= 4 \\times (-3) = -12$.\n\nEquation: $x^2 - 1x + (-12) = 0 \\implies x^2 - x - 12 = 0$.',
       difficulty: 'easy'
     },
     {
@@ -43,7 +43,7 @@ const quizSet: QuizSet = {
       question: 'If one root of $x^2 - 5x + k = 0$ is $2$, what is the value of $k$?',
       options: ['$6$', '$-6$', '$10$', '$5$'],
       answer: 0,
-      explanation: '**Step-by-step Solution:**\nSince 2 is a root, it must satisfy the equation.\nSubstitute $x=2$: $(2)^2 - 5(2) + k = 0$\n$4 - 10 + k = 0$\n$-6 + k = 0 \\implies k = 6$.',
+      explanation: '**Step-by-step Solution:**\n\nSince 2 is a root, it must satisfy the equation.\n\nSubstitute $x=2$: $(2)^2 - 5(2) + k = 0$\n$4 - 10 + k = 0$\n$-6 + k = 0 \\implies k = 6$.',
       difficulty: 'easy'
     },
     {
@@ -51,7 +51,7 @@ const quizSet: QuizSet = {
       question: 'If the roots of $x^2 - px + q = 0$ are consecutive integers, then the value of $p^2 - 4q$ is:',
       options: ['0', '1', '2', '4'],
       answer: 1,
-      explanation: '**Step-by-step Solution:**\nLet roots be $\\alpha$ and $\\alpha + 1$.\nDifference of roots $= (\\alpha+1) - \\alpha = 1$.\nWe know $(\\alpha - \\beta)^2 = (\\alpha+\\beta)^2 - 4\\alpha\\beta$.\nHere, difference squared $= 1^2 = 1$.\nSum $p = \\alpha+\\beta$, Product $q = \\alpha\\beta$.\nSo, $p^2 - 4q = 1$.',
+      explanation: '**Step-by-step Solution:**\n\nLet roots be $\\alpha$ and $\\alpha + 1$.\n\nDifference of roots $= (\\alpha+1) - \\alpha = 1$.\n\nWe know $(\\alpha - \\beta)^2 = (\\alpha+\\beta)^2 - 4\\alpha\\beta$.\n\nHere, difference squared $= 1^2 = 1$.\n\nSum $p = \\alpha+\\beta$, Product $q = \\alpha\\beta$.\n\nSo, $p^2 - 4q = 1$.',
       difficulty: 'medium'
     },
     {
@@ -91,7 +91,7 @@ const quizSet: QuizSet = {
       question: 'The discriminant of the quadratic equation $3x^2 - 5x + 2 = 0$ is:',
       options: ['$1$', '$-1$', '$49$', '$24$'],
       answer: 0,
-      explanation: '**Step-by-step Solution:**\nDiscriminant $\\Delta = b^2 - 4ac$.\nHere $a=3, b=-5, c=2$.\n$\\Delta = (-5)^2 - 4(3)(2) = 25 - 24 = 1$.',
+      explanation: '**Step-by-step Solution:**\n\nDiscriminant $\\Delta = b^2 - 4ac$.\n\nHere $a=3, b=-5, c=2$.\n\n$\\Delta = (-5)^2 - 4(3)(2) = 25 - 24 = 1$.',
       difficulty: 'easy'
     },
     {

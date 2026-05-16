@@ -11,7 +11,7 @@ const quizSet: QuizSet = {
       question: 'The correct order of second ionization enthalpy ($IE_2$) for the elements $V, Cr, Mn$, and $Fe$ is:',
       options: ['$Cr > Mn > V > Fe$', '$Cr > Fe > Mn > V$', '$Mn > Cr > Fe > V$', '$Fe > Mn > Cr > V$'],
       answer: 0,
-      explanation: '**Expert Solution:**\nElectronic configurations:\n\n- $V: [Ar] 3d^3 4s^2 \\to V^+: [Ar] 3d^3 4s^1$\n- $Cr: [Ar] 3d^5 4s^1 \\to Cr^+: [Ar] 3d^5$\n- $Mn: [Ar] 3d^5 4s^2 \\to Mn^+: [Ar] 3d^5 4s^1$\n- $Fe: [Ar] 3d^6 4s^2 \\to Fe^+: [Ar] 3d^6 4s^1$\n\nTo find $IE_2$, we remove an electron from the $+1$ cation. $Cr^+$ has a highly stable exactly **half-filled** $d^5$ configuration, making its $IE_2$ exceptionally high. Therefore, Cr has the highest $IE_2$ among these. The order is $Cr > Mn > V > Fe$.',
+      explanation: '**Expert Solution:**\nElectronic configurations:\n\n- $V: [Ar] 3d^3 4s^2 \to V^+: [Ar] 3d^3 4s^1$\n- $Cr: [Ar] 3d^5 4s^1 \to Cr^+: [Ar] 3d^5$\n- $Mn: [Ar] 3d^5 4s^2 \to Mn^+: [Ar] 3d^5 4s^1$\n- $Fe: [Ar] 3d^6 4s^2 \to Fe^+: [Ar] 3d^6 4s^1$\n\nTo find $IE_2$, we remove an electron from the $+1$ cation. $Cr^+$ has a highly stable exactly **half-filled** $d^5$ configuration, making its $IE_2$ exceptionally high.\n\nTherefore, Cr has the highest $IE_2$ among these. The order is $Cr > Mn > V > Fe$.',
       difficulty: 'hard'
     },
     {
@@ -19,7 +19,7 @@ const quizSet: QuizSet = {
       question: 'Which of the following oxides is expected to exhibit paramagnetic behavior?',
       options: ['$CO_2$', '$ClO_2$', '$SO_2$', '$SiO_2$'],
       answer: 1,
-      explanation: '**Expert Solution:**\n$ClO_2$ (Chlorine dioxide) is an **odd-electron molecule**. Chlorine has 7 valence electrons and two Oxygens bring $2 \\times 6 = 12$. Total valence electrons = 19 (an odd number). Any molecule with an odd number of electrons must have at least one unpaired electron, making it paramagnetic.',
+      explanation: '**Expert Solution:**\n$ClO_2$ (Chlorine dioxide) is an **odd-electron molecule**.\n\nChlorine has 7 valence electrons and two Oxygens bring $2 \times 6 = 12$.\n\nTotal valence electrons = 19 (an odd number).\n\nAny molecule with an odd number of electrons must have at least one unpaired electron, making it paramagnetic.',
       difficulty: 'medium'
     },
     {
@@ -27,7 +27,7 @@ const quizSet: QuizSet = {
       question: 'Identify the element that has the highest first ionization enthalpy.',
       options: ['Helium (He)', 'Neon (Ne)', 'Fluorine (F)', 'Nitrogen (N)'],
       answer: 0,
-      explanation: '**Expert Solution:**\nIonization energy generally increases across a period and decreases down a group. Helium is at the top right of the periodic table, having a completely filled $1s^2$ shell very close to the nucleus without any inner shielding electrons. Thus, Helium has the highest first ionization enthalpy of all elements.',
+      explanation: '**Expert Solution:**\nIonization energy generally increases across a period and decreases down a group.\n\nHelium is at the top right of the periodic table, having a completely filled $1s^2$ shell very close to the nucleus without any inner shielding electrons.\n\nThus, Helium has the highest first ionization enthalpy of all elements.',
       difficulty: 'hard'
     },
     {
@@ -35,7 +35,7 @@ const quizSet: QuizSet = {
       question: 'The $IE_1$ and $IE_2$ of four elements are given below (in kJ/mol). Which element is most likely to be an alkaline earth metal?',
       options: ['$IE_1=520, IE_2=7300$', '$IE_1=419, IE_2=3051$', '$IE_1=590, IE_2=1145$', '$IE_1=2372, IE_2=5251$'],
       answer: 2,
-      explanation: '**Expert Solution:**\nAn alkaline earth metal (Group 2) has 2 valence electrons ($ns^2$). Therefore, it will easily lose two electrons, meaning $IE_1$ and $IE_2$ will be relatively low. The major jump will occur at $IE_3$. Looking at the options, $590 \\to 1145$ is a normal progression. Options 1 and 2 show a massive jump after $IE_1$, typical of Group 1 metals. Option 4 is extremely high, typical of a noble gas.',
+      explanation: '**Expert Solution:**\nAn alkaline earth metal (Group 2) has 2 valence electrons ($ns^2$). Therefore, it will easily lose two electrons, meaning $IE_1$ and $IE_2$ will be relatively low.\n\nThe major jump will occur at $IE_3$.\n\nLooking at the options, $590 \to 1145$ is a normal progression.\n\nOptions 1 and 2 show a massive jump after $IE_1$, typical of Group 1 metals. Option 4 is extremely high, typical of a noble gas.',
       difficulty: 'hard'
     },
     {
@@ -43,7 +43,7 @@ const quizSet: QuizSet = {
       question: 'Among $Al_2O_3, SiO_2, P_2O_3$, and $SO_2$, the correct order of acidic strength is:',
       options: ['$SO_2 < P_2O_3 < SiO_2 < Al_2O_3$', '$Al_2O_3 < SiO_2 < P_2O_3 < SO_2$', '$Al_2O_3 < P_2O_3 < SiO_2 < SO_2$', '$SiO_2 < SO_2 < Al_2O_3 < P_2O_3$'],
       answer: 1,
-      explanation: '**Expert Solution:**\nAs we move across a period from left to right ($Al \\to Si \\to P \\to S$), the non-metallic character increases, which increases the electronegativity of the central atom. This leads to a continuous increase in the acidic character of their oxides. $Al_2O_3$ is amphoteric, while $SO_2$ is strongly acidic.',
+      explanation: '**Expert Solution:**\nAs we move across a period from left to right ($Al \to Si \to P \to S$), the non-metallic character increases, which increases the electronegativity of the central atom.\n\nThis leads to a continuous increase in the acidic character of their oxides.\n\n$Al_2O_3$ is amphoteric, while $SO_2$ is strongly acidic.',
       difficulty: 'medium'
     },
     {
@@ -59,7 +59,7 @@ const quizSet: QuizSet = {
       question: 'The correct order of ionic mobility in aqueous solution for the alkali metal ions is:',
       options: ['$Li^+ > Na^+ > K^+ > Rb^+$', '$Rb^+ > K^+ > Na^+ > Li^+$', '$Na^+ > K^+ > Rb^+ > Li^+$', '$Li^+ > Rb^+ > K^+ > Na^+$'],
       answer: 1,
-      explanation: '**Expert Solution:**\nIn aqueous solution, the smallest bare ion ($Li^+$) has the highest charge density. This intensely attracts water molecules, leading to the largest **hydrated radius** ($Li^+(aq)$). A larger hydrated radius creates more drag/friction, resulting in the lowest ionic mobility. Thus, mobility follows the order of bare ionic size reversed: $Rb^+ > K^+ > Na^+ > Li^+$.',
+      explanation: '**Expert Solution:**\nIn aqueous solution, the smallest bare ion ($Li^+$) has the highest charge density. This intensely attracts water molecules, leading to the largest **hydrated radius** ($Li^+(aq)$).\n\nA larger hydrated radius creates more drag/friction, resulting in the lowest ionic mobility.\n\nThus, mobility follows the order of bare ionic size reversed: $Rb^+ > K^+ > Na^+ > Li^+$.',
       difficulty: 'medium'
     },
     {
@@ -75,7 +75,7 @@ const quizSet: QuizSet = {
       question: 'Which of the following sets contains only amphoteric oxides?',
       options: ['$ZnO, Al_2O_3, PbO, SnO_2$', '$CO, NO, N_2O, H_2O$', '$Na_2O, K_2O, BaO, CaO$', '$SO_2, Cl_2O_7, P_4O_{10}, NO_2$'],
       answer: 0,
-      explanation: '**Expert Solution:**\n**Amphoteric oxides** can react with both acids and bases. Common examples include oxides of Zn, Al, Pb, Sn, Be, and Ga ($ZnO, Al_2O_3, PbO, SnO_2$). Set 2 contains neutral oxides. Set 3 contains basic oxides. Set 4 contains acidic oxides.',
+      explanation: '**Expert Solution:**\n**Amphoteric oxides** can react with both acids and bases.\n\nCommon examples include oxides of Zn, Al, Pb, Sn, Be, and Ga ($ZnO, Al_2O_3, PbO, SnO_2$).\n\nSet 2 contains neutral oxides. Set 3 contains basic oxides. Set 4 contains acidic oxides.',
       difficulty: 'medium'
     },
     {
@@ -99,7 +99,7 @@ const quizSet: QuizSet = {
       question: 'What is the correct order of the first electron affinity for the oxygen group (Group 16)?',
       options: ['$O > S > Se > Te$', '$S > Se > Te > O$', '$S > O > Se > Te$', '$Te > Se > S > O$'],
       answer: 1,
-      explanation: '**Expert Solution:**\nElectron affinity (negative electron gain enthalpy) generally decreases down a group. However, Oxygen is an anomaly; its extremely small size causes intense electron-electron repulsion when an incoming electron is added, making its EA the least negative in the entire group. Therefore, $S$ has the highest EA, and $O$ has the lowest: $S > Se > Te > O$.',
+      explanation: '**Expert Solution:**\nElectron affinity (negative electron gain enthalpy) generally decreases down a group.\n\nHowever, Oxygen is an anomaly; its extremely small size causes intense electron-electron repulsion when an incoming electron is added, making its EA the least negative in the entire group.\n\nTherefore, $S$ has the highest EA, and $O$ has the lowest: $S > Se > Te > O$.',
       difficulty: 'hard'
     },
     {
@@ -107,7 +107,7 @@ const quizSet: QuizSet = {
       question: 'Among $O^{2-}, F^-, Na^+, Mg^{2+}$, the species with the lowest ionization energy is:',
       options: ['$Mg^{2+}$', '$Na^+$', '$F^-$', '$O^{2-}$'],
       answer: 3,
-      explanation: '**Expert Solution:**\nThese are isoelectronic species (all have 10 electrons). The species with the lowest nuclear charge (fewest protons) will hold its electrons the most loosely. Oxygen has only 8 protons holding 10 electrons, making it the easiest to remove an electron from. Thus, $O^{2-}$ has the lowest IE.',
+      explanation: '**Expert Solution:**\nThese are isoelectronic species (all have 10 electrons).\n\nThe species with the lowest nuclear charge (fewest protons) will hold its electrons the most loosely.\n\nOxygen has only 8 protons holding 10 electrons, making it the easiest to remove an electron from. Thus, $O^{2-}$ has the lowest IE.',
       difficulty: 'medium'
     },
     {
@@ -131,7 +131,7 @@ const quizSet: QuizSet = {
       question: 'Which of the following graphs correctly represents the variation of electronegativity with the percentage s-character in hybridized orbitals?',
       options: ['Exponential decrease', 'Linear increase', 'Parabolic decrease', 'Remains constant'],
       answer: 1,
-      explanation: '**Expert Solution:**\n$s$-orbitals are closer to the nucleus than $p$-orbitals. Therefore, an orbital with a higher percentage of $s$-character ($sp = 50\\%$, $sp^2 = 33.3\\%$, $sp^3 = 25\\%$) holds bonding electrons more tightly. Electronegativity increases linearly with $s$-character ($sp > sp^2 > sp^3$).',
+      explanation: '**Expert Solution:**\n$s$-orbitals are closer to the nucleus than $p$-orbitals.\n\nTherefore, an orbital with a higher percentage of $s$-character ($sp = 50\\%$, $sp^2 = 33.3\\%$, $sp^3 = 25\\%$) holds bonding electrons more tightly.\n\nElectronegativity increases linearly with $s$-character ($sp > sp^2 > sp^3$).',
       difficulty: 'hard'
     },
     {

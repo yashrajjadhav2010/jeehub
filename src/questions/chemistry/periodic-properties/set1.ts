@@ -11,7 +11,7 @@ const quizSet: QuizSet = {
       question: 'The IUPAC symbol for the element with atomic number 119 is:',
       options: ['Uue', 'Uun', 'Uuq', 'Uhe'],
       answer: 0,
-      explanation: 'According to IUPAC nomenclature for $Z > 100$: $1 = un$, $1 = un$, $9 = enn$. Thus, 119 is ununennium, symbol **Uue**.',
+      explanation: 'According to IUPAC nomenclature for $Z > 100$:\n\n$1 = un$\n$1 = un$\n$9 = enn$\n\nThus, 119 is ununennium, symbol **Uue**.',
       difficulty: 'easy'
     },
     {
@@ -27,7 +27,7 @@ const quizSet: QuizSet = {
       question: 'Which of the following orders of ionic radii is correctly represented?',
       options: ['$H^- > H^+ > H$', '$Na^+ > F^- > O^{2-}$', '$F^- > O^{2-} > Na^+$', '$O^{2-} > F^- > Na^+$'],
       answer: 3,
-      explanation: 'For isoelectronic species ($O^{2-}, F^-, Na^+$ all have 10 electrons), ionic radius is inversely proportional to the nuclear charge ($Z$). $Z$ values are $O(8), F(9), Na(11)$. So radius order is $O^{2-} > F^- > Na^+$.',
+      explanation: 'For isoelectronic species ($O^{2-}, F^-, Na^+$ all have 10 electrons), ionic radius is inversely proportional to the nuclear charge ($Z$).\n\n$Z$ values are $O(8), F(9), Na(11)$. So radius order is $O^{2-} > F^- > Na^+$.',
       difficulty: 'medium'
     },
     {
@@ -43,7 +43,7 @@ const quizSet: QuizSet = {
       question: 'Among the halogens, the correct order of negative electron gain enthalpy is:',
       options: ['$F > Cl > Br > I$', '$Cl > F > Br > I$', '$I > Br > Cl > F$', '$Cl > Br > F > I$'],
       answer: 1,
-      explanation: 'Normally, electron affinity decreases down a group. However, Fluorine has a very small $2p$ orbital, leading to strong interelectronic repulsions when an incoming electron is added. Chlorine accommodates the electron more easily. Order: $Cl > F > Br > I$.',
+      explanation: 'Normally, electron affinity decreases down a group.\n\nHowever, Fluorine has a very small $2p$ orbital, leading to strong interelectronic repulsions when an incoming electron is added.\n\nChlorine accommodates the electron more easily. Order: $Cl > F > Br > I$.',
       difficulty: 'medium'
     },
     {
@@ -75,7 +75,7 @@ const quizSet: QuizSet = {
       question: 'Identify the most acidic oxide among the following:',
       options: ['$Na_2O$', '$MgO$', '$Al_2O_3$', '$Cl_2O_7$'],
       answer: 3,
-      explanation: 'Acidic character of oxides increases left to right across a period. $Na_2O$ is strongly basic, $Al_2O_3$ is amphoteric, and $Cl_2O_7$ is strongly acidic.',
+      explanation: 'Acidic character of oxides increases left to right across a period.\n\n$Na_2O$ is strongly basic, $Al_2O_3$ is amphoteric, and $Cl_2O_7$ is strongly acidic.',
       difficulty: 'medium'
     },
     {
@@ -99,7 +99,7 @@ const quizSet: QuizSet = {
       question: 'Due to d-block contraction (poor shielding of 3d electrons), the atomic radius of Gallium (Ga) is:',
       options: ['Much larger than Aluminum (Al)', 'Equal to Indium (In)', 'Slightly less than Aluminum (Al)', 'Larger than Thallium (Tl)'],
       answer: 2,
-      explanation: 'Normally, radius increases down a group. However, poor shielding of $3d$ electrons in Gallium increases the effective nuclear charge, pulling valence electrons closer ($Ga = 135$ pm, $Al = 143$ pm).',
+      explanation: 'Poor shielding of $3d$ electrons in Gallium increases the effective nuclear charge, pulling valence electrons closer.\n\n($Ga = 135$ pm, $Al = 143$ pm).',
       difficulty: 'medium'
     },
     {
@@ -107,7 +107,7 @@ const quizSet: QuizSet = {
       question: 'Which of the following sets represents a collection of isoelectronic species?',
       options: ['$K^+, Cl^-, Ca^{2+}, Sc^{3+}$', '$Ba^{2+}, Sr^{2+}, K^+, Ca^{2+}$', '$N^{3-}, O^{2-}, F^-, S^{2-}$', '$Li^+, Na^+, Mg^{2+}, Ca^{2+}$'],
       answer: 0,
-      explanation: 'Isoelectronic species have the same number of electrons. $K^+ (18), Cl^- (18), Ca^{2+} (18), Sc^{3+} (18)$ all have 18 electrons.',
+      explanation: 'Isoelectronic species have the same number of electrons.\n\n$K^+ (18), Cl^- (18), Ca^{2+} (18), Sc^{3+} (18)$ all have 18 electrons.',
       difficulty: 'easy'
     },
     {
@@ -187,7 +187,7 @@ const quizSet: QuizSet = {
       question: 'An element has the configuration $[Ar] 4s^1 3d^5$. Its group and period numbers are:',
       options: ['Group 6, Period 4', 'Group 7, Period 4', 'Group 6, Period 3', 'Group 11, Period 4'],
       answer: 0,
-      explanation: 'Highest $n=4$ (Period 4). Valence electrons = $1 + 5 = 6$ (Group 6). This is Chromium.',
+      explanation: 'Highest $n=4$ (Period 4).\n\nValence electrons = $1 + 5 = 6$ (Group 6).\n\nThis is Chromium.',
       difficulty: 'medium'
     },
     {
@@ -251,7 +251,7 @@ const quizSet: QuizSet = {
       question: 'According to the Allred-Rochow scale, electronegativity is related to:',
       options: ['Ionization Energy and Electron Affinity', 'Effective nuclear charge and covalent radius', 'Bond dissociation energy', 'Electron density'],
       answer: 1,
-      explanation: 'Allred-Rochow scale: $EN = 0.359 \\frac{Z_{eff}}{r^2} + 0.744$.',
+      explanation: 'Allred-Rochow scale:\n\n$EN = 0.359 \\frac{Z_{eff}}{r^2} + 0.744$.',
       difficulty: 'hard'
     },
     {
@@ -259,7 +259,7 @@ const quizSet: QuizSet = {
       question: 'Among the alkali metal ions, the highest ionic mobility in aqueous solution is shown by:',
       options: ['$Li^+$', '$Na^+$', '$K^+$', '$Rb^+$'],
       answer: 3,
-      explanation: '$Li^+$ is the smallest bare ion, highly hydrated, and Thus the largest/slowest in water. $Rb^+$ is least hydrated and moves fastest.',
+      explanation: '$Li^+$ is the smallest bare ion, highly hydrated, and thus the largest/slowest in water.\n\n$Rb^+$ is least hydrated and moves fastest.',
       difficulty: 'medium'
     },
     {
@@ -315,7 +315,7 @@ const quizSet: QuizSet = {
       question: 'The correct order of ionic radii for $Y^{3+}, La^{3+}, Eu^{3+}, Lu^{3+}$ is:',
       options: ['$La^{3+} > Eu^{3+} > Lu^{3+} > Y^{3+}$', '$Y^{3+} > La^{3+} > Eu^{3+} > Lu^{3+}$', '$Lu^{3+} > Eu^{3+} > La^{3+} > Y^{3+}$', '$La^{3+} > Y^{3+} > Eu^{3+} > Lu^{3+}$'],
       answer: 0,
-      explanation: 'Due to lanthanide contraction, size decreases $La^{3+} > Eu^{3+} > Lu^{3+}$. $Y^{3+}$ is smallest due to being in the period above.',
+      explanation: 'Due to lanthanide contraction, size decreases $La^{3+} > Eu^{3+} > Lu^{3+}$.\n\n$Y^{3+}$ is smallest due to being in the period above.',
       difficulty: 'hard'
     },
     {
@@ -331,7 +331,7 @@ const quizSet: QuizSet = {
       question: 'Which of the following is true for $IE_1$ and $IE_2$ of $Na$ and $Mg$?',
       options: ['$IE_1(Na) > IE_1(Mg)$ and $IE_2(Na) < IE_2(Mg)$', '$IE_1(Na) < IE_1(Mg)$ and $IE_2(Na) > IE_2(Mg)$', '$IE_1(Na) > IE_1(Mg)$ and $IE_2(Na) > IE_2(Mg)$', 'Both equal'],
       answer: 1,
-      explanation: '$IE_1(Mg) > IE_1(Na)$ (stable $s^2$). $IE_2(Na) > IE_2(Mg)$ (removing from noble gas core $2p^6$).',
+      explanation: '$IE_1(Mg) > IE_1(Na)$ (stable $s^2$).\n\n$IE_2(Na) > IE_2(Mg)$ (removing from noble gas core $2p^6$).',
       difficulty: 'medium'
     },
     {
@@ -387,7 +387,7 @@ const quizSet: QuizSet = {
       question: 'Arrange N, O, P, S in increasing order of first ionization energies.',
       options: ['$P < S < O < N$', '$S < P < O < N$', '$S < P < N < O$', '$P < S < N < O$'],
       answer: 1,
-      explanation: 'N > O (half-filled). P > S (half-filled). $N$ and $O$ are higher than $P$ and $S$. Order: $S < P < O < N$.',
+      explanation: 'N > O (half-filled). P > S (half-filled).\n\n$N$ and $O$ are higher than $P$ and $S$.\n\nOrder: $S < P < O < N$.',
       difficulty: 'hard'
     },
     {
