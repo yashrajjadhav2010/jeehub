@@ -1,13 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ChevronLeft, ChevronRight, ArrowRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, ArrowRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X, Sparkles, Loader2, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { QuizSet } from '../types';
 import { loadQuizSet } from '../lib/dataService';
+import { solveDoubt } from '../services/aiService';
 import { cn } from '../lib/utils';
 
 export default function Quiz() {
@@ -26,6 +27,8 @@ export default function Quiz() {
   const [showSolution, setShowSolution] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<Record<string, string>>({});
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -154,6 +157,27 @@ export default function Quiz() {
     setShowSolution(false);
   };
 
+  const handleAiExplain = async () => {
+    if (!currentQuestion || isAiLoading) return;
+    
+    if (aiAnalysis[currentQuestion.id]) {
+      setShowSolution(true);
+      return;
+    }
+
+    setIsAiLoading(true);
+    setShowSolution(true);
+    try {
+      const prompt = `Question: ${currentQuestion.question}\nOptions: ${currentQuestion.options.join(', ')}\nCorrect Answer: Option ${currentQuestion.answer + 1}\nExplanation: ${currentQuestion.explanation || 'None provided'}`;
+      const analysis = await solveDoubt([{ role: 'user', content: prompt }], `Deep-dive analysis for Subject: ${subjectId}`);
+      setAiAnalysis(prev => ({ ...prev, [currentQuestion.id]: analysis }));
+    } catch (e) {
+      console.error("AI Analysis failed:", e);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   const handleMarkReviewNext = () => {
     setMarkedForReview(prev => ({ ...prev, [currentQuestion!.id]: true }));
     handleSaveNext();
@@ -276,12 +300,20 @@ export default function Quiz() {
              <div className="px-2 md:px-4 py-1 md:py-1.5 bg-emerald-950 text-white text-[8px] md:text-[10px] font-black rounded-lg md:rounded-xl uppercase tracking-[0.1em] md:tracking-[0.2em] shadow-lg shadow-emerald-950/20 whitespace-nowrap">JEE MAIN</div>
              <div className="flex flex-col min-w-0">
                 <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 hidden md:block">Mission Identifier</span>
-                <h1 className="text-[10px] md:text-sm font-black text-emerald-950 tracking-tight leading-tight uppercase truncate max-w-[120px] md:max-w-none">{quizSet.title}</h1>
+                <h1 className="text-[10px] md:text-sm font-black text-emerald-950 tracking-tight leading-tight uppercase truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">{quizSet.title}</h1>
              </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 md:gap-8 pr-4 md:pr-10">
+        <div className="flex items-center gap-2 md:gap-8 pr-4 md:pr-10">
+          <div className="flex flex-col items-center md:hidden">
+             <span className="text-[7px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1">Grand Timer</span>
+             <div className="flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100">
+               <Clock size={10} className="text-primary animate-pulse" />
+               <span className="text-[10px] font-black text-emerald-950 tabular-nums">{formatTime(timeLeft)}</span>
+             </div>
+          </div>
+
           <button 
             onClick={handleFinish}
             className="md:hidden bg-primary text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg shadow-primary/20 border border-white/10"
@@ -289,7 +321,7 @@ export default function Quiz() {
             Submit
           </button>
 
-          <div className="flex flex-col items-center sm:items-end">
+          <div className="flex flex-col items-center sm:items-end hidden md:flex">
              <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 md:mb-2 hidden md:block">T-Minus Remaining</span>
              <div className="flex items-center gap-2 md:gap-2 bg-emerald-50 px-3 md:px-2 py-2 md:py-1 rounded-xl md:rounded-xl border border-emerald-100 shadow-inner">
                <Clock size={14} className="md:size-10 text-primary animate-pulse" />
@@ -414,27 +446,99 @@ export default function Quiz() {
                       })}
                    </div>
 
-                   {showSolution && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-8 md:mt-16 p-6 md:p-10 bg-emerald-950 rounded-3xl md:rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
-                      >
-                         <div className="relative z-10 markdown-body">
-                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Expert Solution Analysis</p>
-                            <div className="text-white/90 leading-relaxed font-medium text-sm md:text-lg italic whitespace-pre-wrap">
-                                <ReactMarkdown 
-                                  remarkPlugins={[remarkMath]} 
-                                  rehypePlugins={[rehypeKatex]}
-                                >
-                                  {currentQuestion.explanation || "No expert breakdown available for this engagement."}
-                                </ReactMarkdown>
-                            </div>
-                         </div>
-                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] hidden md:block">
-                            <HelpCircle size={200} />
-                         </div>
-                      </motion.div>
+                    {showSolution && (
+                      <div className="space-y-6 mt-8 md:mt-16">
+                        <motion.div 
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="p-6 md:p-10 bg-emerald-950 rounded-3xl md:rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
+                        >
+                           <div className="relative z-10 markdown-body">
+                              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Internal Mission Log: Solution</p>
+                              <div className="text-white/90 font-medium text-sm md:text-lg italic whitespace-pre-wrap">
+                                  <ReactMarkdown 
+                                    remarkPlugins={[remarkMath]} 
+                                    rehypePlugins={[rehypeKatex]}
+                                  >
+                                    {currentQuestion.explanation || "No expert breakdown available for this engagement."}
+                                  </ReactMarkdown>
+                              </div>
+                           </div>
+                           <div className="absolute top-0 right-0 p-10 opacity-[0.03] hidden md:block">
+                              <HelpCircle size={200} />
+                           </div>
+                        </motion.div>
+
+                        {(isAiLoading || aiAnalysis[currentQuestion.id]) && (
+                          <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-emerald-950 rounded-[2.5rem] md:rounded-[3.5rem] border border-white/10 text-white shadow-2xl relative overflow-hidden"
+                          >
+                             {/* Tactical Grid Background */}
+                             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                                  style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}>
+                             </div>
+
+                             <div className="relative z-10 p-6 md:p-12">
+                                <div className="flex items-center justify-between mb-8 md:mb-10 border-b border-white/5 pb-6">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/20 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-primary/20">
+                                      <Sparkles className="text-primary animate-pulse" size={24} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-primary leading-none mb-2 italic">Neural Concept Extraction</p>
+                                      <h3 className="text-lg md:text-2xl font-black heading-display uppercase tracking-tight italic">Tactical <span className="text-primary not-italic">Diagnosis</span></h3>
+                                    </div>
+                                  </div>
+                                  <div className="hidden md:flex flex-col items-end">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                      <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Llama-3.3 Live Engine</span>
+                                    </div>
+                                    <p className="text-[8px] font-bold text-white/20 uppercase tracking-[0.4em] mt-1">Status: Extracting Intel</p>
+                                  </div>
+                                </div>
+
+                                {isAiLoading ? (
+                                  <div className="space-y-6 animate-pulse">
+                                    <div className="h-6 bg-white/10 rounded-full w-3/4" />
+                                    <div className="space-y-3">
+                                       <div className="h-3 bg-white/5 rounded-full w-full" />
+                                       <div className="h-3 bg-white/5 rounded-full w-5/6" />
+                                       <div className="h-3 bg-white/5 rounded-full w-4/6" />
+                                    </div>
+                                    <div className="h-40 bg-white/5 rounded-3xl w-full border border-white/5" />
+                                  </div>
+                                ) : (
+                                  <div className="prose prose-invert prose-emerald prose-sm md:prose-lg max-w-none prose-headings:text-primary prose-headings:uppercase prose-headings:tracking-tighter prose-headings:italic prose-pre:bg-black/40 prose-pre:backdrop-blur-xl prose-pre:text-emerald-50 prose-pre:rounded-[2rem] prose-pre:border prose-pre:border-white/5">
+                                    <ReactMarkdown 
+                                      remarkPlugins={[remarkMath]} 
+                                      rehypePlugins={[rehypeKatex]}
+                                    >
+                                      {aiAnalysis[currentQuestion.id]}
+                                    </ReactMarkdown>
+                                  </div>
+                                )}
+
+                                <div className="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+                                   <div className="flex items-center gap-3">
+                                      <Activity size={14} className="text-primary/40" />
+                                      <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Strategic Output Validated</span>
+                                   </div>
+                                   <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+                                      <Zap size={10} className="text-primary/60" />
+                                      <span className="text-[8px] font-black uppercase tracking-widest text-white/40 italic">Priority: Concept Mastery</span>
+                                   </div>
+                                </div>
+                             </div>
+                             
+                             <div className="absolute -right-20 -bottom-20 opacity-[0.03] pointer-events-none rotate-12">
+                                <BrainCircuit size={400} />
+                             </div>
+                          </motion.div>
+                        )}
+                      </div>
                    )}
                 </motion.div>
               </AnimatePresence>
@@ -458,13 +562,23 @@ export default function Quiz() {
                  </button>
                  
                  {answers[currentQuestion.id] !== null && (
-                   <button 
-                    onClick={() => setShowSolution(!showSolution)}
-                    className="px-2 md:px-4 py-1.5 md:py-1 bg-emerald-500 text-white text-[8px] md:text-[8px] font-black uppercase rounded-lg md:rounded-lg shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all flex items-center justify-center gap-1.5 border-2 border-emerald-400 shrink-0"
-                   >
-                      <BrainCircuit size={10} className="md:size-10" />
-                      <span className="hidden sm:inline">{showSolution ? 'Hide Intel' : 'Analyze'}</span>
-                   </button>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setShowSolution(!showSolution)}
+                      className="px-2 md:px-4 py-1.5 md:py-1 bg-white text-emerald-950 text-[8px] md:text-[8px] font-black uppercase rounded-lg md:rounded-lg shadow-sm hover:bg-emerald-50 transition-all flex items-center justify-center gap-1.5 border-2 border-emerald-100 shrink-0"
+                    >
+                       <Info size={10} className="md:size-10" />
+                       <span className="hidden sm:inline">{showSolution ? 'Hide Info' : 'Solution'}</span>
+                    </button>
+                    <button 
+                      onClick={handleAiExplain}
+                      disabled={isAiLoading}
+                      className="px-2 md:px-4 py-1.5 md:py-1 bg-emerald-950 text-white text-[8px] md:text-[8px] font-black uppercase rounded-lg md:rounded-lg shadow-lg shadow-emerald-950/20 hover:bg-black transition-all flex items-center justify-center gap-1.5 border-2 border-emerald-800 shrink-0 disabled:opacity-50"
+                    >
+                       {isAiLoading ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} className="text-primary" />}
+                       <span className="hidden sm:inline">{aiAnalysis[currentQuestion.id] ? 'AI Insight' : 'AI Analysis'}</span>
+                    </button>
+                  </div>
                  )}
               </div>
               
@@ -507,6 +621,14 @@ export default function Quiz() {
               </div>
               
               <div className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm space-y-6 md:space-y-8">
+                <div className="flex justify-between items-center bg-primary/5 p-4 rounded-2xl border border-primary/10">
+                   <div className="flex flex-col">
+                      <span className="text-[8px] font-black uppercase tracking-[0.2em] text-primary/40">Total Remaining</span>
+                      <span className="text-xl font-black text-primary tabular-nums">{formatTime(timeLeft)}</span>
+                   </div>
+                   <Clock size={24} className="text-primary animate-pulse" />
+                </div>
+
                 <div className="flex justify-between items-center">
                   <div className="space-y-1">
                     <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-emerald-800/40">Engagement</p>

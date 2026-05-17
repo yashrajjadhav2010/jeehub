@@ -1,39 +1,18 @@
 import { SubjectId } from "../types";
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
-
 export async function getTopicSuggestions(subject?: string, performance?: string) {
-  if (!GROQ_API_KEY) {
-    console.warn("Groq API key not found. Using fallback suggestions.");
-    return [
-      { topic: "Rotational Mechanics", reason: "Fundamental concept in Physics with high weightage." },
-      { topic: "Thermodynamics", reason: "Scoring topic if concepts are clear." },
-      { topic: "Organic Chemistry", reason: "Requires consistent revision for mastery." }
-    ];
-  }
-
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("/api/suggestions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${GROQ_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-          {
-            role: "system",
-            content: "You are a JEE Preparation Expert. Provide performance-based study suggestions based on student data. Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys."
-          },
-          {
-            role: "user",
-            content: `Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}. Identify 3 high-priority focus topics.`
-          }
-        ],
-        response_format: { type: "json_object" }
-      })
+      body: JSON.stringify({ performance, subject })
     });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}`);
+    }
 
     const data = await response.json();
     if (!data.choices?.[0]?.message?.content) {
@@ -43,14 +22,12 @@ export async function getTopicSuggestions(subject?: string, performance?: string
     const content = data.choices[0].message.content;
     const parsed = JSON.parse(content);
     
-    // Support multiple common response shapes
     const rawList = parsed.suggestions || parsed.topics || parsed.data || (Array.isArray(parsed) ? parsed : []);
     
     if (Array.isArray(rawList) && rawList.length > 0) {
       return rawList.slice(0, 3);
     }
     
-    // If it returned a single object not in an array
     if (parsed.topic && parsed.reason) {
       return [parsed];
     }
@@ -63,5 +40,32 @@ export async function getTopicSuggestions(subject?: string, performance?: string
       { topic: "Coordinate Geometry", reason: "High scoring sector in Mathematics." },
       { topic: "Stoichiometry", reason: "Fundamental base for physical chemistry." }
     ];
+  }
+}
+
+export async function solveDoubt(messages: { role: 'user' | 'assistant', content: string }[], context?: string) {
+  try {
+    const response = await fetch("/api/solve", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ messages, context })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server responded with ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error("Invalid command interface response.");
+    }
+    
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("Doubt solver operational failure:", error);
+    throw error;
   }
 }

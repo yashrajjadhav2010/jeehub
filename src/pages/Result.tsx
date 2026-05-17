@@ -207,7 +207,7 @@ export default function Result() {
                         {q.explanation && (
                           <div className="p-6 bg-emerald-50/50 border border-emerald-50 rounded-2xl">
                              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/50 mb-2">Step-by-Step Logic</p>
-                             <div className="text-emerald-800 leading-relaxed text-sm font-medium markdown-body">
+                             <div className="text-emerald-800 text-sm font-medium markdown-body">
                                 <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                                   {q.explanation}
                                 </ReactMarkdown>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ArrowRight, Zap, FlaskConical, Binary, Atom, Search, Target, Clock, Play, ChevronRight, Layers } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Zap, FlaskConical, Binary, Atom, Search, Target, Clock, Play, ChevronRight, Layers, BrainCircuit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SubjectId, UserStats } from '../types';
 import { cn, formatTime } from '../lib/utils';
@@ -465,9 +465,10 @@ export default function Subjects() {
            </div>
         </div>
 
-        <button className="px-8 py-4 bg-emerald-100 text-emerald-950 font-black text-[10px] uppercase tracking-widest rounded-full hover:bg-emerald-200 transition-colors">
-          View Detail Intel
-        </button>
+        <Link to="/doubt-solver" className="px-8 py-4 bg-emerald-950 text-white font-black text-[10px] uppercase tracking-widest rounded-full hover:bg-emerald-900 transition-all flex items-center gap-3 group">
+          <BrainCircuit size={16} className="text-primary group-hover:scale-110 transition-transform" />
+          AI Doubt Solver
+        </Link>
       </div>
     </motion.div>
   )}

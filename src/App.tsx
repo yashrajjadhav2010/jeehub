@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Home from './pages/Home';
 import Subjects from './pages/Subjects';
@@ -9,6 +9,7 @@ import Quiz from './pages/Quiz';
 import Result from './pages/Result';
 import Analytics from './pages/Analytics';
 import Challenges from './pages/Challenges';
+import DoubtSolver from './pages/DoubtSolver';
 import SettingsPage from './pages/Settings';
 import Documentation from './pages/Documentation';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -29,6 +30,7 @@ function Navbar() {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: BookOpen, label: 'Subjects', path: '/subjects' },
+    { icon: BrainCircuit, label: 'Solver', path: '/doubt-solver' },
     { icon: Trophy, label: 'Challenges', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];
@@ -104,6 +106,7 @@ function BottomNav() {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Home', path: '/' },
     { icon: BookOpen, label: 'Subjects', path: '/subjects' },
+    { icon: BrainCircuit, label: 'Solver', path: '/doubt-solver' },
     { icon: Trophy, label: 'Missions', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];
@@ -200,6 +203,8 @@ function NameModal({ onComplete }: { onComplete: () => void }) {
 function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isQuizMode = location.pathname.startsWith('/quiz');
+  const isSolverMode = location.pathname === '/doubt-solver';
+  const isCleanLayout = isQuizMode || isSolverMode;
   const [showNameModal, setShowNameModal] = useState(false);
   const [key, setKey] = useState(0); // For forcing re-render of navbar
 
@@ -238,12 +243,12 @@ function Layout({ children }: { children: React.ReactNode }) {
         {showNameModal && <NameModal onComplete={handleNameComplete} />}
       </AnimatePresence>
 
-      {!isQuizMode && <Navbar key={key} />}
-      {!isQuizMode && <BottomNav />}
+      {!isCleanLayout && <Navbar key={key} />}
+      {!isCleanLayout && <BottomNav />}
       
       <main className={cn(
         "relative z-10 flex-1",
-        !isQuizMode ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 pb-32 sm:pb-10 w-full" : ""
+        !isCleanLayout ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 pb-32 sm:pb-10 w-full" : ""
       )}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -252,14 +257,14 @@ function Layout({ children }: { children: React.ReactNode }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className={cn(isQuizMode ? "h-screen" : "")}
+            className={cn(isCleanLayout ? "h-screen" : "")}
           >
             {children}
           </motion.div>
         </AnimatePresence>
       </main>
       
-      {!isQuizMode && (
+      {!isCleanLayout && (
         <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-32 sm:pb-16 border-t border-emerald-50 w-full">
           <div className="flex flex-col items-center gap-12">
             <div className="flex flex-col md:flex-row justify-between items-center w-full gap-8">
@@ -303,6 +308,7 @@ export default function App() {
           <Route path="/result" element={<Result />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenges" element={<Challenges />} />
+          <Route path="/doubt-solver" element={<DoubtSolver />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair } from 'lucide-react';
+import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair, Cpu, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserStats, SubjectId } from '../types';
 import { cn, formatTime } from '../lib/utils';
@@ -105,7 +105,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-6">
                    <div className="w-12 h-[2px] bg-primary animate-pulse" />
-                   <span className="text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">Mission Control Center</span>
+                   <span className="text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">JEE Preparation Dashboard</span>
                 </div>
                 <h1 className="text-4xl sm:text-5xl md:text-7xl font-black heading-display leading-[0.9] text-emerald-950 uppercase tracking-tighter">
                   Performance <br /> 
@@ -121,15 +121,15 @@ export default function Home() {
               </div>
               
               <p className="text-emerald-800/60 max-w-lg text-base sm:text-lg md:text-xl font-medium leading-relaxed">
-                Welcome Commander. Your current readiness index is being analyzed. Engage with learning sectors to populate your data radar.
+                Welcome to JEE TAPASYA. Your local JEE prep intelligence is active. Tackle chapters, solve doubts, and build your consistency streak to dominate the competitive arena.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4 md:pt-6">
                  <Link to="/subjects" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-primary text-white rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center justify-center gap-4 group">
-                    START NEW MISSION <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                    START PRACTICE <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                  </Link>
                  <Link to="/analytics" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-white border border-emerald-100 text-emerald-950 rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center justify-center gap-4 shadow-xl shadow-emerald-950/5">
-                    VIEW RADAR DATA <Activity size={20} />
+                    VIEW PERFORMANCE <Activity size={20} />
                  </Link>
               </div>
            </div>
@@ -143,7 +143,7 @@ export default function Home() {
               >
                  <div className="relative z-10 space-y-8 sm:space-y-12">
                     <div>
-                      <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/30 mb-6 sm:mb-8 border-b border-white/5 pb-4">Mission Status Report</p>
+                      <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/30 mb-6 sm:mb-8 border-b border-white/5 pb-4">Study Progress Report</p>
                       <div className="space-y-8 sm:space-y-10">
                          <div className="group cursor-help">
                             <div className="flex justify-between items-end mb-3 sm:mb-4">
@@ -177,7 +177,7 @@ export default function Home() {
                     <div className="flex items-center gap-4 pt-4 border-t border-white/5">
                         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center font-bold text-emerald-400 border border-white/10">{initial}</div>
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-white/30">System Operator</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Candidate</p>
                           <p className="text-sm font-black uppercase tracking-tight">{operatorName}</p>
                         </div>
                     </div>
@@ -216,12 +216,31 @@ export default function Home() {
             className="col-span-2 lg:col-span-1"
          />
       </div>
+      
+      {/* Promotion Poster */}
+      <section className="px-2 sm:px-0">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="w-full relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] md:rounded-[4rem] shadow-2xl shadow-emerald-950/10 group"
+        >
+          <img 
+            src="https://i.ibb.co/nsTKYPSp/file-000000007b3c720880d2f615e81e965f.png" 
+            alt="JEE TAPASYA Banner"
+            className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-emerald-950/20 pointer-events-none" />
+        </motion.div>
+      </section>
 
       <section>
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-10 px-2 gap-4">
            <div className="space-y-1">
-             <h2 className="text-2xl md:text-3xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">Operational <span className="text-primary not-italic">Sectors</span></h2>
-             <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-emerald-700/40">Select your field of engagement</p>
+             <h2 className="text-2xl md:text-3xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">Study <span className="text-primary not-italic">Sectors</span></h2>
+             <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-emerald-700/40">Select your subject and begin practice</p>
            </div>
            
            <div className="flex items-center gap-4">
@@ -282,7 +301,7 @@ export default function Home() {
                   
                   <div className="mt-auto pt-6 border-t border-emerald-900/5 space-y-4">
                      <div className="flex justify-between items-end">
-                        <span className="font-mono text-[9px] font-black uppercase text-emerald-700/40 tracking-widest">Mastery Readiness</span>
+                        <span className="font-mono text-[9px] font-black uppercase text-emerald-700/40 tracking-widest">Mastery Level</span>
                         <span className="text-xl font-black heading-display text-emerald-950">{stats.subjectProgress[sub.id]}%</span>
                      </div>
                      <div className="h-1.5 bg-emerald-900/5 rounded-full overflow-hidden">
@@ -345,15 +364,18 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Strategic Support Section removed */}
+
+
       {/* Numerical Roadmap / Workflow */}
       <section className="py-10 md:py-20 px-4 md:px-0">
          <div className="flex flex-col lg:flex-row gap-12 lg:items-center">
             <div className="flex-1 space-y-10">
                <div className="space-y-4">
-                  <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-primary">Mission Pipeline</span>
+                  <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-primary">Learning Pipeline</span>
                   <h2 className="text-4xl md:text-6xl font-black heading-display text-emerald-950 leading-tight uppercase italic">
-                    How We Achieve <br />
-                    <span className="text-primary not-italic">Victory.</span>
+                    Path to <br />
+                    <span className="text-primary not-italic">JEE Success.</span>
                   </h2>
                </div>
                <p className="text-emerald-800/60 text-lg md:text-xl font-medium leading-relaxed max-w-xl italic">
@@ -369,19 +391,19 @@ export default function Home() {
             <div className="flex-1 grid grid-cols-1 gap-6">
                <WorkflowStep 
                   number="01" 
-                  title="Target Acquisition" 
+                  title="Topic Selection" 
                   desc="Select your subject and chapter to begin a focused practice session." 
-                  icon={Crosshair} 
+                  icon={Target} 
                />
                <WorkflowStep 
                   number="02" 
-                  title="Expert Engagement" 
+                  title="Active Practice" 
                   desc="Solve hand-picked questions with active timers and detailed telemetry." 
                   icon={Zap} 
                />
                <WorkflowStep 
                   number="03" 
-                  title="After-Action Review" 
+                  title="Performance Review" 
                   desc="Analyze your solution paths with AI-powered insights and visual data." 
                   icon={Activity} 
                />
