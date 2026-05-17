@@ -23,7 +23,7 @@ function Navbar() {
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: BookOpen, label: 'Catalog', path: '/subjects' },
+    { icon: BookOpen, label: 'Subjects', path: '/subjects' },
     { icon: Trophy, label: 'Challenges', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];
@@ -98,7 +98,7 @@ function BottomNav() {
   const location = useLocation();
   const menuItems = [
     { icon: LayoutDashboard, label: 'Home', path: '/' },
-    { icon: BookOpen, label: 'Catalog', path: '/subjects' },
+    { icon: BookOpen, label: 'Subjects', path: '/subjects' },
     { icon: Trophy, label: 'Missions', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];

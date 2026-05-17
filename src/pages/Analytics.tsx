@@ -133,7 +133,7 @@ export default function Analytics() {
                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Predicted Rank</p>
                  <div>
                    <p className="text-4xl font-black text-white heading-display italic tracking-tighter">{calculateRank()}</p>
-                   <p className="text-[9px] font-black uppercase tracking-widest text-emerald-100/30 mt-1">Based on tactical performance</p>
+                   <p className="text-[9px] font-black uppercase tracking-widest text-emerald-100/30 mt-1">Based on performance history</p>
                  </div>
               </div>
            </div>

@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ArrowRight, Zap, FlaskConical, Binary, Atom, Search, Target, Clock, Play, ChevronRight, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { SubjectId } from '../types';
-import { cn } from '../lib/utils';
+import { SubjectId, UserStats } from '../types';
+import { cn, formatTime } from '../lib/utils';
 import { getAllData } from '../lib/dataService';
 
 interface SearchResult {
@@ -104,7 +104,7 @@ export default function Subjects() {
       topics: ['Algebra', 'Calculus', 'Coordinate Geometry'],
       stats: `${allChapters.maths.reduce((acc, c) => acc + c.sets.length, 0)} Modules`,
       score: `${userStats.subjectProgress.maths}%`,
-      status: userStats.subjectProgress.maths > 80 ? 'Advanced' : userStats.subjectProgress.maths > 0 ? 'Tactical' : 'Baseline'
+      status: userStats.subjectProgress.maths > 80 ? 'Advanced' : userStats.subjectProgress.maths > 0 ? 'Active' : 'Baseline'
     }
   ];
 
@@ -170,12 +170,12 @@ export default function Subjects() {
             className="flex items-center gap-2 mb-6"
           >
             <div className="w-12 h-[1px] bg-emerald-500/50" />
-            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.4em] text-emerald-600/60">Phase 01 / Operation Catalog</span>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.4em] text-emerald-600/60">Phase 01 / Operation Subjects</span>
           </motion.div>
           
           <h1 className="text-4xl sm:text-6xl md:text-8xl font-black heading-display leading-[0.85] text-emerald-950 uppercase tracking-tighter mb-6">
             The <span className="text-emerald-500/10 absolute -top-8 left-0 select-none -z-10 blur-[2px]">THE MISSION</span> <br /> 
-            Mission <span className="text-emerald-500 italic lowercase font-serif font-light tracking-normal">catalog</span>
+            Mission <span className="text-emerald-500 italic lowercase font-serif font-light tracking-normal">subjects</span>
           </h1>
           
           <p className="text-emerald-800/60 max-w-lg text-sm sm:text-base font-medium leading-relaxed">
@@ -438,8 +438,8 @@ export default function Subjects() {
            </div>
            <div className="w-[1px] h-10 bg-emerald-900/10 hidden md:block" />
            <div className="flex flex-col">
-              <span className="font-mono text-[10px] uppercase text-emerald-800/40 font-bold mb-2 tracking-[0.2em]">Practice Hrs</span>
-              <span className="text-3xl font-black text-emerald-950 heading-display">{(userStats.totalTime / 3600).toFixed(1)}</span>
+              <span className="font-mono text-[10px] uppercase text-emerald-800/40 font-bold mb-2 tracking-[0.2em]">Practice Time</span>
+              <span className="text-3xl font-black text-emerald-950 heading-display">{formatTime(userStats.totalTime)}</span>
            </div>
         </div>
 

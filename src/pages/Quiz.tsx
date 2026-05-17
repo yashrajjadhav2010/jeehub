@@ -85,13 +85,13 @@ export default function Quiz() {
   }, [subjectId, chapterId, setId]);
 
   useEffect(() => {
-    if (timeLeft <= 0 || isFinished) return;
+    if (timeLeft <= 0 || isFinished || !isStarted) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
       setQuestionTime((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isFinished]);
+  }, [timeLeft, isFinished, isStarted]);
 
   useEffect(() => {
     setQuestionTime(0);
@@ -170,7 +170,7 @@ export default function Quiz() {
         
         <div className="space-y-4 p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md">
            <div className="flex justify-between items-center border-b border-white/10 pb-4">
-             <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Tactical Objective</span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Mission Objective</span>
              <span className="text-sm font-bold uppercase">{quizSet.title}</span>
            </div>
            <div className="flex justify-between items-center border-b border-white/10 pb-4">
@@ -179,7 +179,7 @@ export default function Quiz() {
            </div>
            {quizSet.difficulty && (
              <div className="flex justify-between items-center border-b border-white/10 pb-4">
-               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Tactical Intensity</span>
+               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Mission Intensity</span>
                <span className={cn(
                  "text-sm font-black uppercase tracking-widest",
                  quizSet.difficulty === 'hard' ? "text-red-400" :
@@ -403,13 +403,13 @@ export default function Quiz() {
                         className="mt-8 md:mt-16 p-6 md:p-10 bg-emerald-950 rounded-3xl md:rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
                       >
                          <div className="relative z-10 markdown-body">
-                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Tactical Solution Analysis</p>
+                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Expert Solution Analysis</p>
                             <div className="text-white/90 leading-relaxed font-medium text-sm md:text-lg italic whitespace-pre-wrap">
                                 <ReactMarkdown 
                                   remarkPlugins={[remarkMath]} 
                                   rehypePlugins={[rehypeKatex]}
                                 >
-                                  {currentQuestion.explanation || "No tactical breakdown available for this engagement."}
+                                  {currentQuestion.explanation || "No expert breakdown available for this engagement."}
                                 </ReactMarkdown>
                             </div>
                          </div>
@@ -476,7 +476,7 @@ export default function Quiz() {
           )}
         >
            <div className="lg:hidden flex items-center justify-between p-4 bg-emerald-950 text-white shrink-0">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Tactical Palette</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Mastery Palette</span>
               <button onClick={() => setIsMenuOpen(false)} className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
                  <X size={20} />
               </button>
@@ -514,7 +514,7 @@ export default function Quiz() {
 
            <div className="p-6 md:p-8 flex-1 overflow-y-auto">
               <div className="flex items-center justify-between mb-6 md:mb-8">
-                <h2 className="text-[9px] md:text-[10px] font-black text-emerald-800/40 tracking-[0.3em] md:tracking-[0.4em] uppercase">Tactical Palette</h2>
+                <h2 className="text-[9px] md:text-[10px] font-black text-emerald-800/40 tracking-[0.3em] md:tracking-[0.4em] uppercase">Mastery Palette</h2>
                 <div className="flex gap-1">
                    <div className="w-1 h-1 rounded-full bg-emerald-200" />
                    <div className="w-1 h-1 rounded-full bg-emerald-200" />

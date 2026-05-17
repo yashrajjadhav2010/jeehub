@@ -37,7 +37,7 @@ export default function DeviceNotice() {
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Tactical Alert</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Mission Alert</span>
               </div>
               <h4 className="text-sm font-black heading-display uppercase italic tracking-tight">Desktop Optimization</h4>
               <p className="text-[11px] text-white/60 font-medium leading-relaxed">

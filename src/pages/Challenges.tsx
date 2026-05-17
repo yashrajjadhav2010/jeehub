@@ -75,7 +75,7 @@ export default function Challenges() {
 
   const milestones = [
     { label: 'Rookie Aspirant', status: 'Completed', req: '5 Missions' },
-    { label: 'Tactical Analyst', status: 'In Progress', req: '25 Missions' },
+    { label: 'Mission Analyst', status: 'In Progress', req: '25 Missions' },
     { label: 'Grandmaster Operator', status: 'Locked', req: '100 Missions' }
   ];
 
@@ -91,7 +91,7 @@ export default function Challenges() {
             Mission <span className="text-primary not-italic">Challenges</span>
           </h1>
           <p className="text-emerald-900/40 font-medium max-w-xl text-sm sm:text-base">
-            High-intensity tactical objectives designed to refine your operational speed and conceptual precision.
+            High-intensity mission objectives designed to refine your operational speed and conceptual precision.
           </p>
         </div>
         

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserStats, SubjectId } from '../types';
-import { cn } from '../lib/utils';
+import { cn, formatTime } from '../lib/utils';
 
 export default function Home() {
   const [stats, setStats] = useState<UserStats>({
@@ -104,7 +104,7 @@ export default function Home() {
                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">Mission Control Center</span>
                 </div>
                 <h1 className="text-4xl sm:text-5xl md:text-7xl font-black heading-display leading-[0.9] text-emerald-950 uppercase tracking-tighter">
-                  Tactical <br /> 
+                  Performance <br /> 
                   <span className="text-primary italic relative">
                     Intelligence
                     <motion.span 
@@ -117,7 +117,7 @@ export default function Home() {
               </div>
               
               <p className="text-emerald-800/60 max-w-lg text-base sm:text-lg md:text-xl font-medium leading-relaxed">
-                Welcome Commander. Your current readiness index is being analyzed. Engage with tactical sectors to populate your data radar.
+                Welcome Commander. Your current readiness index is being analyzed. Engage with learning sectors to populate your data radar.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4 md:pt-6">
@@ -205,7 +205,7 @@ export default function Home() {
          />
          <StatsCard 
             label="Engaged" 
-            value="0.0 Hrs" 
+            value={formatTime(stats.totalTime)} 
             icon={Calendar} 
             color="text-[#ef5350]" 
             bg="bg-red-50 border-red-100" 
@@ -313,7 +313,7 @@ export default function Home() {
            <FeatureCard 
               icon={BrainCircuit}
               title="Adaptive AI"
-              desc="Our tactical engine tracks your weak sectors and surfaces high-priority questions to bridge your intelligence gaps."
+              desc="Our preparation engine tracks your weak sectors and surfaces high-priority questions to bridge your performance gaps."
               accent="text-emerald-500"
               bg="bg-white shadow-sm"
            />
@@ -327,7 +327,7 @@ export default function Home() {
            <FeatureCard 
               icon={ShieldCheck}
               title="Mission Ready"
-              desc="Simulate the actual JEE environment with pressurized timers, standard markings, and tactical dashboards."
+              desc="Simulate the actual JEE environment with pressurized timers, standard markings, and performance dashboards."
               accent="text-orange-500"
               bg="bg-white shadow-sm"
            />
@@ -366,12 +366,12 @@ export default function Home() {
                <WorkflowStep 
                   number="01" 
                   title="Target Acquisition" 
-                  desc="Select your subject and chapter to begin a tactical practice session." 
+                  desc="Select your subject and chapter to begin a focused practice session." 
                   icon={Crosshair} 
                />
                <WorkflowStep 
                   number="02" 
-                  title="Tactical Engagement" 
+                  title="Expert Engagement" 
                   desc="Solve hand-picked questions with active timers and detailed telemetry." 
                   icon={Zap} 
                />

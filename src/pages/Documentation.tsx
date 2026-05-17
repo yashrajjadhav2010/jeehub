@@ -12,7 +12,7 @@ export default function Documentation() {
     {
       title: 'Practice Modules',
       icon: BookOpen,
-      content: 'Navigate to the Catalog to select your subject. Each subject is divided into key chapters (Modules). Select a chapter to see available practice sets filtered by difficulty level.'
+      content: 'Navigate to the Subjects to select your subject. Each subject is divided into key chapters (Modules). Select a chapter to see available practice sets filtered by difficulty level.'
     },
     {
       title: 'Performance Radar',
@@ -79,7 +79,7 @@ export default function Documentation() {
               to="/subjects"
               className="px-6 py-3 bg-white/10 text-white font-black text-xs uppercase tracking-widest rounded-2xl border border-white/10 hover:bg-white/20 transition-all"
             >
-              Back to Catalog
+              Back to Subjects
             </Link>
           </div>
         </div>

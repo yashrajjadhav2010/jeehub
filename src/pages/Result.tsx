@@ -7,7 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { QuizResult, QuizSet } from '../types';
-import { cn } from '../lib/utils';
+import { cn, formatTime } from '../lib/utils';
 
 export default function Result() {
   const navigate = useNavigate();
@@ -121,7 +121,7 @@ export default function Result() {
               <div className="w-px h-16 bg-emerald-100 hidden md:block" />
               <div className="text-center flex-1 min-w-[120px]">
                  <p className="text-[10px] font-bold tracking-widest text-emerald-700/50 uppercase mb-2">Time spent</p>
-                 <p className="text-3xl sm:text-4xl md:text-5xl font-bold heading-display text-emerald-900">{Math.floor(result.timeTaken / 60)}:{(result.timeTaken % 60).toString().padStart(2, '0')}</p>
+                 <p className="text-3xl sm:text-4xl md:text-5xl font-bold heading-display text-emerald-900">{formatTime(result.timeTaken)}</p>
               </div>
            </div>
         </div>
@@ -228,7 +228,7 @@ export default function Result() {
            className="flex-1 py-6 bg-white border-2 border-emerald-950 text-emerald-950 rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-50 transition-all flex items-center justify-center gap-4 group"
          >
            <RefreshCcw size={18} className="group-hover:rotate-180 transition-transform duration-700" /> 
-           Return to Catalog
+           Return to Subjects
          </button>
          <button 
            onClick={() => navigate('/')}

@@ -67,7 +67,7 @@ export default function ChapterSelection() {
           className="group flex items-center gap-4 px-8 py-4 bg-emerald-950 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-full shadow-2xl hover:bg-emerald-900 transition-all active:scale-95"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          Retreat to Catalog
+          Retreat to Subjects
         </Link>
       </div>
 
@@ -138,7 +138,7 @@ export default function ChapterSelection() {
                           set.difficulty === 'medium' ? "bg-amber-50 text-amber-600 border-amber-100" :
                           "bg-emerald-50 text-emerald-600 border-emerald-100"
                         )}>
-                          {set.difficulty === 'hard' ? 'Advanced' : set.difficulty === 'medium' ? 'Active' : 'Tactical'}
+                          {set.difficulty === 'hard' ? 'Advanced' : set.difficulty === 'medium' ? 'Active' : 'Standard'}
                         </div>
                       )}
                       <div className="w-10 h-10 rounded-full bg-emerald-950 text-white flex items-center justify-center scale-0 group-hover/set:scale-100 transition-all duration-300">

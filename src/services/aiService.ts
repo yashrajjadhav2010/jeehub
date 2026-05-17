@@ -24,11 +24,11 @@ export async function getTopicSuggestions(subject?: string, performance?: string
         messages: [
           {
             role: "system",
-            content: "You are a JEE Preparation Expert. Provide tactical study suggestions based on student performance data. Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys."
+            content: "You are a JEE Preparation Expert. Provide performance-based study suggestions based on student data. Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys."
           },
           {
             role: "user",
-            content: `Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}. Identify 3 high-priority tactical focus topics.`
+            content: `Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}. Identify 3 high-priority focus topics.`
           }
         ],
         response_format: { type: "json_object" }
