@@ -2,5 +2,5 @@
   "name": "JEE TAPASYA",
   "description": "JEE Tapasya is a free, high-performance question practice platform for JEE aspirants. Features mock tests, expert missions, and real-time analytics for Physics, Chemistry, and Mathematics.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -19,13 +19,17 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const savedStats = localStorage.getItem('userStats');
-    if (savedStats) {
-      const parsedStats = JSON.parse(savedStats);
-      setStats(prev => ({
-        ...prev,
-        ...parsedStats
-      }));
+    try {
+      const savedStats = localStorage.getItem('userStats');
+      if (savedStats) {
+        const parsedStats = JSON.parse(savedStats);
+        setStats(prev => ({
+          ...prev,
+          ...parsedStats
+        }));
+      }
+    } catch (e) {
+      console.error('Stats recovery failed:', e);
     }
   }, []);
 

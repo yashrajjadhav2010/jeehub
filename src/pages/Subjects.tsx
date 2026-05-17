@@ -37,15 +37,23 @@ export default function Subjects() {
 
   useEffect(() => {
     async function load() {
-      const data = await getAllData();
-      setAllChapters(data);
+      try {
+        const data = await getAllData();
+        setAllChapters(data);
+      } catch (e) {
+        console.error('Data load failed:', e);
+      }
     }
     load();
 
-    const saved = localStorage.getItem('userStats');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setUserStats(prev => ({ ...prev, ...parsed }));
+    try {
+      const saved = localStorage.getItem('userStats');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setUserStats(prev => ({ ...prev, ...parsed }));
+      }
+    } catch (e) {
+      console.error('Stats recovery failed:', e);
     }
   }, []);
 

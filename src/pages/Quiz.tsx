@@ -36,19 +36,26 @@ export default function Quiz() {
 
   const startTest = () => {
     setIsStarted(true);
-    const prefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
-    if (prefs.autoFullscreen !== false) {
-      requestFullScreen();
+    try {
+      const prefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
+      if (prefs.autoFullscreen !== false) {
+        requestFullScreen();
+      }
+      // Clear challenge flag after start
+      localStorage.removeItem('activeChallenge');
+    } catch (e) {
+      console.error('Start test storage access failed:', e);
     }
-    // Clear challenge flag after start
-    localStorage.removeItem('activeChallenge');
   };
 
   useEffect(() => {
-    const prefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
-    if (prefs.autoFullscreen && isStarted === false && loading === false && quizSet) {
-      // If auto-fullscreen is on and we are on briefing screen, maybe suggest it or just let startBtn handle it
-      // For UX, it's better to trigger on button click as browsers block auto-fullscreen without user intent
+    try {
+      const prefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
+      if (prefs.autoFullscreen && isStarted === false && loading === false && quizSet) {
+        // If auto-fullscreen is on and we are on briefing screen
+      }
+    } catch (e) {
+      console.error('Prefs recovery failed:', e);
     }
   }, [isStarted, loading, quizSet]);
 
@@ -93,16 +100,6 @@ export default function Quiz() {
     return () => clearInterval(timer);
   }, [timeLeft, isFinished, isStarted]);
 
-  useEffect(() => {
-    if (isStarted && !isFinished && timeLeft === 0 && quizSet) {
-      handleFinish();
-    }
-  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet]);
-
-  useEffect(() => {
-    setQuestionTime(0);
-  }, [currentIdx]);
-
   const exitFullScreen = () => {
     if (document.fullscreenElement && document.exitFullscreen) {
       document.exitFullscreen();
@@ -123,6 +120,16 @@ export default function Quiz() {
     localStorage.setItem('lastQuizResult', JSON.stringify(results));
     navigate('/result');
   }, [answers, timeLeft, quizSet, subjectId, chapterId, setId, navigate]);
+
+  useEffect(() => {
+    if (isStarted && !isFinished && timeLeft === 0 && quizSet) {
+      handleFinish();
+    }
+  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet]);
+
+  useEffect(() => {
+    setQuestionTime(0);
+  }, [currentIdx]);
 
   const handleExit = () => {
     exitFullScreen();
@@ -224,7 +231,12 @@ export default function Quiz() {
   );
 
   const currentQuestion = quizSet.questions[currentIdx];
-  const operatorName = localStorage.getItem('operatorName') || 'Candidate';
+  let operatorName = 'Candidate';
+  try {
+    operatorName = localStorage.getItem('operatorName') || 'Candidate';
+  } catch (e) {
+    console.error('Operator name recovery failed:', e);
+  }
   const initial = operatorName.substring(0, 2).toUpperCase();
   
   // Calculate Stats

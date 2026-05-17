@@ -18,7 +18,12 @@ import { cn } from './lib/utils';
 
 function Navbar() {
   const location = useLocation();
-  const operatorName = localStorage.getItem('operatorName') || 'Candidate';
+  let operatorName = 'Candidate';
+  try {
+    operatorName = localStorage.getItem('operatorName') || 'Candidate';
+  } catch (e) {
+    console.error('Navbar storage access failed:', e);
+  }
   const initial = operatorName.substring(0, 2).toUpperCase();
 
   const menuItems = [
@@ -199,21 +204,26 @@ function Layout({ children }: { children: React.ReactNode }) {
   const [key, setKey] = useState(0); // For forcing re-render of navbar
 
   useEffect(() => {
-    const handleStorage = () => {
-      setKey(prev => prev + 1);
-      const name = localStorage.getItem('operatorName');
-      if (!name) setShowNameModal(true);
-      else setShowNameModal(false);
-    };
+    try {
+      const handleStorage = () => {
+        setKey(prev => prev + 1);
+        const name = localStorage.getItem('operatorName');
+        if (!name) setShowNameModal(true);
+        else setShowNameModal(false);
+      };
 
-    window.addEventListener('storage', handleStorage);
-    
-    const name = localStorage.getItem('operatorName');
-    if (!name) {
+      window.addEventListener('storage', handleStorage);
+      
+      const name = localStorage.getItem('operatorName');
+      if (!name) {
+        setShowNameModal(true);
+      }
+      
+      return () => window.removeEventListener('storage', handleStorage);
+    } catch (e) {
+      console.error('Storage access failed:', e);
       setShowNameModal(true);
     }
-    
-    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
   const handleNameComplete = () => {
