@@ -94,6 +94,12 @@ export default function Quiz() {
   }, [timeLeft, isFinished, isStarted]);
 
   useEffect(() => {
+    if (isStarted && !isFinished && timeLeft === 0 && quizSet) {
+      handleFinish();
+    }
+  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet]);
+
+  useEffect(() => {
     setQuestionTime(0);
   }, [currentIdx]);
 
