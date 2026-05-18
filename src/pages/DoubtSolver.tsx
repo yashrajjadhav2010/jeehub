@@ -250,8 +250,8 @@ export default function DoubtSolver() {
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto w-full relative z-10" ref={scrollRef}>
-        <div className="max-w-3xl mx-auto w-full flex flex-col pt-4 md:pt-8 pb-32">
+      <div className="flex-1 overflow-y-auto w-full relative z-10 scroll-smooth" ref={scrollRef}>
+        <div className="max-w-3xl mx-auto w-full flex flex-col pt-4 md:pt-8 pb-40">
           
           <AnimatePresence mode="popLayout">
             {messages.length === 0 && !loading && (
@@ -259,15 +259,15 @@ export default function DoubtSolver() {
                 key="empty-state"
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center"
+                className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center"
               >
-                <div className="mb-8">
+                <div className="mb-4 md:mb-8 scale-75 md:scale-100">
                   <AxiomMascot size="lg" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-semibold mb-2">
+                <h2 className="text-xl md:text-3xl font-black heading-display uppercase tracking-tight mb-2">
                   Hi, I'm Axiom!
                 </h2>
-                <p className="text-gray-500 mb-8 max-w-sm">
+                <p className="text-sm md:text-base text-gray-500 mb-8 max-w-sm font-medium">
                   Your premium AI assistant for JEE prep. What can I help you solve today?
                 </p>
                 
@@ -281,12 +281,12 @@ export default function DoubtSolver() {
                   </button>
                 )}
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 w-full max-w-xl">
                   {[
-                    "Explain Heisenberg's Uncertainty Principle",
-                    "Solve: Integration of tan³x",
+                    "Newton's Laws of Motion",
+                    "Integration of tan³x",
                     "Periodic trends in Chemistry",
-                    "Newton's Laws of Motion"
+                    "Heisenberg Principle"
                   ].map((sample, i) => (
                     <motion.button
                       key={sample}
@@ -294,7 +294,7 @@ export default function DoubtSolver() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.1 }}
                       onClick={() => setInput(sample)}
-                      className="p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-all text-left text-sm text-gray-600 font-medium"
+                      className="p-3 md:p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-100 transition-all text-left text-[11px] md:text-sm text-gray-600 font-bold uppercase tracking-tight"
                     >
                       {sample}
                     </motion.button>
@@ -380,29 +380,29 @@ export default function DoubtSolver() {
             onSubmit={handleSubmit}
             className="relative flex items-center group flex-col"
           >
-            <div className="relative w-full">
+            <div className="relative w-full shadow-2xl shadow-emerald-950/10 rounded-2xl md:rounded-[2rem]">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={placeholder}
-                className="w-full bg-white border border-gray-200 shadow-lg rounded-2xl py-4 md:py-5 pl-5 pr-14 md:pr-16 outline-none focus:border-gray-300 transition-all font-medium text-gray-800"
+                className="w-full bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] py-4 md:py-6 pl-5 pr-14 md:pr-20 outline-none focus:ring-4 focus:ring-primary/5 transition-all font-bold text-sm md:text-lg text-emerald-950 placeholder:text-gray-300 shadow-sm"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
                 className={cn(
-                  "absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all",
+                  "absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all",
                   loading || !input.trim()
-                    ? "bg-gray-100 text-gray-300"
-                    : "bg-[#10a37f] text-white hover:bg-[#1a7f64]"
+                    ? "bg-gray-50 text-gray-200"
+                    : "bg-primary text-white hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
                 )}
               >
                 {loading ? (
-                  <Loader2 size={18} className="animate-spin" />
+                  <Loader2 size={20} className="animate-spin" />
                 ) : (
-                  <ArrowRight size={18} />
+                  <ArrowRight size={20} />
                 )}
               </button>
             </div>

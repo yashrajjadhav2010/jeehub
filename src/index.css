@@ -34,6 +34,10 @@ body {
   font-family: 'Inter', sans-serif;
   letter-spacing: -0.012em;
   -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .mesh-bg {

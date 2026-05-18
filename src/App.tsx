@@ -217,6 +217,16 @@ function Layout({ children }: { children: React.ReactNode }) {
         else setShowNameModal(false);
       };
 
+      // Prevent Copying and Context Menu
+      const handleCopy = (e: ClipboardEvent) => {
+        e.preventDefault();
+      };
+      const handleContextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+      };
+      
+      window.addEventListener('copy', handleCopy as any);
+      window.addEventListener('contextmenu', handleContextMenu);
       window.addEventListener('storage', handleStorage);
       
       const name = localStorage.getItem('operatorName');
@@ -224,7 +234,11 @@ function Layout({ children }: { children: React.ReactNode }) {
         setShowNameModal(true);
       }
       
-      return () => window.removeEventListener('storage', handleStorage);
+      return () => {
+        window.removeEventListener('copy', handleCopy as any);
+        window.removeEventListener('contextmenu', handleContextMenu);
+        window.removeEventListener('storage', handleStorage);
+      };
     } catch (e) {
       console.error('Storage access failed:', e);
       setShowNameModal(true);
