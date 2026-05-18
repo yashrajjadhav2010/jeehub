@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import Groq from "groq-sdk";
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Initialize AI Clients
 let groq: Groq | null = null;
+let genAI: GoogleGenerativeAI | null = null;
 
 const AI_NAME = "AXIOM";
 
@@ -20,7 +22,7 @@ const getGroqClient = () => {
   if (!groq) {
     let apiKey = process.env.GROQ_API_KEY;
     
-    // Hardcoded segmented key for testing phase
+    // Hardcoded segmented key for testing phase - explicitly verified from user snippet
     const _p1 = "gsk_bZjNxttczeRG";
     const _p2 = "xotPg3LMWGdyb3FY";
     const _p3 = "u6Vtw8Jl0NE8wts1";
@@ -29,9 +31,21 @@ const getGroqClient = () => {
 
     if (apiKey) {
       groq = new Groq({ apiKey });
+      console.log("Groq client initialized with hardcoded key");
     }
   }
   return groq;
+};
+
+const getGeminiClient = () => {
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (apiKey) {
+      genAI = new GoogleGenerativeAI(apiKey);
+      console.log("Gemini client initialized");
+    }
+  }
+  return genAI;
 };
 
 // Logger for debugging routes
@@ -53,27 +67,67 @@ app.get("/api/health", (req, res) => {
 
 // API route for solving doubts
 app.post("/api/solve", async (req, res) => {
-  console.log("Received solve request:", JSON.stringify(req.body).substring(0, 100) + "...");
+  console.log("Received solve request for /api/solve");
   const { messages } = req.body;
+  
+  if (!messages || !Array.isArray(messages)) {
+    return res.status(400).json({ error: "Invalid messages format" });
+  }
+
   const systemPrompt = `Your name is ${AI_NAME}. You are a premium AI assistant for JEE preparation, developed by Yashraj Jadhav. Your mission is to provide high-precision, tactically concise solutions. \n\nFORMATTING RULES:\n1. Use double newlines between paragraphs for clear vertical spacing.\n2. Use bullet points or numbered lists for multi-step explanations or definitions.\n3. Use bold text for key terms or final answers.\n4. Use LaTeX for mathematical expressions (e.g., $x^2$).\n5. If asked about your developer, founder, or creator, reply 'Yashraj Jadhav'.\n6. If asked about your name or the platform, it is '${AI_NAME}'.\n7. Maintain context from previous messages.\n\nKeep it professional, structured, and visually clean.`;
 
   try {
     const groqClient = getGroqClient();
-    if (!groqClient) throw new Error("AI service is currently unavailable.");
+    if (groqClient) {
+      try {
+        const completion = await groqClient.chat.completions.create({
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...messages
+          ],
+          model: "llama-3.3-70b-versatile",
+          temperature: 0.4,
+          max_tokens: 1000,
+        });
+        return res.json(completion);
+      } catch (groqError: any) {
+        console.warn("Groq failed, trying Gemini fallback:", groqError.message);
+      }
+    }
 
-    const completion = await groqClient.chat.completions.create({
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages
+    // Gemini Fallback
+    const geminiClient = getGeminiClient();
+    if (!geminiClient) throw new Error("No AI service available (Groq/Gemini)");
+
+    const model = geminiClient.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const lastMessage = messages[messages.length - 1].content;
+    const history = messages.slice(0, -1).map((m: any) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }]
+    }));
+
+    const result = await model.generateContent({
+      contents: [
+        ...history,
+        { role: 'user', parts: [{ text: `System Context: ${systemPrompt}\n\nUser Question: ${lastMessage}` }] }
       ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.4,
-      max_tokens: 1000,
+      generationConfig: {
+        maxOutputTokens: 1000,
+        temperature: 0.4,
+      }
     });
-    return res.json(completion);
+
+    const text = result.response.text();
+
+    // Mock Groq format for frontend compatibility
+    return res.json({
+      choices: [{
+        message: { content: text }
+      }]
+    });
   } catch (error: any) {
-    console.error("AI Service Error:", error.message);
-    return res.status(500).json({ error: "Doubt solver is currently experiencing high load. Please try again in 5 minutes." });
+    console.error("All AI services failed:", error.message);
+    return res.status(500).json({ error: "AI service error. Please check keys or try again. " + error.message });
   }
 });
 
@@ -83,26 +137,55 @@ app.post("/api/suggestions", async (req, res) => {
     const { performance, subject } = req.body;
     const groqClient = getGroqClient();
     
-    if (!groqClient) throw new Error("AI service is currently unavailable.");
+    if (groqClient) {
+      try {
+        const completion = await groqClient.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content: "You are a JEE Preparation Expert. Provide performance-based study suggestions based on student data. Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys."
+            },
+            {
+              role: "user",
+              content: `Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}. Identify 3 high-priority focus topics.`
+            }
+          ],
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" }
+        });
+        return res.json(completion);
+      } catch (e) {
+        console.warn("Groq suggestions failed, falling back to Gemini");
+      }
+    }
 
-    const completion = await groqClient.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: "You are a JEE Preparation Expert. Provide performance-based study suggestions based on student data. Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys."
-        },
-        {
-          role: "user",
-          content: `Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}. Identify 3 high-priority focus topics.`
-        }
-      ],
-      model: "llama-3.3-70b-versatile",
-      response_format: { type: "json_object" }
+    const geminiClient = getGeminiClient();
+    if (!geminiClient) throw new Error("No AI service available for suggestions");
+
+    const model = geminiClient.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const prompt = `You are a JEE Preparation Expert. Provide performance-based study suggestions based on student data.
+    Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}.
+    Identify 3 high-priority focus topics.
+    Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys.`;
+
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+      }
     });
-    return res.json(completion);
+
+    const text = result.response.text();
+    
+    // Mock Groq format
+    return res.json({
+      choices: [{
+        message: { content: text }
+      }]
+    });
   } catch (error: any) {
     console.error("Server Suggestions API Error:", error.message);
-    res.status(500).json({ error: "Failed to reach AI service. Please try again later." });
+    res.status(500).json({ error: "Failed to reach AI service. " + error.message });
   }
 });
 
