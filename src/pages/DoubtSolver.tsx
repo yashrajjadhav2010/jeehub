@@ -14,7 +14,7 @@ interface Message {
   content: string;
 }
 
-const AxiomMascot = ({ size = "md", isThinking = false }: { size?: "sm" | "md" | "lg", isThinking?: boolean }) => {
+const YInfinityMascot = ({ size = "md", isThinking = false }: { size?: "sm" | "md" | "lg", isThinking?: boolean }) => {
   const scale = {
     sm: 0.22,
     md: 0.45,
@@ -149,7 +149,7 @@ export default function DoubtSolver() {
     "Clarity today, Victory Tomorrow",
     "Mastering JEE, one doubt at a time.",
     "Solve complex equations instantly",
-    "Axiom is ready to solve",
+    "Y Infinity is ready to solve",
     "Physics, Chemistry or Maths?"
   ];
 
@@ -227,7 +227,7 @@ export default function DoubtSolver() {
         </Link>
         
         <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <span className="text-lg font-black tracking-tighter italic">AXIOM</span>
+            <span className="text-lg font-black tracking-tighter italic">Y INFINITY</span>
             <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-gray-400 -mt-1">by JEE TAPASYA</span>
         </div>
 
@@ -262,10 +262,10 @@ export default function DoubtSolver() {
                 className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center"
               >
                 <div className="mb-4 md:mb-8 scale-75 md:scale-100">
-                  <AxiomMascot size="lg" />
+                  <YInfinityMascot size="lg" />
                 </div>
                 <h2 className="text-xl md:text-3xl font-black heading-display uppercase tracking-tight mb-2">
-                  Hi, I'm Axiom!
+                  Hi, I'm Y Infinity!
                 </h2>
                 <p className="text-sm md:text-base text-gray-500 mb-8 max-w-sm font-medium">
                   Your premium AI assistant for JEE prep. What can I help you solve today?
@@ -320,13 +320,13 @@ export default function DoubtSolver() {
                       U
                     </div>
                   ) : (
-                    <AxiomMascot size="sm" />
+                    <YInfinityMascot size="sm" />
                   )}
                   
                   <div className="flex-1 min-w-0 flex flex-col space-y-2">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                        {msg.role === 'user' ? 'You' : 'Axiom Solves'}
+                        {msg.role === 'user' ? 'You' : 'Y Infinity Solves'}
                       </span>
                     </div>
                     <div className="text-base text-[#374151] markdown-body overflow-hidden break-words">
@@ -352,9 +352,9 @@ export default function DoubtSolver() {
                 className="flex w-full px-4 py-8 md:px-0 bg-gray-50/50"
               >
                 <div className="max-w-3xl mx-auto w-full flex gap-4 md:gap-6">
-                  <AxiomMascot size="sm" isThinking />
+                  <YInfinityMascot size="sm" isThinking />
                   <div className="flex-1 space-y-2 pt-1 text-[#374151] animate-pulse">
-                     <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Axiom is calculating...</span>
+                     <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Y Infinity is calculating...</span>
                      <div className="h-4 bg-gray-200 rounded-full w-2/3" />
                   </div>
                 </div>
