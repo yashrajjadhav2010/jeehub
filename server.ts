@@ -14,20 +14,18 @@ app.use(express.json());
 // Initialize AI Clients
 let groq: Groq | null = null;
 
-const AI_NAME = "Y Infinity"; // Name from user snippet
+const AI_NAME = "AXIOM";
 
 const getGroqClient = () => {
   if (!groq) {
     let apiKey = process.env.GROQ_API_KEY;
     
-    // Fallback segmented key from user image
-    if (!apiKey) {
-      const _p1 = "gsk_bZjNxttczeRG";
-      const _p2 = "xotPg3LMWGdyb3FY";
-      const _p3 = "u6Vtw8Jl0NE8wts1";
-      const _p4 = "FOBk3DGT";
-      apiKey = _p1 + _p2 + _p3 + _p4;
-    }
+    // Hardcoded segmented key for testing phase
+    const _p1 = "gsk_bZjNxttczeRG";
+    const _p2 = "xotPg3LMWGdyb3FY";
+    const _p3 = "u6Vtw8Jl0NE8wts1";
+    const _p4 = "FOBk3DGT";
+    apiKey = _p1 + _p2 + _p3 + _p4;
 
     if (apiKey) {
       groq = new Groq({ apiKey });
