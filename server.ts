@@ -1,20 +1,18 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import Groq from "groq-sdk";
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
 // Initialize AI Clients
 let groq: Groq | null = null;
-let genAI: GoogleGenerativeAI | null = null;
 
 const AI_NAME = "AXIOM";
 
@@ -22,13 +20,9 @@ const getGroqClient = () => {
   if (!groq) {
     let apiKey = process.env.GROQ_API_KEY;
     
-    // Fallback to hardcoded segmented key if environment variable is missing
+    // Fallback to hardcoded key if environment variable is missing
     if (!apiKey) {
-      const _p1 = "gsk_bZjNxttczeRG";
-      const _p2 = "xotPg3LMWGdyb3FY";
-      const _p3 = "u6Vtw8Jl0NE8wts1";
-      const _p4 = "FOBk3DGT";
-      apiKey = _p1 + _p2 + _p3 + _p4;
+      apiKey = "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";
     }
 
     if (apiKey) {
@@ -37,17 +31,6 @@ const getGroqClient = () => {
     }
   }
   return groq;
-};
-
-const getGeminiClient = () => {
-  if (!genAI) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey) {
-      genAI = new GoogleGenerativeAI(apiKey);
-      console.log("Gemini client initialized");
-    }
-  }
-  return genAI;
 };
 
 // Logger for debugging routes
@@ -93,43 +76,15 @@ app.post("/api/solve", async (req, res) => {
         });
         return res.json(completion);
       } catch (groqError: any) {
-        console.warn("Groq failed, trying Gemini fallback:", groqError.message);
+        console.error("Groq Service Error:", groqError.message);
+        throw groqError;
       }
+    } else {
+      throw new Error("AI service (Groq) is currently unavailable.");
     }
-
-    // Gemini Fallback
-    const geminiClient = getGeminiClient();
-    if (!geminiClient) throw new Error("No AI service available (Groq/Gemini)");
-
-    const model = geminiClient.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const lastMessage = messages[messages.length - 1].content;
-    const history = messages.slice(0, -1).map((m: any) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
-
-    const result = await model.generateContent({
-      contents: [
-        ...history,
-        { role: 'user', parts: [{ text: `System Context: ${systemPrompt}\n\nUser Question: ${lastMessage}` }] }
-      ],
-      generationConfig: {
-        maxOutputTokens: 1000,
-        temperature: 0.4,
-      }
-    });
-
-    const text = result.response.text();
-
-    // Mock Groq format for frontend compatibility
-    return res.json({
-      choices: [{
-        message: { content: text }
-      }]
-    });
   } catch (error: any) {
-    console.error("All AI services failed:", error.message);
-    return res.status(500).json({ error: "AI service error. Please check keys or try again. " + error.message });
+    console.error("Doubt Solver Error:", error.message);
+    return res.status(500).json({ error: "AI service error. Please try again. " + error.message });
   }
 });
 
@@ -156,42 +111,20 @@ app.post("/api/suggestions", async (req, res) => {
           response_format: { type: "json_object" }
         });
         return res.json(completion);
-      } catch (e) {
-        console.warn("Groq suggestions failed, falling back to Gemini");
+      } catch (e: any) {
+        console.error("Groq suggestions failed:", e.message);
+        throw e;
       }
+    } else {
+      throw new Error("AI service unavailable for suggestions");
     }
-
-    const geminiClient = getGeminiClient();
-    if (!geminiClient) throw new Error("No AI service available for suggestions");
-
-    const model = geminiClient.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `You are a JEE Preparation Expert. Provide performance-based study suggestions based on student data.
-    Performance telemetry: ${performance || 'Baseline'}. Subject focus: ${subject || 'General JEE'}.
-    Identify 3 high-priority focus topics.
-    Return response as a JSON object with a 'suggestions' key containing an array of 3 objects, each with 'topic' and 'reason' keys.`;
-
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json",
-      }
-    });
-
-    const text = result.response.text();
-    
-    // Mock Groq format
-    return res.json({
-      choices: [{
-        message: { content: text }
-      }]
-    });
   } catch (error: any) {
     console.error("Server Suggestions API Error:", error.message);
     res.status(500).json({ error: "Failed to reach AI service. " + error.message });
   }
 });
 
-async function startServer() {
+const startServer = async () => {
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -216,9 +149,15 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+  // Only listen if we are NOT in Vercel environment
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  }
+};
 
+// Start the server
 startServer();
+
+export default app;
