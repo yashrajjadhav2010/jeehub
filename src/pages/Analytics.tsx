@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle, Info } from 'lucide-react';
 import { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -204,7 +204,13 @@ export default function Analytics() {
                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Predicted Rank</p>
                  <div>
                    <p className="text-4xl font-black text-white heading-display italic tracking-tighter">{calculateRank()}</p>
-                   <p className="text-[9px] font-black uppercase tracking-widest text-emerald-100/30 mt-1">Based on performance history</p>
+                   <div className="group relative inline-flex items-center gap-1.5 mt-2 cursor-pointer">
+                     <Info size={12} className="text-emerald-400/50 group-hover:text-emerald-400 transition-colors" />
+                     <p className="text-[9px] font-black uppercase tracking-widest text-emerald-100/30 group-hover:text-emerald-100 transition-colors">Based on performance history</p>
+                     <div className="absolute left-0 top-full mt-2 w-48 bg-emerald-900 border border-emerald-700/50 p-2 rounded-lg text-[10px] font-medium text-emerald-50 tracking-normal normal-case opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 shadow-xl leading-relaxed">
+                       Rank is calculated on the basis of correct question solved and it can vary.
+                     </div>
+                   </div>
                  </div>
               </div>
            </div>

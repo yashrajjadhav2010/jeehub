@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Trophy, Clock, Zap, Target, ArrowRight, Shield, Flame, Swords } from 'lucide-react';
+import { Trophy, Clock, Zap, Target, ArrowRight, Shield, Flame, Swords, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { cn } from '../lib/utils';
@@ -111,7 +111,16 @@ export default function Challenges() {
             </div>
             <div>
               <p className="text-[9px] sm:text-[10px] font-black text-emerald-400 uppercase tracking-widest">Global Rank</p>
-              <p className="text-lg sm:text-xl font-black text-white">{calculateRank()}</p>
+              <div className="flex flex-col items-start">
+                 <p className="text-lg sm:text-xl font-black text-white leading-none">{calculateRank()}</p>
+                 <div className="group relative inline-flex items-center gap-1 mt-1 cursor-pointer">
+                   <Info size={10} className="text-emerald-400/50 group-hover:text-emerald-400 transition-colors" />
+                   <span className="text-[8px] font-bold uppercase tracking-widest text-emerald-100/30 group-hover:text-emerald-100 transition-colors">Info</span>
+                   <div className="absolute top-full left-0 mt-2 w-48 bg-emerald-900 text-emerald-50 text-[10px] leading-relaxed p-2 rounded-lg border border-emerald-700/50 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 tracking-normal normal-case">
+                     Rank is calculated on the basis of correct question solved and it can vary.
+                   </div>
+                 </div>
+              </div>
             </div>
           </div>
         </div>
