@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle, Info } from 'lucide-react';
+import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle, Info, BookOpen } from 'lucide-react';
 import { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -157,6 +157,23 @@ export default function Analytics() {
                      <Radar name="Proficiency" dataKey="value" stroke="#3b82f6" strokeWidth={2} fill="#3b82f6" fillOpacity={0.2} />
                    </RadarChart>
                  </ResponsiveContainer>
+               </div>
+
+               <div className="mt-8 bg-[#fff3f0] border border-[#ffccbc] rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex flex-col gap-2">
+                     <h3 className="text-lg font-bold text-[#bf360c] flex items-center justify-center sm:justify-start gap-2">
+                        <BookOpen size={18} className="text-[#e64a19]" /> Error Book
+                     </h3>
+                     <p className="text-xs text-[#d84315]/70 max-w-sm text-center sm:text-left">
+                        Re-solve incorrect questions to bridge your conceptual gaps directly from radar telemetry.
+                     </p>
+                  </div>
+                  <Link 
+                     to="/error-book"
+                     className="shrink-0 w-full sm:w-auto text-center px-6 py-3 bg-[#ff5722] text-white hover:bg-[#e64a19] transition-colors rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-[#ff5722]/20"
+                  >
+                     Open Error Book
+                  </Link>
                </div>
            </div>
 

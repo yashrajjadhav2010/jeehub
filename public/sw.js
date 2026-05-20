@@ -3,7 +3,7 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  'https://i.ibb.co/0RvSBwRL/appicon.png'
+  'https://i.ibb.co/4RFc0Zfs/iconnn.png'
 ];
 
 self.addEventListener('install', (event) => {

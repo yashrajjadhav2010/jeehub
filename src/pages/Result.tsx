@@ -24,12 +24,24 @@ export default function Result() {
       let wrong = 0;
       let skipped = 0;
 
+      let errorBook = [];
+      try {
+        errorBook = JSON.parse(localStorage.getItem('errorBook') || '[]');
+      } catch(e) {}
+
       quizSet.questions.forEach((q: any) => {
         const selected = answers[q.id];
         if (selected === null) skipped++;
         else if (selected === q.answer) correct++;
-        else wrong++;
+        else {
+          wrong++;
+          if (!errorBook.find((item: any) => item.id === q.id)) {
+            errorBook.push({ ...q, subjectId: quizSet.subjectId, chapterId: quizSet.chapterId, userWrongAnswer: selected, timestamp: new Date().toISOString() });
+          }
+        }
       });
+      
+      localStorage.setItem('errorBook', JSON.stringify(errorBook));
 
       const totalScore = correct * 4 - wrong * 1; // standard JEE +4, -1
       const totalPossible = quizSet.questions.length * 4;

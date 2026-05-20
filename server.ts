@@ -51,7 +51,9 @@ const getGeminiClient = () => {
 
 // Logger for debugging routes
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  if (!req.path.startsWith('/src/') && !req.path.startsWith('/@') && !req.path.startsWith('/node_modules/')) {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  }
   next();
 });
 

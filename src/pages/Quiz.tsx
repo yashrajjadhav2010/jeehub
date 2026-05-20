@@ -25,6 +25,7 @@ export default function Quiz() {
   const [isFinished, setIsFinished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showSolution, setShowSolution] = useState(false);
+  const [solutionViewed, setSolutionViewed] = useState<Record<string, boolean>>({});
   const [isStarted, setIsStarted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<Record<string, string>>({});
@@ -152,6 +153,7 @@ export default function Quiz() {
   };
 
   const handleClear = () => {
+    if (currentQuestion && solutionViewed[currentQuestion.id]) return;
     setAnswers(prev => ({ ...prev, [currentQuestion!.id]: null }));
     setMarkedForReview(prev => ({ ...prev, [currentQuestion!.id]: false }));
     setShowSolution(false);
@@ -167,6 +169,7 @@ export default function Quiz() {
 
     setIsAiLoading(true);
     setShowSolution(true);
+    setSolutionViewed(prev => ({ ...prev, [currentQuestion.id]: true }));
     try {
       const prompt = `Question: ${currentQuestion.question}\nOptions: ${currentQuestion.options.join(', ')}\nCorrect Answer: Option ${currentQuestion.answer + 1}\nExplanation: ${currentQuestion.explanation || 'None provided'}`;
       const analysis = await solveDoubt([{ role: 'user', content: prompt }], `Deep-dive analysis for Subject: ${subjectId}`);
@@ -433,24 +436,28 @@ export default function Quiz() {
                         
                         return (
                           <label key={idx} className={cn(
-                            "flex items-center gap-4 md:gap-8 p-4 md:p-8 rounded-2xl md:rounded-[2.5rem] cursor-pointer transition-all border-2 relative overflow-hidden group",
+                            "flex items-center gap-4 md:gap-8 p-4 md:p-8 rounded-2xl md:rounded-[2.5rem] transition-all border-2 relative overflow-hidden group",
+                            !solutionViewed[currentQuestion.id] ? "cursor-pointer" : "cursor-default opacity-80",
                             answers[currentQuestion.id] === idx 
-                              ? "border-primary bg-white shadow-2xl shadow-primary/10 -translate-y-1" 
-                              : "border-emerald-50 hover:bg-white hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-900/5",
-                            showSolution && isCorrect && "border-emerald-500 bg-emerald-50/50",
-                            showSolution && isSelected && !isCorrect && "border-red-500 bg-red-50/50"
+                              ? (showSolution ? "border-emerald-50 bg-white" : "border-primary bg-white shadow-2xl shadow-primary/10 -translate-y-1")
+                              : (showSolution ? "border-emerald-50" : "border-emerald-50 hover:bg-white hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-900/5"),
+                            showSolution && isCorrect && "border-emerald-500 bg-emerald-50/50 opacity-100",
+                            showSolution && isSelected && !isCorrect && "border-red-500 bg-red-50/50 opacity-100"
                           )}>
                             <div className={cn(
                               "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border-2 flex items-center justify-center transition-all font-black text-sm md:text-base shadow-sm shrink-0",
                               answers[currentQuestion.id] === idx 
-                                ? "border-primary bg-primary text-white scale-110 shadow-primary/20" 
-                                : "border-emerald-100 text-emerald-300 group-hover:border-emerald-300 group-hover:text-emerald-500",
+                                ? (showSolution ? "border-emerald-100 text-emerald-300" : "border-primary bg-primary text-white scale-110 shadow-primary/20")
+                                : (showSolution ? "border-emerald-100 text-emerald-300" : "border-emerald-100 text-emerald-300 group-hover:border-emerald-300 group-hover:text-emerald-500"),
                               showSolution && isCorrect && "border-emerald-500 bg-emerald-500 text-white",
                               showSolution && isSelected && !isCorrect && "border-red-500 bg-red-500 text-white"
                             )}>
                               {idx + 1}
                             </div>
-                            <span className="text-base md:text-xl font-bold text-emerald-950 group-hover:translate-x-1 transition-transform tracking-tight flex-1">
+                            <span className={cn(
+                              "text-base md:text-xl font-bold text-emerald-950 transition-transform tracking-tight flex-1",
+                              !solutionViewed[currentQuestion.id] && "group-hover:translate-x-1"
+                            )}>
                               <ReactMarkdown 
                                 remarkPlugins={[remarkMath]} 
                                 rehypePlugins={[rehypeKatex]}
@@ -462,12 +469,16 @@ export default function Quiz() {
                               type="radio" 
                               name="quiz-option" 
                               className="sr-only"
-                              disabled={showSolution}
+                              disabled={solutionViewed[currentQuestion.id]}
                               checked={answers[currentQuestion.id] === idx}
-                              onChange={() => setAnswers(prev => ({ ...prev, [currentQuestion.id]: idx }))}
+                              onChange={() => {
+                                if (!solutionViewed[currentQuestion.id]) {
+                                  setAnswers(prev => ({ ...prev, [currentQuestion.id]: idx }));
+                                }
+                              }}
                             />
                             
-                            {isSelected && (
+                            {answers[currentQuestion.id] === idx && !showSolution && (
                               <motion.div 
                                 layoutId="active-bg"
                                 className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent -z-10"
@@ -588,7 +599,8 @@ export default function Quiz() {
                  </button>
                  <button 
                   onClick={handleClear}
-                  className="px-3 md:px-5 py-2 md:py-2 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[9px] font-black uppercase rounded-xl hover:bg-emerald-50 transition-all shrink-0"
+                  disabled={currentQuestion ? solutionViewed[currentQuestion.id] : false}
+                  className="px-3 md:px-5 py-2 md:py-2 bg-white text-emerald-900 border-2 border-emerald-50 text-[9px] md:text-[9px] font-black uppercase rounded-xl hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0"
                  >
                    Clear
                  </button>
@@ -596,7 +608,12 @@ export default function Quiz() {
                  {answers[currentQuestion.id] !== null && (
                   <div className="flex gap-2">
                     <button 
-                      onClick={() => setShowSolution(!showSolution)}
+                      onClick={() => {
+                        if (!showSolution) {
+                           setSolutionViewed(prev => ({ ...prev, [currentQuestion.id]: true }));
+                        }
+                        setShowSolution(!showSolution);
+                      }}
                       className="px-2 md:px-4 py-1.5 md:py-1 bg-white text-emerald-950 text-[8px] md:text-[8px] font-black uppercase rounded-lg md:rounded-lg shadow-sm hover:bg-emerald-50 transition-all flex items-center justify-center gap-1.5 border-2 border-emerald-100 shrink-0"
                     >
                        <Info size={10} className="md:size-10" />

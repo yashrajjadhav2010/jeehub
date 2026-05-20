@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Home from './pages/Home';
 import Subjects from './pages/Subjects';
@@ -14,6 +14,7 @@ import SettingsPage from './pages/Settings';
 import Documentation from './pages/Documentation';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import ErrorBook from './pages/ErrorBook';
 import DeviceNotice from './components/DeviceNotice';
 import { cn } from './lib/utils';
 
@@ -39,7 +40,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-emerald-100 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-emerald-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 sm:h-20">
             <div className="flex items-center gap-10">
@@ -107,6 +108,8 @@ function Navbar() {
           </div>
         </div>
       </nav>
+      {/* Spacer to prevent content from going under the fixed navbar */}
+      <div className="h-16 sm:h-20" />
     </>
   );
 }
@@ -308,8 +311,17 @@ function Layout({ children }: { children: React.ReactNode }) {
               <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/20">© 2026 JEE TAPASYA Command</p>
             </div>
             
-            <div className="flex items-center gap-2 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 shadow-sm">
-              <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/50 whitespace-nowrap">Made with <span className="text-red-500 animate-pulse">❤️</span> by Yashraj Jadhav</span>
+            <div className="relative inline-block mt-8 md:mt-0">
+              <div className="flex items-center gap-2 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 shadow-sm transition-all hover:scale-105 hover:bg-emerald-100 active:scale-95 group cursor-pointer relative overflow-hidden z-10 box-border">
+                <a href="https://yashrajjadhav.netlify.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-900/60 whitespace-nowrap group-hover:text-emerald-900 transition-colors z-10 w-full h-full absolute inset-0 px-6 py-2">
+                  <span className="relative z-10 flex flex-row items-center gap-1">Made with <span className="text-red-500 animate-pulse">❤️</span> by Yashraj Jadhav <ExternalLink size={10} className="text-emerald-900/40 group-hover:text-emerald-900 transition-colors opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>
+                </a>
+                <span className="opacity-0 text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 py-0 px-0">
+                  Made with <span className="text-red-500">❤️</span> by Yashraj Jadhav <ExternalLink size={10} />
+                </span>
+                {/* Shine effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer z-0 pointer-events-none" />
+              </div>
             </div>
           </div>
         </footer>
@@ -342,6 +354,7 @@ export default function App() {
           <Route path="/quiz/:subjectId/:chapterId/:setId" element={<Quiz />} />
           <Route path="/result" element={<Result />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/error-book" element={<ErrorBook />} />
           <Route path="/challenges" element={<Challenges />} />
           <Route path="/doubt-solver" element={<DoubtSolver />} />
           <Route path="/settings" element={<SettingsPage />} />
