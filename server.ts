@@ -3,6 +3,7 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import Groq from "groq-sdk";
+import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Initialize AI Clients
 let groq: Groq | null = null;
+let ai: GoogleGenAI | null = null;
 
 const AI_NAME = "AXIOM";
 
@@ -31,6 +33,20 @@ const getGroqClient = () => {
     }
   }
   return groq;
+};
+
+const getGeminiClient = () => {
+  if (!ai && process.env.GEMINI_API_KEY) {
+    ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    });
+  }
+  return ai;
 };
 
 // Logger for debugging routes
@@ -121,6 +137,37 @@ app.post("/api/suggestions", async (req, res) => {
   } catch (error: any) {
     console.error("Server Suggestions API Error:", error.message);
     res.status(500).json({ error: "Failed to reach AI service. " + error.message });
+  }
+});
+
+// API route for AI Study Planner
+app.post("/api/study-plan", async (req, res) => {
+  try {
+    const { stats, radarData } = req.body;
+    
+    const groqClient = getGroqClient();
+    if (groqClient) {
+      const completion = await groqClient.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: "You are a personalized study planner for JEE students. Output a JSON object with a 'weekPlan' array containing 7 objects. Each object should have 'day' (e.g. 'Monday'), 'focus' (e.g. 'Physics - Kinematics'), 'tasks' (array of strings, specific tasks for the day), and 'rationale' (why you chose this)."
+          },
+          {
+            role: "user",
+            content: `Generate a 7-day study plan based on the student's radar performance data: ${JSON.stringify(radarData)}. Context stats: ${JSON.stringify(stats)}. Focus their week on improving weakest subjects. Keep it specific.`
+          }
+        ],
+        model: "llama-3.3-70b-versatile",
+        response_format: { type: "json_object" }
+      });
+      return res.json(JSON.parse(completion.choices[0].message.content || '{}'));
+    }
+    
+    throw new Error("No AI service available");
+  } catch (error: any) {
+    console.error("Study Planner API Error:", error.message);
+    res.status(500).json({ error: "Failed to generate study plan: " + error.message });
   }
 });
 

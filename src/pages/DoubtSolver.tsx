@@ -139,6 +139,19 @@ const AxiomMascot = ({ size = "md", isThinking = false }: { size?: "sm" | "md" |
 export default function DoubtSolver() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [operatorName, setOperatorName] = useState('U');
+  const [operatorPfp, setOperatorPfp] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const name = localStorage.getItem('operatorName');
+      const pfp = localStorage.getItem('operatorPfp');
+      if (name) setOperatorName(name.charAt(0).toUpperCase());
+      if (pfp) setOperatorPfp(pfp);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState('Ask Anything...');
@@ -316,8 +329,12 @@ export default function DoubtSolver() {
               >
                 <div className="max-w-3xl mx-auto w-full flex gap-4 md:gap-6">
                   {msg.role === 'user' ? (
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white font-bold text-xs shadow-sm bg-[#10a37f]">
-                      U
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center shrink-0 text-white font-bold text-xs shadow-sm bg-[#10a37f]">
+                      {operatorPfp ? (
+                        <img src={operatorPfp} alt="User" className="w-full h-full object-cover" />
+                      ) : (
+                        operatorName
+                      )}
                     </div>
                   ) : (
                     <AxiomMascot size="sm" />

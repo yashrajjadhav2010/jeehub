@@ -134,11 +134,12 @@ export default function ChapterSelection() {
                       {set.difficulty && (
                         <div className={cn(
                           "px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border",
+                          set.difficulty === 'pyq' ? "bg-purple-50 text-purple-600 border-purple-200" :
                           set.difficulty === 'hard' ? "bg-red-50 text-red-600 border-red-100" :
                           set.difficulty === 'medium' ? "bg-amber-50 text-amber-600 border-amber-100" :
                           "bg-emerald-50 text-emerald-600 border-emerald-100"
                         )}>
-                          {set.difficulty === 'hard' ? 'Advanced' : set.difficulty === 'medium' ? 'Active' : 'Standard'}
+                          {set.difficulty === 'pyq' ? 'PYQ' : set.difficulty === 'hard' ? 'Advanced' : set.difficulty === 'medium' ? 'Active' : 'Standard'}
                         </div>
                       )}
                       <div className="w-10 h-10 rounded-full bg-emerald-950 text-white flex items-center justify-center scale-0 group-hover/set:scale-100 transition-all duration-300">

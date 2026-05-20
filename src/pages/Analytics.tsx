@@ -1,12 +1,25 @@
-import { motion } from 'motion/react';
-import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle } from 'lucide-react';
 import { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { UserStats } from '../types';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+
+interface StudyPlanDay {
+  day: string;
+  focus: string;
+  tasks: string[];
+  rationale: string;
+}
+
+import { generateStudyPlanAI } from '../services/aiService';
 
 export default function Analytics() {
   const [stats, setStats] = useState<UserStats | null>(null);
+  const [studyPlan, setStudyPlan] = useState<StudyPlanDay[] | null>(null);
+  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+  const [planError, setPlanError] = useState('');
 
   useEffect(() => {
     const saved = localStorage.getItem('userStats');
@@ -35,10 +48,10 @@ export default function Analytics() {
     return { chartData: normalizedData, rawData: data, dayLabels: labels };
   }, [stats]);
 
-  const accuracy = stats ? Math.round((stats.correctAnswers / (stats.totalSolved || 1)) * 100) : 0;
-  const physicsProgress = stats?.subjectProgress.physics || 0;
-  const chemistryProgress = stats?.subjectProgress.chemistry || 0;
-  const mathsProgress = stats?.subjectProgress.maths || 0;
+  const accuracy = stats && stats.totalSolved > 0 ? Math.round((stats.correctAnswers / Math.max(stats.totalSolved, 1)) * 100) : 0;
+  const physicsProgress = stats?.subjectProgress?.physics || 0;
+  const chemistryProgress = stats?.subjectProgress?.chemistry || 0;
+  const mathsProgress = stats?.subjectProgress?.maths || 0;
 
   const calculateRank = () => {
     const missions = stats?.missionsCompleted || 0;
@@ -48,6 +61,68 @@ export default function Analytics() {
     const predictedRank = Math.max(1, baseRank - (missions * 25000) - Math.floor(acc * 500000));
     return `#${predictedRank.toLocaleString()}`;
   };
+
+  const radarData = [
+    { subject: 'Physics', value: physicsProgress, fullMark: 100 },
+    { subject: 'Chemistry', value: chemistryProgress, fullMark: 100 },
+    { subject: 'Math', value: mathsProgress, fullMark: 100 },
+    { subject: 'Accuracy', value: accuracy, fullMark: 100 },
+    { subject: 'Consistency', value: Math.min((stats?.streak || 0) * 10, 100), fullMark: 100 },
+  ];
+
+  const achievement1Progress = accuracy > 0 ? Math.min((accuracy / 90) * 100, 100) : 0;
+  const achievement2Progress = Math.min(((stats?.totalSolved || 0) / 100) * 100, 100);
+  const avgSpeed = (stats?.totalTime || 0) / Math.max(stats?.totalSolved || 1, 1);
+  const achievement3Progress = stats?.totalSolved ? (avgSpeed <= 60 ? 100 : Math.max(0, 100 - (avgSpeed - 60))) : 0;
+
+  // Real heatmap data generator based on days active
+  const heatmapData = useMemo(() => {
+    const arr = [];
+    const today = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const solved = stats?.dailyActivity?.[dateStr] || 0;
+      let intensity = 0;
+      if (solved > 20) intensity = 4;
+      else if (solved > 10) intensity = 3;
+      else if (solved > 5) intensity = 2;
+      else if (solved > 0) intensity = 1;
+
+      arr.push({ date: dateStr, intensity, solved });
+    }
+    return arr;
+  }, [stats]);
+
+  const generateStudyPlan = async () => {
+    setIsGeneratingPlan(true);
+    setPlanError('');
+    try {
+      const now = new Date().getTime();
+      const data = await generateStudyPlanAI(stats, radarData);
+      
+      if (data && data.weekPlan && Array.isArray(data.weekPlan)) {
+        setStudyPlan(data.weekPlan);
+        localStorage.setItem('lastStudyPlan', JSON.stringify(data.weekPlan));
+        localStorage.setItem('studyPlanExpiry', (now + 7 * 24 * 60 * 60 * 1000).toString()); // 1 week
+      } else {
+         throw new Error('Invalid plan format received');
+      }
+    } catch (e: any) {
+      setPlanError(e.message || 'An error occurred while generating the plan.');
+    } finally {
+      setIsGeneratingPlan(false);
+    }
+  };
+
+  useEffect(() => {
+    const savedPlan = localStorage.getItem('lastStudyPlan');
+    const expiry = localStorage.getItem('studyPlanExpiry');
+    if (savedPlan && expiry && new Date().getTime() < parseInt(expiry)) {
+      setStudyPlan(JSON.parse(savedPlan));
+    }
+  }, []);
 
   return (
     <div className="space-y-10">
@@ -67,60 +142,56 @@ export default function Analytics() {
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 px-4 md:px-0">
-        {/* Main Performance Chart */}
-        <div className="lg:col-span-2 bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 border border-emerald-100 shadow-sm relative overflow-hidden group/chart">
-          <div className="flex flex-col sm:flex-row items-center justify-between mb-8 sm:mb-12 gap-6">
-            <div className="space-y-1 text-center sm:text-left">
-              <h2 className="text-xl sm:text-2xl font-black heading-display text-emerald-950 uppercase italic">Activity <span className="text-primary not-italic">Radar</span></h2>
-              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-emerald-700/40">Questions Solved: Last 7 Days</p>
-            </div>
-            <div className="flex gap-4 sm:gap-6">
-               <div className="flex items-center gap-2">
-                 <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-primary" />
-                 <span className="text-[9px] sm:text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">Physics</span>
+        <div className="lg:col-span-2 bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 border border-emerald-100 shadow-sm relative overflow-hidden flex flex-col gap-16">
+           <div className="flex-1 space-y-6 w-full">
+               <div className="space-y-1 text-center sm:text-left">
+                  <h2 className="text-xl sm:text-2xl font-black heading-display text-emerald-950 uppercase italic">Skill <span className="text-primary not-italic">Radar</span></h2>
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-emerald-700/40">Multi-axis proficiency mapping</p>
                </div>
-               <div className="flex items-center gap-2">
-                 <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-[#e64a19]" />
-                 <span className="text-[9px] sm:text-[10px] text-emerald-700/60 font-black uppercase tracking-widest">Chemistry</span>
+               
+               <div className="h-[300px] w-full min-w-[280px]">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                     <PolarGrid stroke="#064e3b" strokeOpacity={0.1} />
+                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#064e3b', fontSize: 10, fontWeight: 'bold' }} />
+                     <Radar name="Proficiency" dataKey="value" stroke="#3b82f6" strokeWidth={2} fill="#3b82f6" fillOpacity={0.2} />
+                   </RadarChart>
+                 </ResponsiveContainer>
                </div>
-            </div>
-          </div>
+           </div>
 
-          <div className="h-[250px] sm:h-[350px] flex items-end justify-between gap-2 sm:gap-4 px-0 sm:px-4 relative">
-             {chartData.map((val, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-4 sm:gap-6 group">
-                   <div className="w-full relative flex items-end justify-center h-[200px] sm:h-[280px]">
-                      <motion.div 
-                        initial={{ height: 0 }}
-                        animate={{ height: `${val}%` }}
-                        transition={{ delay: i * 0.1, type: 'spring', stiffness: 50 }}
-                        className={cn(
-                          "w-full max-w-[44px] rounded-t-2xl relative group-hover:brightness-110 transition-all cursor-help overflow-hidden",
-                          i % 2 === 0 
-                            ? "bg-primary shadow-[0_0_30px_rgba(29,77,41,0.2)]" 
-                            : "bg-[#e64a19] shadow-[0_0_30px_rgba(230,74,25,0.2)]"
-                        )}
-                      >
-                         <div className="absolute inset-0 bg-white/5" />
-                         <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            {rawData[i]} SOLVED
-                         </div>
-                      </motion.div>
-                   </div>
-                   <span className="text-[11px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] text-emerald-800/40">{dayLabels[i]}</span>
-                </div>
-             ))}
-
-             {!stats && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[2px] z-10 rounded-[3rem]">
-                   <div className="w-24 h-24 rounded-full bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed animate-spin-slow mb-6">
-                      <Activity size={32} className="text-emerald-200" />
-                   </div>
-                   <p className="text-sm font-black uppercase tracking-[0.4em] text-emerald-900/40 italic">Awaiting Mission Data...</p>
-                   <p className="text-[10px] font-bold text-emerald-700/30 uppercase mt-2">Complete subject modules to populate radar</p>
-                </div>
-             )}
-          </div>
+           <div className="flex-1 w-full space-y-6">
+               <div className="space-y-1 text-center sm:text-left">
+                  <h2 className="text-xl sm:text-2xl font-black heading-display text-emerald-950 uppercase italic">Velocity <span className="text-[#e64a19] not-italic">Trend</span></h2>
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-emerald-700/40">Questions Solved: Last 7 Days</p>
+               </div>
+               
+               <div className="h-[250px] sm:h-[300px] flex items-end justify-between gap-2 sm:gap-4 px-0 sm:px-4 relative">
+                  {chartData.map((val, i) => (
+                     <div key={i} className="flex-1 flex flex-col items-center gap-2 sm:gap-4 group">
+                        <div className="w-full relative flex items-end justify-center h-[200px] sm:h-[240px]">
+                           <motion.div 
+                             initial={{ height: 0 }}
+                             animate={{ height: `${val}%` }}
+                             transition={{ delay: i * 0.1, type: 'spring', stiffness: 50 }}
+                             className={cn(
+                               "w-full max-w-[32px] rounded-t-xl relative group-hover:brightness-110 transition-all cursor-help overflow-hidden",
+                               i % 2 === 0 
+                                 ? "bg-primary shadow-[0_0_30px_rgba(29,77,41,0.2)]" 
+                                 : "bg-[#e64a19] shadow-[0_0_30px_rgba(230,74,25,0.2)]"
+                             )}
+                           >
+                              <div className="absolute inset-0 bg-white/5" />
+                              <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                 {rawData[i]} SOLVED
+                              </div>
+                           </motion.div>
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-[0.1em] text-emerald-800/40">{dayLabels[i]}</span>
+                     </div>
+                  ))}
+               </div>
+           </div>
         </div>
 
         {/* Breakdown Stats */}
@@ -143,19 +214,71 @@ export default function Analytics() {
                  <Award className="text-[#e64a19]" size={20} /> Accomplishments
               </h3>
               <div className="space-y-4">
-                <AchievementItem icon={Target} title="Accuracy Pro" desc="Maintain >90% for 3 days" progress={0} />
-                <AchievementItem icon={Activity} title="Early Bird" desc="Solved 50 Qs before 8 AM" progress={0} />
-                <AchievementItem icon={Clock} title="Speed Demon" desc="Avg time < 45s per Q" progress={100} completed />
+                <AchievementItem icon={Target} title="Accuracy Pro" desc="Maintain >90% accuracy" progress={achievement1Progress} completed={achievement1Progress === 100} />
+                <AchievementItem icon={Activity} title="Century Club" desc="Solve 100 questions" progress={achievement2Progress} completed={achievement2Progress === 100} />
+                <AchievementItem icon={Clock} title="Speed Demon" desc="Avg time < 60s per Q" progress={achievement3Progress} completed={achievement3Progress >= 100} />
               </div>
            </div>
 
-           <div className="bg-emerald-50 rounded-[1.5rem] p-8 border border-emerald-100">
-              <h3 className="text-lg font-bold mb-2 flex items-center gap-2 text-emerald-900">
-                 <BrainCircuit className="text-primary" size={20} /> Smart Suggestion
-              </h3>
-              <p className="text-sm text-emerald-800/70 leading-relaxed font-medium">
-                Complete assessments to generate smart study suggestions based on your performance patterns.
-              </p>
+           <div className="bg-emerald-50 rounded-[1.5rem] p-8 border border-emerald-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                 <Calendar size={100} className="text-primary" />
+              </div>
+              <div className="relative z-10 flex flex-col h-full">
+                 <h3 className="text-lg font-bold flex items-center gap-2 text-emerald-900 mb-4">
+                    <Sparkles className="text-primary" size={20} /> AI Weekly Planner
+                 </h3>
+                 {!studyPlan ? (
+                    <div className="flex-1 flex flex-col justify-center items-start">
+                       <p className="text-sm text-emerald-800/70 mb-6 font-medium leading-relaxed max-w-sm">
+                         Generate a personalized 7-day study plan based on your recent skill radar performance. Focus on weak areas and fortify strengths.
+                       </p>
+                       <button 
+                         onClick={generateStudyPlan}
+                         disabled={isGeneratingPlan}
+                         className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold text-sm rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+                       >
+                         {isGeneratingPlan ? (
+                           <><Loader2 size={16} className="animate-spin" /> Analyzing Radar...</>
+                         ) : (
+                           <><BrainCircuit size={16} /> Generate Week Plan</>
+                         )}
+                       </button>
+                       {planError && (
+                         <div className="mt-4 flex items-center gap-2 text-red-500 text-xs font-bold bg-red-50 px-3 py-2 rounded-lg border border-red-100">
+                           <AlertCircle size={14} /> {planError}
+                         </div>
+                       )}
+                    </div>
+                 ) : (
+                    <div className="flex-1 flex flex-col space-y-4">
+                       <div className="flex items-center justify-between">
+                         <span className="text-xs font-bold uppercase tracking-widest text-primary">Your Week Setup</span>
+                         <button onClick={generateStudyPlan} className="text-[10px] uppercase font-bold text-emerald-600/50 hover:text-primary transition-colors flex items-center gap-1">
+                           <Loader2 size={10} className={isGeneratingPlan ? "animate-spin" : ""} /> Regenerate Plan
+                         </button>
+                       </div>
+                       <div className="max-h-[300px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+                         {studyPlan.map((day, idx) => (
+                           <div key={idx} className="bg-white p-4 rounded-xl border border-emerald-100/50 shadow-sm">
+                             <div className="flex justify-between items-start mb-2">
+                               <h4 className="font-bold text-emerald-950 text-sm">{day.day} <span className="text-emerald-700/50 text-xs ml-2">— {day.focus}</span></h4>
+                             </div>
+                             <ul className="space-y-1 mb-2">
+                               {day.tasks.map((task, i) => (
+                                 <li key={i} className="text-xs text-emerald-800 flex gap-2">
+                                   <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
+                                   <span className="leading-tight">{task}</span>
+                                 </li>
+                               ))}
+                             </ul>
+                             <p className="text-[10px] text-emerald-700/50 italic bg-emerald-50/50 p-2 rounded -mx-2 -mb-2 mt-3">{day.rationale}</p>
+                           </div>
+                         ))}
+                       </div>
+                    </div>
+                 )}
+              </div>
            </div>
         </div>
       </div>
@@ -172,14 +295,22 @@ export default function Analytics() {
 
          <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm">
             <h2 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 text-emerald-950 uppercase tracking-tight">Concept Heatmap</h2>
-            <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 sm:gap-3">
-               {Array.from({ length: 30 }).map((_, i) => {
+            <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 sm:gap-3">
+               {heatmapData.map((day, i) => {
+                 let bgColor = "bg-emerald-50/10 border-emerald-50";
+                 if (day.intensity === 1) bgColor = "bg-primary/20 border-primary/20";
+                 if (day.intensity === 2) bgColor = "bg-primary/60 border-primary/60";
+                 if (day.intensity === 3) bgColor = "bg-primary border-primary";
+                 if (day.intensity === 4) bgColor = "bg-emerald-950 border-emerald-950";
+
                  return (
                    <motion.div 
                      key={i}
                      whileHover={{ scale: 1.1, zIndex: 10 }}
+                     title={`${day.solved} questions solved on ${day.date}`}
                      className={cn(
-                       "aspect-square rounded-lg border border-emerald-50 bg-emerald-50/10"
+                       "aspect-square rounded-lg border",
+                       bgColor
                      )}
                    />
                  )

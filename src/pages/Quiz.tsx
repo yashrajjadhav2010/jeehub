@@ -219,10 +219,11 @@ export default function Quiz() {
                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Mission Intensity</span>
                <span className={cn(
                  "text-sm font-black uppercase tracking-widest",
+                 quizSet.difficulty === 'pyq' ? "text-purple-400" :
                  quizSet.difficulty === 'hard' ? "text-red-400" :
                  quizSet.difficulty === 'medium' ? "text-amber-400" :
                  "text-green-400"
-               )}>{quizSet.difficulty === 'hard' ? 'Advanced' : quizSet.difficulty === 'medium' ? 'Moderate' : 'Easy'}</span>
+               )}>{quizSet.difficulty === 'pyq' ? 'PYQ' : quizSet.difficulty === 'hard' ? 'Advanced' : quizSet.difficulty === 'medium' ? 'Moderate' : 'Easy'}</span>
              </div>
            )}
            <div className="flex justify-between items-center">
@@ -263,6 +264,31 @@ export default function Quiz() {
   }
   const initial = operatorName.substring(0, 2).toUpperCase();
   
+  // Extract exam tag (e.g., JEE Main 2024)
+  let _qText = currentQuestion.question;
+  let _eText = currentQuestion.explanation;
+  let _examTag = null;
+
+  const qMatch = _qText.match(/\s*\((JEE[^)]+)\)\s*$/i);
+  if (qMatch) {
+    _examTag = qMatch[1];
+    _qText = _qText.replace(qMatch[0], '');
+  }
+
+  if (_eText) {
+    const eMatch = _eText.match(/\s*\*\(\s*(?:Asked in\s+|Note:\s+)?(JEE.*?)\s*\)\*\s*$/i);
+    if (eMatch) {
+      _examTag = eMatch[1];
+      _eText = _eText.replace(eMatch[0], '');
+    } else {
+        const eMatch2 = _eText.match(/\s*\(\s*(?:Asked in\s+|Note:\s+)?(JEE.*?)\s*\)\s*$/i);
+        if (eMatch2) {
+          _examTag = eMatch2[1];
+          _eText = _eText.replace(eMatch2[0], '');
+        }
+    }
+  }
+
   // Calculate Stats
   const stats = quizSet.questions.reduce((acc, q, idx) => {
     const isAnswered = answers[q.id] !== null;
@@ -369,7 +395,7 @@ export default function Quiz() {
                   className="max-w-4xl mx-auto"
                 >
                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-10 border-b border-emerald-50 pb-4 md:pb-6 gap-4">
-                      <div className="flex items-center gap-3 md:gap-6">
+                      <div className="flex items-center gap-3 md:gap-6 w-full">
                         <div className="flex flex-col">
                           <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-emerald-800/40 mb-1">Current Sector</span>
                           <h2 className="text-xl md:text-2xl font-black heading-display text-emerald-950 uppercase italic">Question {currentIdx + 1}<span className="text-primary not-italic">.0</span></h2>
@@ -378,6 +404,12 @@ export default function Quiz() {
                           <Clock size={12} className="text-emerald-400" />
                           TIME: {formatShortTime(questionTime)}
                         </div>
+                        {_examTag && (
+                          <div className="ml-auto inline-flex items-center gap-1.5 bg-purple-50 px-3 py-1.5 rounded-lg border border-purple-200">
+                             <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                             <span className="text-[10px] font-black text-purple-900 uppercase tracking-widest leading-none">{_examTag}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-2 md:gap-4">
                          <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Info size={18} className="md:size-20" /></button>
@@ -390,7 +422,7 @@ export default function Quiz() {
                         remarkPlugins={[remarkMath]} 
                         rehypePlugins={[rehypeKatex]}
                       >
-                        {currentQuestion.question}
+                        {_qText}
                       </ReactMarkdown>
                    </div>
 
@@ -460,7 +492,7 @@ export default function Quiz() {
                                     remarkPlugins={[remarkMath]} 
                                     rehypePlugins={[rehypeKatex]}
                                   >
-                                    {currentQuestion.explanation || "No expert breakdown available for this engagement."}
+                                    {_eText || "No expert breakdown available for this engagement."}
                                   </ReactMarkdown>
                               </div>
                            </div>
@@ -487,16 +519,16 @@ export default function Quiz() {
                                       <Sparkles className="text-primary animate-pulse" size={24} />
                                     </div>
                                     <div>
-                                      <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-primary leading-none mb-2 italic">Neural Concept Extraction</p>
-                                      <h3 className="text-lg md:text-2xl font-black heading-display uppercase tracking-tight italic">Tactical <span className="text-primary not-italic">Diagnosis</span></h3>
+                                      <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-primary leading-none mb-2 italic">AI Concept Explanation</p>
+                                      <h3 className="text-lg md:text-2xl font-black heading-display uppercase tracking-tight italic">Step-by-step <span className="text-primary not-italic">Solution</span></h3>
                                     </div>
                                   </div>
                                   <div className="hidden md:flex flex-col items-end">
                                     <div className="flex items-center gap-2">
                                       <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                      <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Llama-3.3 Live Engine</span>
+                                      <span className="text-[10px] font-black uppercase tracking-widest text-white/40">AXIOM Live Engine</span>
                                     </div>
-                                    <p className="text-[8px] font-bold text-white/20 uppercase tracking-[0.4em] mt-1">Status: Extracting Intel</p>
+                                    <p className="text-[8px] font-bold text-white/20 uppercase tracking-[0.4em] mt-1">Status: Analyzing Problem</p>
                                   </div>
                                 </div>
 

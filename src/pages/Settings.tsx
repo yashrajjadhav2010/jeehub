@@ -1,22 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { User, Shield, Bell, Trash2, Save, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { User, Shield, Bell, Trash2, Save, CheckCircle2, AlertTriangle, Camera } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function Settings() {
   const [name, setName] = useState('');
+  const [profilePic, setProfilePic] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [prefs, setPrefs] = useState({
     timeWarnings: true,
     soundEffects: false,
-    autoFullscreen: true
+    autoFullscreen: true,
+    darkMode: false
   });
 
   useEffect(() => {
     const savedName = localStorage.getItem('operatorName') || '';
+    const savedPfp = localStorage.getItem('operatorPfp') || null;
     const savedPrefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
     setName(savedName);
-    setPrefs(prev => ({ ...prev, ...savedPrefs }));
+    setProfilePic(savedPfp);
+    const mergedPrefs = { ...prefs, ...savedPrefs };
+    setPrefs(mergedPrefs);
+    if (mergedPrefs.darkMode) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
   }, []);
 
   const handleSaveName = () => {
@@ -28,10 +39,31 @@ export default function Settings() {
     }
   };
 
+  const handlePfpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setProfilePic(base64String);
+        localStorage.setItem('operatorPfp', base64String);
+        window.dispatchEvent(new Event('storage'));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const togglePref = (key: keyof typeof prefs) => {
     const newPrefs = { ...prefs, [key]: !prefs[key] };
     setPrefs(newPrefs);
     localStorage.setItem('systemPrefs', JSON.stringify(newPrefs));
+    if (key === 'darkMode') {
+      if (newPrefs.darkMode) {
+        document.documentElement.classList.add('dark-mode');
+      } else {
+        document.documentElement.classList.remove('dark-mode');
+      }
+    }
     window.dispatchEvent(new Event('storage'));
   };
 
@@ -56,12 +88,36 @@ export default function Settings() {
           {/* Identity Section */}
           <div className="bg-white p-8 rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                <User size={24} />
+              <div 
+                className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary relative overflow-hidden cursor-pointer group"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {profilePic ? (
+                  <>
+                    <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Camera size={20} className="text-white" />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <User size={28} />
+                    <div className="absolute inset-0 bg-primary/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Camera size={20} className="text-white" />
+                    </div>
+                  </>
+                )}
               </div>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handlePfpChange} 
+                accept="image/*" 
+                className="hidden" 
+              />
               <div>
                 <h3 className="text-lg font-black text-emerald-950 uppercase italic tracking-tight">Identity Protocol</h3>
-                <p className="text-[10px] text-emerald-900/40 font-black uppercase tracking-widest">Update your operator handle</p>
+                <p className="text-[10px] text-emerald-900/40 font-black uppercase tracking-widest">Update your operator handle & photo</p>
               </div>
             </div>
 
@@ -102,6 +158,7 @@ export default function Settings() {
             
             <div className="space-y-3">
               {[
+                { id: 'darkMode', label: 'Dark Mode (Experimental)' },
                 { id: 'timeWarnings', label: 'Time-limit Warnings' },
                 { id: 'soundEffects', label: 'Sound Effects (Beta)' },
                 { id: 'autoFullscreen', label: 'Auto-fullscreen on Quiz' },

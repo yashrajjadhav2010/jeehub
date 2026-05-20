@@ -20,8 +20,10 @@ import { cn } from './lib/utils';
 function Navbar() {
   const location = useLocation();
   let operatorName = 'Candidate';
+  let operatorPfp: string | null = null;
   try {
     operatorName = localStorage.getItem('operatorName') || 'Candidate';
+    operatorPfp = localStorage.getItem('operatorPfp');
   } catch (e) {
     console.error('Navbar storage access failed:', e);
   }
@@ -76,8 +78,12 @@ function Navbar() {
                   <p className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Operator</p>
                   <p className="text-xs font-black text-emerald-900 uppercase">{operatorName}</p>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
-                  {initial}
+                <div className="w-9 h-9 rounded-xl overflow-hidden bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
+                  {operatorPfp ? (
+                    <img src={operatorPfp} alt={operatorName} className="w-full h-full object-cover" />
+                  ) : (
+                    initial
+                  )}
                 </div>
               </div>
               <Link to="/settings" className="p-3 text-emerald-900/40 hover:text-primary hover:bg-emerald-50 rounded-xl transition-colors">
@@ -90,8 +96,12 @@ function Navbar() {
                 <p className="text-[8px] font-black text-emerald-900/40 uppercase tracking-widest leading-none mb-1">Sector</p>
                 <p className="text-[10px] font-black text-emerald-950 uppercase leading-none">{location.pathname === '/' ? 'DASHBOARD' : location.pathname.split('/')[1].toUpperCase()}</p>
               </div>
-              <Link to="/settings" className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-950">
-                <User size={18} />
+              <Link to="/settings" className="w-9 h-9 rounded-xl overflow-hidden bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-950">
+                {operatorPfp ? (
+                  <img src={operatorPfp} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={18} />
+                )}
               </Link>
             </div>
           </div>
@@ -309,6 +319,17 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    try {
+      const prefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
+      if (prefs.darkMode) {
+        document.documentElement.classList.add('dark-mode');
+      } else {
+        document.documentElement.classList.remove('dark-mode');
+      }
+    } catch(e) {}
+  }, []);
+
   return (
     <Router>
       <div className="mesh-bg" />

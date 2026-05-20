@@ -36,6 +36,21 @@ export default function Home() {
   const accuracy = Math.round((stats.correctAnswers / (stats.totalSolved || 1)) * 100);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const capabilitiesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (capabilitiesRef.current && window.innerWidth < 768) {
+        const container = capabilitiesRef.current;
+        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+          container.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          container.scrollBy({ left: container.clientWidth * 0.8, behavior: 'smooth' });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -313,13 +328,14 @@ export default function Home() {
            <p className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">The Tapasya intelligence Engine</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 md:px-0">
+        <div ref={capabilitiesRef} className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 md:px-0 pb-8 md:pb-0 hide-scrollbar snap-x snap-mandatory scroll-smooth w-full">
            <FeatureCard 
               icon={BrainCircuit}
               title="Adaptive AI"
               desc="Our preparation engine tracks your weak sectors and surfaces high-priority questions to bridge your performance gaps."
               accent="text-emerald-500"
               bg="bg-white shadow-sm"
+              className="min-w-[280px] w-[85vw] md:w-auto snap-center shrink-0 md:shrink"
            />
            <FeatureCard 
               icon={BarChart3}
@@ -327,6 +343,7 @@ export default function Home() {
               desc="Real-time visualizations of your accuracy, time-spent, and mastery across all JEE subjects and chapters."
               accent="text-primary"
               bg="bg-white shadow-xl shadow-emerald-950/5"
+              className="min-w-[280px] w-[85vw] md:w-auto snap-center shrink-0 md:shrink"
            />
            <FeatureCard 
               icon={ShieldCheck}
@@ -334,6 +351,7 @@ export default function Home() {
               desc="Simulate the actual JEE environment with pressurized timers, standard markings, and performance dashboards."
               accent="text-orange-500"
               bg="bg-white shadow-sm"
+              className="min-w-[280px] w-[85vw] md:w-auto snap-center shrink-0 md:shrink"
            />
            <FeatureCard 
               icon={Trophy}
@@ -341,6 +359,7 @@ export default function Home() {
               desc="Compare your telemetry with simulated candidate peers to identify where you stand in the competitive arena."
               accent="text-red-500"
               bg="bg-white shadow-sm"
+              className="min-w-[280px] w-[85vw] md:w-auto snap-center shrink-0 md:shrink"
            />
         </div>
       </section>
@@ -460,11 +479,11 @@ function StatsCard({ icon: Icon, label, value, color, bg, className }: any) {
   );
 }
 
-function FeatureCard({ icon: Icon, title, desc, accent, bg }: any) {
+function FeatureCard({ icon: Icon, title, desc, accent, bg, className }: any) {
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className={cn("p-8 rounded-[2.5rem] border border-emerald-100 flex flex-col gap-6 transition-all", bg)}
+      className={cn("p-8 rounded-[2.5rem] border border-emerald-100 flex flex-col gap-6 transition-all", bg, className)}
     >
        <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center bg-emerald-50 shadow-inner", accent)}>
           <Icon size={28} />

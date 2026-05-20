@@ -1,6 +1,6 @@
 export type SubjectId = 'physics' | 'chemistry' | 'maths';
 
-export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'pyq';
 
 export interface Question {
   id: string;

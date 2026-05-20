@@ -60,5 +60,15 @@ export async function getAllData() {
     });
   }
 
+  for (const subjectId in subjects) {
+    subjects[subjectId as SubjectId].forEach(chapter => {
+      chapter.sets.sort((a, b) => {
+        if (a.difficulty === 'pyq' && b.difficulty !== 'pyq') return 1;
+        if (a.difficulty !== 'pyq' && b.difficulty === 'pyq') return -1;
+        return a.id.localeCompare(b.id);
+      });
+    });
+  }
+
   return subjects;
 }

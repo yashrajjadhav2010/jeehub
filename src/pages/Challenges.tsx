@@ -40,31 +40,31 @@ export default function Challenges() {
       type: 'Time Trial',
       icon: Zap,
       color: 'bg-orange-500',
-      path: '/quiz/chemistry/organic-chemistry/set-1'
+      path: '/quiz/chemistry/iupac-nomenclature/set1'
     },
     {
       id: 'deep-physics',
       title: 'Electrostatic Lockdown',
-      description: 'Master advanced Gauss Law problems. No hints allowed.',
+      description: 'Master advanced Kinematics problems. No hints allowed.',
       points: 600,
       timeLimit: '45m',
       intensity: 'Critical',
       type: 'Expert Mode',
       icon: Shield,
       color: 'bg-blue-600',
-      path: '/quiz/physics/electrostatics/set-1'
+      path: '/quiz/physics/kinematics/set-01'
     },
     {
       id: 'math-marathon',
       title: 'Integration Marathon',
-      description: 'Solve 50 indefinite integrals. Accuracy bonus active.',
+      description: 'Solve indefinite integrals. Accuracy bonus active.',
       points: 1200,
       timeLimit: '90m',
       intensity: 'Medium',
       type: 'Endurance',
       icon: Target,
       color: 'bg-emerald-500',
-      path: '/quiz/maths/calculus/set-1'
+      path: '/quiz/maths/integration/set1'
     }
   ];
 

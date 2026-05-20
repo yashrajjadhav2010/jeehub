@@ -171,6 +171,20 @@ body {
   scrollbar-width: none;
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(29, 77, 41, 0.2);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(29, 77, 41, 0.4);
+}
+
 /* Markdown Styling */
 .markdown-body {
   line-height: 1.7;
@@ -209,5 +223,25 @@ body {
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
   font-size: 0.9em;
+}
+
+/* Dark Mode Implementation */
+html.dark-mode {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: #f8faf9;
+  min-height: 100vh;
+}
+
+html.dark-mode img,
+html.dark-mode video,
+html.dark-mode iframe,
+html.dark-mode svg {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Specific elements that also shouldn't be inverted */
+html.dark-mode .mesh-bg,
+html.dark-mode .noise-overlay {
+  filter: invert(1) hue-rotate(180deg);
 }
 
