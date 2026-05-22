@@ -40,6 +40,17 @@ body {
   -ms-user-select: none;
 }
 
+@keyframes gradientBg {
+  0% { background-position: 100% 50%; }
+  100% { background-position: -100% 50%; }
+}
+
+.thinking-flow-bar {
+  background: linear-gradient(90deg, #10b981, #3b82f6, #ec4899, #f59e0b, #10b981);
+  background-size: 200% 100%;
+  animation: gradientBg 2.5s linear infinite;
+}
+
 .mesh-bg {
   position: fixed;
   top: 0;
@@ -224,7 +235,6 @@ body {
 
 .markdown-body strong {
   font-weight: 700;
-  color: #111827;
 }
 
 .markdown-body code {
@@ -232,7 +242,45 @@ body {
   background-color: #f3f4f6;
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
-  font-size: 0.9em;
+  font-size: 0.85em;
+  word-break: break-word;
+}
+
+.markdown-body pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.85em;
+  color: inherit;
+  word-break: normal;
+}
+
+.markdown-body pre {
+  background-color: #f8faf9;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 1.25rem;
+  font-size: 14px;
+}
+
+.markdown-body table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-body th, .markdown-body td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  background-color: #f9fafb;
+  font-weight: 600;
 }
 
 /* Dark Mode Implementation */

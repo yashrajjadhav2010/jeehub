@@ -228,9 +228,9 @@ export default function DoubtSolver() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white relative overflow-hidden text-[#0d0d0d]">
+    <div className="flex flex-col h-[100dvh] bg-white relative overflow-hidden text-[#0d0d0d]">
       {/* Search Header / Navigation */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white/80 backdrop-blur-md z-30 sticky top-0">
+      <div className="flex items-center justify-between p-3 md:p-4 border-b border-gray-100 bg-white/80 backdrop-blur-md z-30 sticky top-0">
         <Link 
           to="/" 
           className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors"
@@ -260,7 +260,24 @@ export default function DoubtSolver() {
             <Trash2 size={20} />
           </button>
         </div>
+
       </div>
+
+      {/* Ambient Thinking Aurora Glow */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 1.5 } }}
+            className="absolute top-0 left-0 right-0 h-[500px] z-20 pointer-events-none mix-blend-multiply overflow-visible"
+          >
+            <div className="absolute top-[-50px] left-[-10%] w-[60%] h-[300px] bg-emerald-400/30 blur-[80px] rounded-full animate-pulse" style={{ animationDuration: '3s' }} />
+            <div className="absolute top-[-100px] right-[-10%] w-[60%] h-[350px] bg-amber-400/30 blur-[80px] rounded-full animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+            <div className="absolute top-0 left-[20%] w-[60%] h-[250px] bg-blue-400/20 blur-[80px] rounded-full animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto w-full relative z-10 scroll-smooth" ref={scrollRef}>
@@ -323,8 +340,8 @@ export default function DoubtSolver() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                  "flex w-full px-4 py-8 md:px-0",
-                  msg.role === 'assistant' ? "bg-gray-50/50" : "bg-white"
+                  "flex w-full px-4 md:px-6 py-6 md:py-8",
+                  msg.role === 'assistant' ? "bg-gray-50/50 border-y border-gray-100/50" : "bg-white"
                 )}
               >
                 <div className="max-w-3xl mx-auto w-full flex gap-4 md:gap-6">
@@ -346,7 +363,7 @@ export default function DoubtSolver() {
                         {msg.role === 'user' ? 'You' : 'Axiom Solves'}
                       </span>
                     </div>
-                    <div className="text-base text-[#374151] markdown-body overflow-hidden break-words">
+                    <div className="text-[15px] leading-[1.65] md:text-base text-[#374151] markdown-body overflow-x-auto break-words pb-2">
                       {msg.role === 'user' ? (
                         <p className="whitespace-pre-wrap">{msg.content}</p>
                       ) : (
@@ -366,7 +383,7 @@ export default function DoubtSolver() {
             {loading && (
               <motion.div 
                 layout 
-                className="flex w-full px-4 py-8 md:px-0 bg-gray-50/50"
+                className="flex w-full px-4 md:px-6 py-6 md:py-8 bg-gray-50/50 border-y border-gray-100/50"
               >
                 <div className="max-w-3xl mx-auto w-full flex gap-4 md:gap-6">
                   <AxiomMascot size="sm" isThinking />
@@ -391,7 +408,7 @@ export default function DoubtSolver() {
       </div>
 
       {/* Input Overlay - Clean floating bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 pb-6 md:pb-8 pt-4 px-4 bg-gradient-to-t from-white via-white to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 z-20 pb-4 md:pb-8 pt-4 px-4 bg-gradient-to-t from-white via-white to-transparent" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
         <div className="max-w-3xl mx-auto w-full">
           <form 
             onSubmit={handleSubmit}
@@ -403,7 +420,7 @@ export default function DoubtSolver() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={placeholder}
-                className="w-full bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] py-4 md:py-6 pl-5 pr-14 md:pr-20 outline-none focus:ring-4 focus:ring-primary/5 transition-all font-bold text-sm md:text-lg text-emerald-950 placeholder:text-gray-300 shadow-sm"
+                className="w-full bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] py-3.5 md:py-6 pl-5 pr-14 md:pr-20 outline-none focus:ring-4 focus:ring-[#10a37f]/10 transition-all font-bold text-[15px] md:text-lg text-emerald-950 placeholder:text-gray-300 shadow-[0_0_15px_rgba(0,0,0,0.02)] md:shadow-sm"
                 disabled={loading}
               />
               <button

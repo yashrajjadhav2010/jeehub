@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair, Cpu, Sparkles, MessageSquare, HelpCircle, CheckCircle } from 'lucide-react';
+import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair, Cpu, Sparkles, MessageSquare, HelpCircle, CheckCircle, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserStats, SubjectId } from '../types';
 import { cn, formatTime } from '../lib/utils';
@@ -146,6 +146,17 @@ export default function Home() {
                  <Link to="/analytics" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-white border border-emerald-100 text-emerald-950 rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center justify-center gap-4 shadow-xl shadow-emerald-950/5">
                     VIEW PERFORMANCE <Activity size={20} />
                  </Link>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-8 pt-6 border-t border-emerald-100/50">
+                 <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                       <Star key={star} className={cn("w-4 h-4", star <= 4 ? "fill-amber-400 text-amber-400" : (star === 5 ? "fill-amber-400/50 text-amber-400" : "fill-amber-100 text-amber-200"))} />
+                    ))}
+                 </div>
+                 <div className="text-sm text-emerald-800/80 font-medium">
+                    <span className="font-bold text-emerald-950">4.6/5</span> average rating from students
+                 </div>
               </div>
            </div>
            
