@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquare, History, Activity, Zap, Binary, FlaskConical, Target, Loader2, User, ChevronLeft, ArrowRight, Trash2 } from 'lucide-react';
+import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquare, History, Activity, Zap, Binary, FlaskConical, Target, Loader2, User, ChevronLeft, ArrowRight, Trash2, Mic, MicOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -136,11 +136,42 @@ const AxiomMascot = ({ size = "md", isThinking = false }: { size?: "sm" | "md" |
   );
 };
 
+const ThemeMicIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Capsule - Emerald gradient or primary color */}
+    <rect x="9.5" y="3" width="5" height="10" rx="2.5" fill="url(#micCapsuleGrad)" />
+    {/* Mid arch */}
+    <path d="M6 11C6 14.3137 8.68629 17 12 17" stroke="url(#micArchGrad)" strokeWidth="2" strokeLinecap="round" />
+    <path d="M12 17C15.3137 17 18 14.3137 18 11" stroke="url(#micArchGradRight)" strokeWidth="2" strokeLinecap="round" />
+    {/* Base stand */}
+    <path d="M12 17V21M9 21H15" stroke="url(#micStandGrad)" strokeWidth="2" strokeLinecap="round" />
+    <defs>
+      <linearGradient id="micCapsuleGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#10b981" />
+        <stop offset="100%" stopColor="#047857" />
+      </linearGradient>
+      <linearGradient id="micArchGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#34d399" />
+        <stop offset="100%" stopColor="#059669" />
+      </linearGradient>
+      <linearGradient id="micArchGradRight" x1="1" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#059669" />
+        <stop offset="100%" stopColor="#34d399" />
+      </linearGradient>
+      <linearGradient id="micStandGrad" x1="0" y1="1" x2="1" y2="1">
+        <stop offset="0%" stopColor="#047857" />
+        <stop offset="100%" stopColor="#059669" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
 export default function DoubtSolver() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [operatorName, setOperatorName] = useState('U');
   const [operatorPfp, setOperatorPfp] = useState<string | null>(null);
+  const [dailyCount, setDailyCount] = useState(0);
 
   useEffect(() => {
     try {
@@ -151,11 +182,103 @@ export default function DoubtSolver() {
     } catch (e) {
       console.error(e);
     }
+
+    // Initialize/Check Daily Limit
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const limitData = localStorage.getItem('axiom_usage_limit');
+      if (limitData) {
+        const parsed = JSON.parse(limitData);
+        if (parsed.date === today) {
+          setDailyCount(parsed.count || 0);
+        } else {
+          localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0 }));
+          setDailyCount(0);
+        }
+      } else {
+        localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0 }));
+        setDailyCount(0);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState('Ask Anything...');
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  const toggleListening = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setError("Speech recognition is not supported in this browser. Please try Chrome or Safari.");
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+    } else {
+      try {
+        const rec = new SpeechRecognition();
+        rec.continuous = false;
+        rec.interimResults = false;
+        rec.lang = 'en-IN'; // Highly optimized for mixed Indian accents and JEE students
+
+        rec.onstart = () => {
+          setIsListening(true);
+          setError(null);
+        };
+
+        rec.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          if (transcript) {
+            setInput(prev => {
+              const trimmed = prev.trim();
+              return trimmed ? `${trimmed} ${transcript}` : transcript;
+            });
+          }
+        };
+
+        rec.onerror = (event: any) => {
+          console.error("Speech recognition error", event.error);
+          if (event.error === 'not-allowed') {
+            setError("Microphone permission denied. Please enable microphone access.");
+          } else if (event.error === 'no-speech' || event.error === 'aborted') {
+            // Quietly handle silence or manual cancellation without presenting a loud error box
+          } else {
+            setError(`Speech recognition error: ${event.error}`);
+          }
+          setIsListening(false);
+        };
+
+        rec.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current = rec;
+        rec.start();
+      } catch (e: any) {
+        console.error(e);
+        setError("Failed to start voice recognition.");
+        setIsListening(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
 
   const placeholders = [
     "Ask Anything...",
@@ -199,7 +322,30 @@ export default function DoubtSolver() {
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
     if (!input.trim() || loading) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    let usage = { date: today, count: 0 };
+    try {
+      const limitData = localStorage.getItem('axiom_usage_limit');
+      if (limitData) {
+        const parsed = JSON.parse(limitData);
+        if (parsed.date === today) {
+          usage = parsed;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (usage.count >= 10) {
+      setError("Daily limit reached! You have consumed your 10 free queries for today. Please come back tomorrow!");
+      return;
+    }
 
     const userMessage = input.trim();
     setInput('');
@@ -212,6 +358,11 @@ export default function DoubtSolver() {
     try {
       const response = await solveDoubt(newMessages);
       setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      
+      // Update usage limit
+      usage.count += 1;
+      localStorage.setItem('axiom_usage_limit', JSON.stringify(usage));
+      setDailyCount(usage.count);
     } catch (err: any) {
       setError(err.message || "Failed to solve doubt. Please try again.");
       console.error(err);
@@ -229,6 +380,30 @@ export default function DoubtSolver() {
 
   return (
     <div className="flex flex-col h-[100dvh] bg-white relative overflow-hidden text-[#0d0d0d]">
+      <AnimatePresence>
+        {isListening && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            className="fixed bottom-0 left-0 right-0 h-[380px] pointer-events-none z-10 overflow-hidden"
+          >
+            {/* Soft, dense multi-color listening glow right behind and below the bottom input/search bar */}
+            {/* Center Main Glow (Teal/Emerald) */}
+            <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[90%] sm:w-[60%] h-[240px] bg-emerald-500/40 blur-[80px] rounded-full animate-pulse" style={{ animationDuration: '2.5s' }} />
+            
+            {/* Left Glow (Cyan) */}
+            <div className="absolute bottom-[-120px] left-[15%] w-[45%] h-[220px] bg-cyan-450/35 blur-[90px] rounded-full animate-pulse" style={{ animationDuration: '3.5s', animationDelay: '0.4s' }} />
+            
+            {/* Right Glow (Amber/Gold) */}
+            <div className="absolute bottom-[-120px] right-[15%] w-[45%] h-[220px] bg-amber-500/30 blur-[90px] rounded-full animate-pulse" style={{ animationDuration: '3s', animationDelay: '0.8s' }} />
+
+            {/* Accent Glow (Deep Emerald) */}
+            <div className="absolute bottom-[-80px] left-1/3 right-1/3 h-[180px] bg-teal-500/35 blur-[70px] rounded-full animate-pulse" style={{ animationDuration: '4s', animationDelay: '1.2s' }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Search Header / Navigation */}
       <div className="flex items-center justify-between p-3 md:p-4 border-b border-gray-100 bg-white/80 backdrop-blur-md z-30 sticky top-0">
         <Link 
@@ -240,8 +415,13 @@ export default function DoubtSolver() {
         </Link>
         
         <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <span className="text-lg font-black tracking-tighter italic">AXIOM</span>
-            <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-gray-400 -mt-1">by JEE TAPASYA</span>
+          <div className="flex items-center gap-1.5 bg-emerald-50/70 hover:bg-emerald-50/90 transition-colors px-3.5 py-1 rounded-full border border-emerald-100/80 shadow-[0_2px_10px_rgba(16,185,129,0.06)]">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600 animate-pulse fill-emerald-500/10" />
+            <span className="text-sm md:text-base font-black tracking-[0.1em] text-[#0d0d0d] bg-gradient-to-r from-emerald-900 to-emerald-950 bg-clip-text text-transparent flex items-center">
+              AXIOM
+            </span>
+          </div>
+          <span className="text-[7px] md:text-[8px] font-extrabold uppercase tracking-[0.4em] text-gray-400 mt-1.5 select-none pl-[0.4em]">by JEE TAPASYA</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -408,7 +588,15 @@ export default function DoubtSolver() {
       </div>
 
       {/* Input Overlay - Clean floating bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 pb-4 md:pb-8 pt-4 px-4 bg-gradient-to-t from-white via-white to-transparent" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
+      <div 
+        className={cn(
+          "absolute bottom-0 left-0 right-0 z-20 pb-4 md:pb-8 pt-4 px-4 transition-all duration-500",
+          isListening 
+            ? "bg-gradient-to-t from-transparent via-transparent to-transparent" 
+            : "bg-gradient-to-t from-white via-white to-transparent"
+        )} 
+        style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+      >
         <div className="max-w-3xl mx-auto w-full">
           <form 
             onSubmit={handleSubmit}
@@ -419,26 +607,60 @@ export default function DoubtSolver() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={placeholder}
-                className="w-full bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] py-3.5 md:py-6 pl-5 pr-14 md:pr-20 outline-none focus:ring-4 focus:ring-[#10a37f]/10 transition-all font-bold text-[15px] md:text-lg text-emerald-950 placeholder:text-gray-300 shadow-[0_0_15px_rgba(0,0,0,0.02)] md:shadow-sm"
+                placeholder={isListening ? "Listening... Speak your doubt clearly" : placeholder}
+                className={cn(
+                  "w-full bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] py-3.5 md:py-6 pl-5 outline-none focus:ring-4 focus:ring-[#10a37f]/10 transition-all font-bold text-[15px] md:text-lg text-emerald-950 placeholder:text-gray-300 shadow-[0_0_15px_rgba(0,0,0,0.02)] md:shadow-sm",
+                  (input.trim() === '' || isListening) ? "pr-24 md:pr-36" : "pr-14 md:pr-20"
+                )}
                 disabled={loading}
               />
-              <button
-                type="submit"
-                disabled={loading || !input.trim()}
-                className={cn(
-                  "absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all",
-                  loading || !input.trim()
-                    ? "bg-gray-50 text-gray-200"
-                    : "bg-primary text-white hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
-                )}
-              >
-                {loading ? (
-                  <Loader2 size={20} className="animate-spin" />
-                ) : (
-                  <ArrowRight size={20} />
-                )}
-              </button>
+              <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 md:gap-2">
+                <AnimatePresence mode="popLayout">
+                  {(input.trim() === '' || isListening) && (
+                    <motion.button
+                      key="google-mic-btn"
+                      type="button"
+                      onClick={toggleListening}
+                      initial={{ opacity: 0, scale: 0.8, width: 0 }}
+                      animate={{ opacity: 1, scale: 1, width: "auto" }}
+                      exit={{ opacity: 0, scale: 0.8, width: 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      className={cn(
+                        "w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all outline-none border shadow-md hover:shadow-lg active:scale-95 shrink-0 bg-white border-gray-100/80",
+                        isListening && "ring-4 ring-emerald-500/20 shadow-xl border-emerald-400"
+                      )}
+                      title={isListening ? "Stop listening" : "Ask by speaking (Voice Match)"}
+                      disabled={loading}
+                    >
+                      {isListening ? (
+                        <div className="relative flex items-center justify-center w-full h-full">
+                          <span className="absolute inset-0 rounded-full bg-emerald-100 animate-ping opacity-75" />
+                          <MicOff size={18} className="md:w-5 md:h-5 text-emerald-600 z-10 animate-pulse" />
+                        </div>
+                      ) : (
+                        <ThemeMicIcon className="w-5 h-5 md:w-6 md:h-6" />
+                      )}
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  type="submit"
+                  disabled={loading || !input.trim()}
+                  className={cn(
+                    "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all shrink-0",
+                    loading || !input.trim()
+                      ? "bg-gray-50 text-gray-200"
+                      : "bg-primary text-white hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
+                  )}
+                >
+                  {loading ? (
+                    <Loader2 size={18} className="animate-spin md:w-5 md:h-5" />
+                  ) : (
+                    <ArrowRight size={18} className="md:w-5 md:h-5" />
+                  )}
+                </button>
+              </div>
             </div>
           </form>
         </div>

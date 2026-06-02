@@ -30,6 +30,7 @@ export default function Quiz() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<Record<string, string>>({});
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiLimitError, setAiLimitError] = useState<string | null>(null);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -167,6 +168,26 @@ export default function Quiz() {
       return;
     }
 
+    const today = new Date().toISOString().split('T')[0];
+    let usage = { date: today, count: 0 };
+    try {
+      const limitData = localStorage.getItem('axiom_usage_limit');
+      if (limitData) {
+        const parsed = JSON.parse(limitData);
+        if (parsed.date === today) {
+          usage = parsed;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (usage.count >= 10) {
+      setAiLimitError("Daily Axiom AI limit of 10 questions reached! Please try tomorrow.");
+      setTimeout(() => setAiLimitError(null), 5000);
+      return;
+    }
+
     setIsAiLoading(true);
     setShowSolution(true);
     setSolutionViewed(prev => ({ ...prev, [currentQuestion.id]: true }));
@@ -174,6 +195,10 @@ export default function Quiz() {
       const prompt = `Question: ${currentQuestion.question}\nOptions: ${currentQuestion.options.join(', ')}\nCorrect Answer: Option ${currentQuestion.answer + 1}\nExplanation: ${currentQuestion.explanation || 'None provided'}`;
       const analysis = await solveDoubt([{ role: 'user', content: prompt }], `Deep-dive analysis for Subject: ${subjectId}`);
       setAiAnalysis(prev => ({ ...prev, [currentQuestion.id]: analysis }));
+      
+      // Update usage limit
+      usage.count += 1;
+      localStorage.setItem('axiom_usage_limit', JSON.stringify(usage));
     } catch (e) {
       console.error("AI Analysis failed:", e);
     } finally {
@@ -588,6 +613,11 @@ export default function Quiz() {
            </div>
 
            {/* Controls Footer */}
+           {aiLimitError && (
+             <div className="bg-rose-50 border-t border-b border-rose-100 px-4 py-2 text-rose-700 text-[10px] md:text-xs font-bold text-center w-full uppercase tracking-wider animate-pulse z-50">
+               ⚠️ {aiLimitError}
+             </div>
+           )}
            <div className="bg-white/95 backdrop-blur-2xl px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row items-center justify-between gap-4 z-50 relative border-t border-emerald-50 shadow-[0_-10px_50px_rgba(0,0,0,0.02)] shrink-0">
               <div className="flex gap-2 items-center w-full md:w-auto">
                  <button 

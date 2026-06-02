@@ -52,6 +52,20 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (scrollContainerRef.current && window.innerWidth < 768) {
+        const container = scrollContainerRef.current;
+        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+          container.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          container.scrollBy({ left: container.clientWidth * 0.8, behavior: 'smooth' });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const { scrollLeft, clientWidth } = scrollContainerRef.current;
@@ -151,11 +165,11 @@ export default function Home() {
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-8 pt-6 border-t border-emerald-100/50">
                  <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
-                       <Star key={star} className={cn("w-4 h-4", star <= 4 ? "fill-amber-400 text-amber-400" : (star === 5 ? "fill-amber-400/50 text-amber-400" : "fill-amber-100 text-amber-200"))} />
+                       <Star key={star} className={cn("w-4 h-4", star <= 4 ? "fill-amber-400 text-amber-400" : (star === 5 ? "fill-amber-400/80 text-amber-400" : "fill-amber-100 text-amber-200"))} />
                     ))}
                  </div>
                  <div className="text-sm text-emerald-800/80 font-medium">
-                    <span className="font-bold text-emerald-950">4.6/5</span> average rating from students
+                    <span className="font-bold text-emerald-950">4.8/5</span> average rating from students
                  </div>
               </div>
            </div>
