@@ -67,10 +67,19 @@ export async function getTopicSuggestions(subject?: string, performance?: string
   }
 }
 
-export async function generateStudyPlanAI(stats: any, radarData: any) {
+export async function generateStudyPlanAI(stats: any, radarData: any, errorTopics: string[] = []) {
   try {
     const apiKey = window.GROQ_API_KEY;
     if (!apiKey) throw new Error("API key not found in window object.");
+
+    const systemPrompt = "You are an expert, personalized study planner for JEE students. Your objective is to create a highly effective proper 7-day study plan. The plan must balance rigorous revisions, fixing conceptual weaknesses (based on incorrect topics), regular practice, and mock tests to ensure actual performance improvements. Output a JSON object with a 'weekPlan' array containing exactly 7 objects. Each object should have 'day' (e.g. 'Monday'), 'focus' (e.g. 'Physics - Kinematics'), 'tasks' (array of strings, specific tasks for the day including solving, revising, finding doubt solutions), and 'rationale' (a detailed reason why you chose this).";
+
+    const userPrompt = `Generate a comprehensive 7-day study plan.
+Student's radar performance data (proficiency by subject): ${JSON.stringify(radarData)}.
+Context stats (accuracy, speed, etc): ${JSON.stringify(stats)}.
+Topics where the student got questions INCORRECT conceptually recently: ${errorTopics.length > 0 ? errorTopics.join(', ') : 'None recorded yet'}.
+
+Build a proper weekly planner that aggressively targets the incorrect conceptually weak topics first, allocates time for strong topic revisions, and balances theory with mock test practice overall. Keep it intensely specific and highly actionable.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -83,11 +92,11 @@ export async function generateStudyPlanAI(stats: any, radarData: any) {
         messages: [
           {
             role: "system",
-            content: "You are a personalized study planner for JEE students. Output a JSON object with a 'weekPlan' array containing 7 objects. Each object should have 'day' (e.g. 'Monday'), 'focus' (e.g. 'Physics - Kinematics'), 'tasks' (array of strings, specific tasks for the day), and 'rationale' (why you chose this)."
+            content: systemPrompt
           },
           {
             role: "user",
-            content: `Generate a 7-day study plan based on the student's radar performance data: ${JSON.stringify(radarData)}. Context stats: ${JSON.stringify(stats)}. Focus their week on improving weakest subjects. Keep it specific.`
+            content: userPrompt
           }
         ],
         response_format: { type: "json_object" }
@@ -111,13 +120,33 @@ export async function generateStudyPlanAI(stats: any, radarData: any) {
   }
 }
 
-export async function solveDoubt(messages: { role: 'user' | 'assistant', content: string }[], context?: string) {
+export async function solveDoubt(messages: any[], context?: string) {
   try {
     const apiKey = window.GROQ_API_KEY;
     if (!apiKey) throw new Error("API key not found in window object.");
 
     const AI_NAME = "AXIOM";
     const systemPrompt = `Your name is ${AI_NAME}. You are a premium AI assistant for JEE preparation, developed by Yashraj Jadhav. Your mission is to provide high-precision, tactically concise solutions. \n\nFORMATTING RULES:\n1. Use double newlines between paragraphs for clear vertical spacing.\n2. Use bullet points or numbered lists for multi-step explanations or definitions.\n3. Use bold text for key terms or final answers.\n4. Use LaTeX for mathematical expressions (e.g., $x^2$).\n5. If asked about your developer, founder, or creator, reply 'Yashraj Jadhav'.\n6. If asked about your name or the platform, it is '${AI_NAME}'.\n7. Maintain context from previous messages.\n\nKeep it professional, structured, and visually clean.`;
+
+    let hasImage = false;
+    const formattedMessages = messages.map(msg => {
+      if (msg.role === 'user' && msg.image) {
+        hasImage = true;
+        return {
+          role: 'user',
+          content: [
+            { type: "text", text: msg.content || "Please analyze this image." },
+            { type: "image_url", image_url: { url: msg.image } }
+          ]
+        };
+      }
+      return {
+        role: msg.role,
+        content: msg.content
+      };
+    });
+
+    const modelName = hasImage ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama-3.3-70b-versatile";
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -126,10 +155,10 @@ export async function solveDoubt(messages: { role: 'user' | 'assistant', content
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: modelName,
         messages: [
           { role: "system", content: systemPrompt },
-          ...messages
+          ...formattedMessages
         ],
         temperature: 0.4,
         max_tokens: 1000,

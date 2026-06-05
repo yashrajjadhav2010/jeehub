@@ -45,7 +45,7 @@ function Navbar() {
           <div className="flex justify-between h-16 sm:h-20">
             <div className="flex items-center gap-10">
               <Link to="/" className="flex items-center gap-3 shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary preserve-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
                   <Zap className="text-white fill-white" size={18} />
                 </div>
                 <span className="text-lg sm:text-2xl font-black heading-display tracking-tighter text-emerald-950 uppercase italic">
@@ -61,7 +61,7 @@ function Navbar() {
                     className={cn(
                       "px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2",
                       location.pathname === item.path
-                        ? "bg-primary text-white shadow-lg shadow-primary/20"
+                        ? "bg-primary text-white preserve-dark shadow-lg shadow-primary/20"
                         : "text-emerald-900/40 hover:text-primary hover:bg-emerald-50"
                     )}
                   >
@@ -79,9 +79,9 @@ function Navbar() {
                   <p className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Operator</p>
                   <p className="text-xs font-black text-emerald-900 uppercase">{operatorName}</p>
                 </div>
-                <div className="w-9 h-9 rounded-xl overflow-hidden bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
+                <div className="w-9 h-9 rounded-xl overflow-hidden bg-primary preserve-dark flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
                   {operatorPfp ? (
-                    <img src={operatorPfp} alt={operatorName} className="w-full h-full object-cover" />
+                    <img src={operatorPfp} alt={operatorName} className="w-full h-full object-cover preserve-dark-ignore" />
                   ) : (
                     initial
                   )}

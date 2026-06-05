@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { Trophy, Clock, Zap, Target, ArrowRight, Shield, Flame, Swords, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { cn } from '../lib/utils';
+import { cn, calculatePredictedRank } from '../lib/utils';
 
 export default function Challenges() {
   const navigate = useNavigate();
@@ -19,12 +19,7 @@ export default function Challenges() {
   const accuracy = totalSolved > 0 ? (correctAnswers / totalSolved) : 0;
   
   const calculateRank = () => {
-    if (missionsCompleted === 0) return 'UNRANKED';
-    const baseRank = 1402345;
-    const missionBonus = missionsCompleted * 25000;
-    const accuracyBonus = Math.floor(accuracy * 500000);
-    const predictedRank = Math.max(1, baseRank - missionBonus - accuracyBonus);
-    return `#${predictedRank.toLocaleString()}`;
+    return calculatePredictedRank(stats);
   };
 
   const totalPoints = (correctAnswers * 10) + (missionsCompleted * 100);

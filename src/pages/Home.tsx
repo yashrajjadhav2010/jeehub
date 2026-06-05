@@ -154,7 +154,7 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4 md:pt-6">
-                 <Link to="/subjects" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-primary text-white rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center justify-center gap-4 group">
+                 <Link to="/subjects" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-primary text-white preserve-dark rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-primary-dark hover:-translate-y-1 transition-all shadow-[0_20px_50px_rgba(29,77,41,0.3)] flex items-center justify-center gap-4 group">
                     START PRACTICE <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                  </Link>
                  <Link to="/analytics" className="px-6 sm:px-8 md:px-12 py-4 sm:py-5 md:py-6 bg-white border border-emerald-100 text-emerald-950 rounded-xl sm:rounded-2xl md:rounded-3xl font-black text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] md:tracking-[0.3em] hover:bg-emerald-50 hover:-translate-y-1 transition-all flex items-center justify-center gap-4 shadow-xl shadow-emerald-950/5">
@@ -179,7 +179,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="bg-emerald-950 rounded-[2rem] sm:rounded-[4rem] p-6 sm:p-12 text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.4)] border border-white/5"
+                className="bg-emerald-950 preserve-dark rounded-[2rem] sm:rounded-[4rem] p-6 sm:p-12 text-white relative overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.4)] border border-white/5"
               >
                  <div className="relative z-10 space-y-8 sm:space-y-12">
                     <div>
@@ -334,7 +334,7 @@ export default function Home() {
                      </div>
                   </div>
 
-                  <div className="absolute top-6 right-8 w-10 h-10 rounded-full bg-emerald-950 text-white flex items-center justify-center translate-x-12 group-hover:translate-x-0 transition-transform duration-500">
+                  <div className="absolute top-6 right-8 w-10 h-10 rounded-full bg-emerald-950 preserve-dark text-white flex items-center justify-center translate-x-12 group-hover:translate-x-0 transition-transform duration-500">
                     <ChevronRight size={20} />
                   </div>
                </motion.div>
@@ -438,7 +438,7 @@ export default function Home() {
 
       {/* Feedback Section */}
       <section className="py-12 md:py-20">
-         <div className="bg-emerald-950 rounded-[3rem] md:rounded-[5rem] p-8 md:p-12 lg:p-20 relative overflow-hidden group">
+         <div className="bg-emerald-950 preserve-dark rounded-[3rem] md:rounded-[5rem] p-8 md:p-12 lg:p-20 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-12 opacity-[0.05] group-hover:opacity-10 transition-opacity pointer-events-none">
                <BrainCircuit size={200} />
             </div>
@@ -525,7 +525,7 @@ function WorkflowStep({ number, title, desc, icon: Icon }: any) {
   return (
     <div className="flex gap-6 group">
        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-950 text-primary flex items-center justify-center font-black text-xs heading-display shadow-xl shadow-emerald-950/20 group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-950 preserve-dark text-primary flex items-center justify-center font-black text-xs heading-display shadow-xl shadow-emerald-950/20 group-hover:scale-110 transition-transform">
              {number}
           </div>
           <div className="flex-1 w-px bg-emerald-100 my-2" />

@@ -293,13 +293,32 @@ html.dark-mode {
 html.dark-mode img,
 html.dark-mode video,
 html.dark-mode iframe,
-html.dark-mode svg {
+html.dark-mode svg:not(.lucide) {
   filter: invert(1) hue-rotate(180deg);
 }
 
 /* Specific elements that also shouldn't be inverted */
 html.dark-mode .mesh-bg,
-html.dark-mode .noise-overlay {
+html.dark-mode .noise-overlay,
+html.dark-mode .preserve-dark,
+html.dark-mode .bg-emerald-950,
+html.dark-mode .bg-primary {
   filter: invert(1) hue-rotate(180deg);
+}
+
+html.dark-mode .preserve-dark img,
+html.dark-mode .preserve-dark video,
+html.dark-mode .preserve-dark iframe,
+html.dark-mode .preserve-dark svg:not(.lucide), 
+html.dark-mode .preserve-dark .preserve-dark-ignore,
+html.dark-mode .bg-emerald-950 img,
+html.dark-mode .bg-emerald-950 video,
+html.dark-mode .bg-emerald-950 iframe,
+html.dark-mode .bg-emerald-950 svg:not(.lucide),
+html.dark-mode .bg-primary img,
+html.dark-mode .bg-primary video,
+html.dark-mode .bg-primary iframe,
+html.dark-mode .bg-primary svg:not(.lucide) {
+  filter: none;
 }
 

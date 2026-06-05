@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronRight, Layers, Layout, Play, Clock, BarChart, Binary } from 'lucide-react';
 import { SubjectId, Chapter } from '../types';
 import { getAllData } from '../lib/dataService';
-import { cn } from '../lib/utils';
+import { cn, calculatePredictedRank } from '../lib/utils';
 
 export default function ChapterSelection() {
   const { subjectId } = useParams<{ subjectId: SubjectId }>();
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -20,7 +21,11 @@ export default function ChapterSelection() {
       setLoading(false);
     }
     fetchData();
+    const saved = localStorage.getItem('userStats');
+    if (saved) setStats(JSON.parse(saved));
   }, [subjectId]);
+
+  const rank = calculatePredictedRank(stats);
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
@@ -101,7 +106,7 @@ export default function ChapterSelection() {
                 </div>
                 <div className="flex flex-col items-start md:items-end">
                    <span className="font-mono text-[9px] font-bold text-emerald-800/30 uppercase tracking-widest">Integrity Rank</span>
-                   <span className="text-xl font-black text-emerald-900/60 heading-display">UNRANKED</span>
+                   <span className="text-xl font-black text-emerald-900/60 heading-display">{rank}</span>
                 </div>
               </div>
 

@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle, Info, BookOpen } from 'lucide-react';
 import { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '../lib/utils';
+import { cn, calculatePredictedRank } from '../lib/utils';
 import { UserStats } from '../types';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
@@ -54,12 +54,7 @@ export default function Analytics() {
   const mathsProgress = stats?.subjectProgress?.maths || 0;
 
   const calculateRank = () => {
-    const missions = stats?.missionsCompleted || 0;
-    if (missions === 0) return 'UNRANKED';
-    const acc = stats?.totalSolved > 0 ? (stats.correctAnswers / stats.totalSolved) : 0;
-    const baseRank = 1402345;
-    const predictedRank = Math.max(1, baseRank - (missions * 25000) - Math.floor(acc * 500000));
-    return `#${predictedRank.toLocaleString()}`;
+    return calculatePredictedRank(stats);
   };
 
   const radarData = [
@@ -100,7 +95,14 @@ export default function Analytics() {
     setPlanError('');
     try {
       const now = new Date().getTime();
-      const data = await generateStudyPlanAI(stats, radarData);
+      
+      const errorBookRaw = localStorage.getItem('errorBook');
+      const errorBookItems = errorBookRaw ? JSON.parse(errorBookRaw) : [];
+      // Pass chapter IDs (which represent topics conceptually like 'kinematics', 'thermodynamics' etc)
+      // or question topics. 'chapterId' is typically a string topic name in our data structure.
+      const errorTopics = [...new Set(errorBookItems.map((q: any) => q.chapterId))].filter(Boolean) as string[];
+
+      const data = await generateStudyPlanAI(stats, radarData, errorTopics);
       
       if (data && data.weekPlan && Array.isArray(data.weekPlan)) {
         setStudyPlan(data.weekPlan);
@@ -213,9 +215,11 @@ export default function Analytics() {
 
         {/* Breakdown Stats */}
         <div className="space-y-6">
-           <div className="bg-emerald-950 rounded-[2rem] p-8 border border-emerald-100 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
-                 <Swords size={60} className="text-white" />
+           <div className="bg-emerald-950 rounded-[2rem] p-8 border border-emerald-100 shadow-2xl relative group">
+              <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[2rem]">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
+                   <Swords size={60} className="text-white" />
+                </div>
               </div>
               <div className="relative z-10 space-y-4">
                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Predicted Rank</p>
@@ -254,7 +258,7 @@ export default function Analytics() {
                  {!studyPlan ? (
                     <div className="flex-1 flex flex-col justify-center items-start">
                        <p className="text-sm text-emerald-800/70 mb-6 font-medium leading-relaxed max-w-sm">
-                         Generate a personalized 7-day study plan based on your recent skill radar performance. Focus on weak areas and fortify strengths.
+                         Generate a personalized 7-day study plan based on your recent skill radar performance and Error Book conceptual gaps. Aggressively target weak areas and fortify your strengths.
                        </p>
                        <button 
                          onClick={generateStudyPlan}

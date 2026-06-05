@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquare, History, Activity, Zap, Binary, FlaskConical, Target, Loader2, User, ChevronLeft, ArrowRight, Trash2, Mic, MicOff } from 'lucide-react';
+import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquare, History, Activity, Zap, Binary, FlaskConical, Target, Loader2, User, ChevronLeft, ArrowRight, Trash2, Mic, MicOff, ImageIcon, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -12,6 +12,7 @@ import { cn } from '../lib/utils';
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  image?: string;
 }
 
 const AxiomMascot = ({ size = "md", isThinking = false }: { size?: "sm" | "md" | "lg", isThinking?: boolean }) => {
@@ -172,6 +173,7 @@ export default function DoubtSolver() {
   const [operatorName, setOperatorName] = useState('U');
   const [operatorPfp, setOperatorPfp] = useState<string | null>(null);
   const [dailyCount, setDailyCount] = useState(0);
+  const [dailyImageCount, setDailyImageCount] = useState(0);
 
   useEffect(() => {
     try {
@@ -191,13 +193,16 @@ export default function DoubtSolver() {
         const parsed = JSON.parse(limitData);
         if (parsed.date === today) {
           setDailyCount(parsed.count || 0);
+          setDailyImageCount(parsed.imageCount || 0);
         } else {
-          localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0 }));
+          localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0, imageCount: 0 }));
           setDailyCount(0);
+          setDailyImageCount(0);
         }
       } else {
-        localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0 }));
+        localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0, imageCount: 0 }));
         setDailyCount(0);
+        setDailyImageCount(0);
       }
     } catch (e) {
       console.error(e);
@@ -208,6 +213,9 @@ export default function DoubtSolver() {
   const [error, setError] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState('Ask Anything...');
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -320,22 +328,52 @@ export default function DoubtSolver() {
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (dailyImageCount >= 2) {
+      setError('Daily image limit reached! You can only post 2 images per day.');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (isListening && recognitionRef.current) {
       recognitionRef.current.stop();
       setIsListening(false);
     }
-    if (!input.trim() || loading) return;
+    if ((!input.trim() && !selectedImage) || loading) return;
 
     const today = new Date().toISOString().split('T')[0];
-    let usage = { date: today, count: 0 };
+    let usage = { date: today, count: 0, imageCount: 0 };
     try {
       const limitData = localStorage.getItem('axiom_usage_limit');
       if (limitData) {
         const parsed = JSON.parse(limitData);
         if (parsed.date === today) {
-          usage = parsed;
+          usage = { count: parsed.count || 0, imageCount: parsed.imageCount || 0, date: today };
         }
       }
     } catch (e) {
@@ -346,11 +384,18 @@ export default function DoubtSolver() {
       setError("Daily limit reached! You have consumed your 10 free queries for today. Please come back tomorrow!");
       return;
     }
+    if (selectedImage && usage.imageCount >= 2) {
+      setError("Daily image limit reached! You can only post 2 images per day.");
+      return;
+    }
 
     const userMessage = input.trim();
     setInput('');
+    const currentImage = selectedImage;
+    removeImage();
     setError(null);
-    const userMessageObj: Message = { role: 'user', content: userMessage };
+    
+    const userMessageObj: Message = { role: 'user', content: userMessage, image: currentImage || undefined };
     const newMessages = [...messages, userMessageObj];
     setMessages(newMessages);
     setLoading(true);
@@ -361,8 +406,10 @@ export default function DoubtSolver() {
       
       // Update usage limit
       usage.count += 1;
+      if (currentImage) usage.imageCount += 1;
       localStorage.setItem('axiom_usage_limit', JSON.stringify(usage));
       setDailyCount(usage.count);
+      setDailyImageCount(usage.imageCount);
     } catch (err: any) {
       setError(err.message || "Failed to solve doubt. Please try again.");
       console.error(err);
@@ -545,7 +592,12 @@ export default function DoubtSolver() {
                     </div>
                     <div className="text-[15px] leading-[1.65] md:text-base text-[#374151] markdown-body overflow-x-auto break-words pb-2">
                       {msg.role === 'user' ? (
-                        <p className="whitespace-pre-wrap">{msg.content}</p>
+                        <div className="flex flex-col gap-4">
+                          {msg.image && (
+                            <img src={msg.image} alt="User attachment" className="max-w-xs md:max-w-sm rounded-[1rem] shadow-sm border border-emerald-900/5 object-contain" />
+                          )}
+                          <p className="whitespace-pre-wrap">{msg.content}</p>
+                        </div>
                       ) : (
                         <ReactMarkdown 
                           remarkPlugins={[remarkMath]} 
@@ -602,64 +654,118 @@ export default function DoubtSolver() {
             onSubmit={handleSubmit}
             className="relative flex items-center group flex-col"
           >
-            <div className="relative w-full shadow-2xl shadow-emerald-950/10 rounded-2xl md:rounded-[2rem]">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={isListening ? "Listening... Speak your doubt clearly" : placeholder}
-                className={cn(
-                  "w-full bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] py-3.5 md:py-6 pl-5 outline-none focus:ring-4 focus:ring-[#10a37f]/10 transition-all font-bold text-[15px] md:text-lg text-emerald-950 placeholder:text-gray-300 shadow-[0_0_15px_rgba(0,0,0,0.02)] md:shadow-sm",
-                  (input.trim() === '' || isListening) ? "pr-24 md:pr-36" : "pr-14 md:pr-20"
-                )}
-                disabled={loading}
-              />
-              <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 md:gap-2">
-                <AnimatePresence mode="popLayout">
-                  {(input.trim() === '' || isListening) && (
-                    <motion.button
-                      key="google-mic-btn"
-                      type="button"
-                      onClick={toggleListening}
-                      initial={{ opacity: 0, scale: 0.8, width: 0 }}
-                      animate={{ opacity: 1, scale: 1, width: "auto" }}
-                      exit={{ opacity: 0, scale: 0.8, width: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                      className={cn(
-                        "w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all outline-none border shadow-md hover:shadow-lg active:scale-95 shrink-0 bg-white border-gray-100/80",
-                        isListening && "ring-4 ring-emerald-500/20 shadow-xl border-emerald-400"
-                      )}
-                      title={isListening ? "Stop listening" : "Ask by speaking (Voice Match)"}
-                      disabled={loading}
-                    >
-                      {isListening ? (
-                        <div className="relative flex items-center justify-center w-full h-full">
-                          <span className="absolute inset-0 rounded-full bg-emerald-100 animate-ping opacity-75" />
-                          <MicOff size={18} className="md:w-5 md:h-5 text-emerald-600 z-10 animate-pulse" />
-                        </div>
-                      ) : (
-                        <ThemeMicIcon className="w-5 h-5 md:w-6 md:h-6" />
-                      )}
-                    </motion.button>
-                  )}
-                </AnimatePresence>
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleImageUpload} 
+            />
 
+            <div className={cn(
+              "relative w-full bg-white border border-gray-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[1.25rem] md:rounded-[2rem] flex flex-col transition-all group-hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]",
+              selectedImage ? "pt-1" : "pt-0"
+            )}>
+              <AnimatePresence>
+                {selectedImage && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                    exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                    className="relative inline-flex self-start ml-4 md:ml-6 mt-3 mb-1"
+                  >
+                    <div className="relative p-1.5 bg-gray-50 border border-gray-100/50 shadow-sm rounded-[1rem]">
+                      <img src={selectedImage} alt="Preview" className="h-14 md:h-20 w-auto rounded-xl object-contain bg-white" />
+                      <button 
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute -top-2.5 -right-2.5 bg-white text-gray-500 rounded-full p-1 border border-gray-200 shadow-sm hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors z-10"
+                      >
+                        <X size={14} strokeWidth={2.5} />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="flex items-center relative w-full h-[52px] md:h-[68px]">
                 <button
-                  type="submit"
-                  disabled={loading || !input.trim()}
-                  className={cn(
-                    "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all shrink-0",
-                    loading || !input.trim()
-                      ? "bg-gray-50 text-gray-200"
-                      : "bg-primary text-white hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
-                  )}
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-10 h-10 md:w-11 md:h-11 flex items-center justify-center text-gray-400 hover:text-emerald-500 transition-colors rounded-full hover:bg-gray-50/80 hidden md:flex"
+                  title="Attach an image of your doubt"
                 >
-                  {loading ? (
-                    <Loader2 size={18} className="animate-spin md:w-5 md:h-5" />
-                  ) : (
-                    <ArrowRight size={18} className="md:w-5 md:h-5" />
-                  )}
+                  <ImageIcon size={22} className={cn(selectedImage && "text-emerald-500", "stroke-[1.5]")} />
                 </button>
+                
+                {/* Mobile Image Upload Icon (inline) */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute left-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-gray-400 hover:text-emerald-500 transition-colors rounded-full active:bg-gray-50 md:hidden"
+                >
+                  <ImageIcon size={20} className={cn(selectedImage && "text-emerald-500", "stroke-[1.5]")} />
+                </button>
+
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={isListening ? "Listening... Speak your doubt clearly" : placeholder}
+                  className={cn(
+                    "w-full h-full bg-transparent border-none py-3 pl-12 md:pl-16 outline-none font-medium text-[15px] md:text-[17px] text-gray-800 placeholder:text-gray-400",
+                    (input.trim() === '' || isListening) ? "pr-24 md:pr-36" : "pr-14 md:pr-20"
+                  )}
+                  disabled={loading}
+                />
+                
+                <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 md:gap-2">
+                  <AnimatePresence mode="popLayout">
+                    {(input.trim() === '' || isListening) && (
+                      <motion.button
+                        key="google-mic-btn"
+                        type="button"
+                        onClick={toggleListening}
+                        initial={{ opacity: 0, scale: 0.8, width: 0 }}
+                        animate={{ opacity: 1, scale: 1, width: "auto" }}
+                        exit={{ opacity: 0, scale: 0.8, width: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        className={cn(
+                          "w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all outline-none border shadow-md hover:shadow-lg active:scale-95 shrink-0 bg-white border-gray-100/80",
+                          isListening && "ring-4 ring-emerald-500/20 shadow-xl border-emerald-400"
+                        )}
+                        title={isListening ? "Stop listening" : "Ask by speaking (Voice Match)"}
+                        disabled={loading}
+                      >
+                        {isListening ? (
+                          <div className="relative flex items-center justify-center w-full h-full">
+                            <span className="absolute inset-0 rounded-full bg-emerald-100 animate-ping opacity-75" />
+                            <MicOff size={18} className="md:w-5 md:h-5 text-emerald-600 z-10 animate-pulse" />
+                          </div>
+                        ) : (
+                          <ThemeMicIcon className="w-5 h-5 md:w-6 md:h-6" />
+                        )}
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+
+                  <button
+                    type="submit"
+                    disabled={loading || (!input.trim() && !selectedImage)}
+                    className={cn(
+                      "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all shrink-0",
+                      loading || (!input.trim() && !selectedImage)
+                        ? "bg-gray-50 text-gray-200"
+                        : "bg-primary text-white preserve-dark hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
+                    )}
+                  >
+                    {loading ? (
+                      <Loader2 size={18} className="animate-spin md:w-5 md:h-5" />
+                    ) : (
+                      <ArrowRight size={18} className="md:w-5 md:h-5" />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </form>
