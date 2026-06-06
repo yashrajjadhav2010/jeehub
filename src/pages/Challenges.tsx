@@ -71,7 +71,7 @@ export default function Challenges() {
   };
 
   return (
-    <div className="space-y-12 pb-20 px-4 md:px-0">
+    <div className="space-y-12 pb-20 w-full min-w-0">
       <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
@@ -117,8 +117,8 @@ export default function Challenges() {
         </div>
       </section>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid lg:grid-cols-3 gap-8 w-full">
+        <div className="lg:col-span-2 space-y-6 min-w-0 w-full">
            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900/30 px-2">Active Objectives</h3>
            <div className="space-y-6">
              {activeChallenges.map((challenge, idx) => (
@@ -130,7 +130,7 @@ export default function Challenges() {
                  className="group relative"
                >
                   <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 rounded-[3rem]", challenge.color)} />
-                  <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-emerald-50 hover:border-emerald-200 shadow-xl shadow-emerald-900/5 hover:shadow-emerald-900/10 flex flex-col md:flex-row items-center gap-6 sm:gap-8 transition-all relative z-10 overflow-hidden">
+                  <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-emerald-50 hover:border-emerald-200 shadow-xl shadow-emerald-900/5 hover:shadow-emerald-900/10 flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8 transition-all relative z-10 overflow-hidden">
                      <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity pointer-events-none scale-150 -translate-y-4">
                         <challenge.icon size={160} />
                      </div>
@@ -139,8 +139,8 @@ export default function Challenges() {
                        <challenge.icon className="size-[24px] sm:size-[32px]" />
                      </div>
                      
-                     <div className="flex-1 space-y-3 text-center md:text-left min-w-0">
-                        <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mb-1">
+                     <div className="flex-1 space-y-3 text-left w-full min-w-0">
+                        <div className="flex flex-wrap justify-start gap-2 sm:gap-3 mb-1">
                           <span className={cn("text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border", 
                             challenge.intensity === 'Critical' ? "text-red-600 bg-red-50 border-red-100" :
                             challenge.intensity === 'High' ? "text-orange-600 bg-orange-50 border-orange-100" :
@@ -154,18 +154,18 @@ export default function Challenges() {
                         </div>
                         <div>
                            <h4 className="text-xl sm:text-2xl font-black text-emerald-950 uppercase tracking-tight">{challenge.title}</h4>
-                           <p className="text-xs sm:text-sm font-medium text-emerald-800/60 leading-relaxed max-w-md mt-1">{challenge.description}</p>
+                           <p className="text-xs sm:text-sm font-medium text-emerald-800/60 leading-relaxed max-w-md mt-1 break-words">{challenge.description}</p>
                         </div>
                      </div>
                      
-                     <div className="flex flex-col items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50/50 rounded-xl border border-emerald-50">
+                     <div className="flex flex-col items-start md:items-center gap-4 w-full md:w-auto mt-2 md:mt-0 shrink-0">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50/50 rounded-xl border border-emerald-50 w-full md:w-auto justify-center">
                            <Clock size={14} className="text-emerald-900/40" />
                            <span className="text-[10px] sm:text-xs font-black text-emerald-900/60 uppercase tracking-widest">{challenge.timeLimit}</span>
                         </div>
                         <button 
                          onClick={() => handleInitiate(challenge.path)}
-                         className={cn("w-full md:w-auto px-8 py-3.5 text-white rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-lg hover:shadow-xl md:group-hover:px-10", challenge.color)}
+                         className={cn("w-full px-8 py-3.5 text-white rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-lg hover:shadow-xl md:group-hover:px-10 whitespace-nowrap", challenge.color)}
                         >
                           Initiate
                         </button>
@@ -176,7 +176,7 @@ export default function Challenges() {
            </div>
         </div>
 
-         <div className="space-y-6">
+         <div className="space-y-6 min-w-0 w-full">
            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900/30 px-2">Operator Badges</h3>
            <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 space-y-6">
              <div className="space-y-6">

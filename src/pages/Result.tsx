@@ -153,7 +153,7 @@ export default function Result() {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-16 underline-cols px-4 md:px-0">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-16 underline-cols">
          <StatsCard label="Correct" value={result.correct} color="text-emerald-600" icon={CheckCircle2} />
          <StatsCard label="Incorrect" value={result.wrong} color="text-[#dc2626]" icon={XCircle} />
          <StatsCard label="Skipped" value={result.skipped} color="text-emerald-700/40" icon={ArrowRight} />

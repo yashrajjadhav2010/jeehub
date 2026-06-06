@@ -138,12 +138,12 @@ export default function Analytics() {
         </Link>
       </div>
 
-      <section className="px-4 md:px-0">
+      <section>
         <h1 className="text-3xl sm:text-4xl font-bold mb-2 uppercase text-emerald-950">Personal <span className="text-primary italic">Insights</span></h1>
         <p className="text-emerald-700/50 font-medium text-sm sm:text-base">Deep dive into your performance and learning patterns.</p>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 px-4 md:px-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2 bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-12 border border-emerald-100 shadow-sm relative overflow-hidden flex flex-col gap-16">
            <div className="flex-1 space-y-6 w-full">
                <div className="space-y-1 text-center sm:text-left">
@@ -310,7 +310,7 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 md:px-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
          <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm">
            <h2 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 text-emerald-950 uppercase tracking-tight">Subject Mastery</h2>
            <div className="space-y-6 sm:space-y-8">

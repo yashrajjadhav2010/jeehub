@@ -78,7 +78,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 pb-20 px-4 md:px-0">
+    <div className="max-w-4xl mx-auto space-y-12 pb-20">
       <section className="text-center md:text-left">
         <h1 className="text-3xl sm:text-4xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">
           Terminal <span className="text-primary not-italic">Settings</span>

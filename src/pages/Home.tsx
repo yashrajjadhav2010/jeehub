@@ -353,7 +353,7 @@ export default function Home() {
            <p className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-emerald-800/40">The Tapasya intelligence Engine</p>
         </div>
 
-        <div ref={capabilitiesRef} className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 md:px-0 pb-8 md:pb-0 hide-scrollbar snap-x snap-mandatory scroll-smooth w-full">
+        <div ref={capabilitiesRef} className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 pb-8 md:pb-0 hide-scrollbar snap-x snap-mandatory scroll-smooth w-full">
            <FeatureCard 
               icon={BrainCircuit}
               title="Adaptive AI"
@@ -393,7 +393,7 @@ export default function Home() {
 
 
       {/* Numerical Roadmap / Workflow */}
-      <section className="py-10 md:py-20 px-4 md:px-0">
+      <section className="py-10 md:py-20">
          <div className="flex flex-col lg:flex-row gap-12 lg:items-center">
             <div className="flex-1 space-y-10">
                <div className="space-y-4">
