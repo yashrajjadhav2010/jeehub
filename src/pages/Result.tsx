@@ -65,7 +65,7 @@ export default function Result() {
         totalTime: 0,
         streak: 1,
         missionsCompleted: 0,
-        subjectProgress: { physics: 0, chemistry: 0, maths: 0 },
+        subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0 },
         dailyActivity: {}
       };
 
@@ -76,6 +76,20 @@ export default function Result() {
       
       // Update daily activity radar data
       const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      
+      const lastActive = stats.lastActiveDate;
+      if (lastActive !== today) {
+        if (lastActive === yesterday) {
+          stats.streak += 1;
+        } else if (!lastActive) {
+          stats.streak = 1;
+        } else {
+          stats.streak = 1; // reset streak
+        }
+        stats.lastActiveDate = today;
+      }
+
       stats.dailyActivity = stats.dailyActivity || {};
       stats.dailyActivity[today] = (stats.dailyActivity[today] || 0) + quizSet.questions.length;
       
@@ -187,33 +201,52 @@ export default function Result() {
                         </h4>
                         
                         <div className="grid grid-cols-1 gap-3 mb-6 sm:mb-8">
-                           {q.options.map((option: string, oIdx: number) => {
-                             const isUserSelected = selected === oIdx;
-                             const isCorrectOption = q.answer === oIdx;
-
-                             return (
-                               <div 
-                                 key={oIdx}
-                                 className={cn(
-                                   "p-4 rounded-xl border flex items-center gap-4 transition-all text-sm",
-                                   isCorrectOption ? "bg-emerald-50 border-emerald-200 text-emerald-700 font-bold" :
-                                   isUserSelected && !isCorrect ? "bg-red-50 border-[#dc2626]/20 text-[#dc2626]" :
-                                   "bg-emerald-50/30 border-emerald-50 text-emerald-800/60"
-                                 )}
-                               >
-                                  <span className="w-8 h-8 rounded-lg bg-white/50 flex items-center justify-center font-bold shrink-0">
-                                     {oIdx + 1}
-                                  </span>
-                                  <span className="markdown-body">
-                                    <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-                                      {option}
-                                    </ReactMarkdown>
-                                  </span>
-                                  {isCorrectOption && <CheckCircle2 size={20} className="ml-auto text-primary shrink-0" />}
-                                  {isUserSelected && !isCorrect && <XCircle size={20} className="ml-auto text-[#dc2626] shrink-0" />}
-                               </div>
-                             );
-                           })}
+                           {(!q.options || q.options.length === 0 || q.type === 'integer') ? (
+                             <div className="flex flex-col gap-4">
+                                <div className={cn("p-4 rounded-xl border flex flex-col gap-2 transition-all text-sm", isCorrect ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-[#dc2626]/20")}>
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-bold text-emerald-900">Your Answer:</span>
+                                    <span className={cn("font-bold text-lg", isCorrect ? "text-emerald-700" : "text-[#dc2626]")}>
+                                      {selected !== null ? selected : "Not Attempted"}
+                                    </span>
+                                  </div>
+                                  {!isCorrect && (
+                                    <div className="flex items-center justify-between border-t border-emerald-900/10 pt-2 mt-2">
+                                      <span className="font-bold text-emerald-900">Correct Answer:</span>
+                                      <span className="font-bold text-lg text-emerald-700">{q.answer}</span>
+                                    </div>
+                                  )}
+                                </div>
+                             </div>
+                           ) : (
+                             q.options.map((option: string, oIdx: number) => {
+                               const isUserSelected = selected === oIdx;
+                               const isCorrectOption = q.answer === oIdx;
+  
+                               return (
+                                 <div 
+                                   key={oIdx}
+                                   className={cn(
+                                     "p-4 rounded-xl border flex items-center gap-4 transition-all text-sm",
+                                     isCorrectOption ? "bg-emerald-50 border-emerald-200 text-emerald-700 font-bold" :
+                                     isUserSelected && !isCorrect ? "bg-red-50 border-[#dc2626]/20 text-[#dc2626]" :
+                                     "bg-emerald-50/30 border-emerald-50 text-emerald-800/60"
+                                   )}
+                                 >
+                                    <span className="w-8 h-8 rounded-lg bg-white/50 flex items-center justify-center font-bold shrink-0">
+                                       {oIdx + 1}
+                                    </span>
+                                    <span className="markdown-body text-left">
+                                      <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                                        {option}
+                                      </ReactMarkdown>
+                                    </span>
+                                    {isCorrectOption && <CheckCircle2 size={20} className="ml-auto text-primary shrink-0" />}
+                                    {isUserSelected && !isCorrect && <XCircle size={20} className="ml-auto text-[#dc2626] shrink-0" />}
+                                 </div>
+                               );
+                             })
+                           )}
                         </div>
 
                         {q.explanation && (

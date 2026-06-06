@@ -15,6 +15,7 @@ import Documentation from './pages/Documentation';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import ErrorBook from './pages/ErrorBook';
+import MockTests from './pages/MockTests';
 import DeviceNotice from './components/DeviceNotice';
 import { cn } from './lib/utils';
 
@@ -350,6 +351,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/subjects" element={<Subjects />} />
+          <Route path="/mock-tests" element={<MockTests />} />
           <Route path="/subjects/:subjectId" element={<ChapterSelection />} />
           <Route path="/quiz/:subjectId/:chapterId/:setId" element={<Quiz />} />
           <Route path="/result" element={<Result />} />

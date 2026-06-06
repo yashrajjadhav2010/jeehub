@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { User, Shield, Bell, Trash2, Save, CheckCircle2, AlertTriangle, Camera } from 'lucide-react';
+import { User, Shield, Bell, Trash2, Save, CheckCircle2, AlertTriangle, Camera, Trophy, Target } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function Settings() {
@@ -14,13 +14,16 @@ export default function Settings() {
     autoFullscreen: true,
     darkMode: false
   });
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     const savedName = localStorage.getItem('operatorName') || '';
     const savedPfp = localStorage.getItem('operatorPfp') || null;
+    const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
     const savedPrefs = JSON.parse(localStorage.getItem('systemPrefs') || '{}');
     setName(savedName);
     setProfilePic(savedPfp);
+    setStreak(stats.streak || 0);
     const mergedPrefs = { ...prefs, ...savedPrefs };
     setPrefs(mergedPrefs);
     if (mergedPrefs.darkMode) {
@@ -144,6 +147,93 @@ export default function Settings() {
                  {success ? <CheckCircle2 size={18} /> : <Save size={18} />}
                  {success ? 'IDENTITY UPDATED' : 'SAVE CHANGES'}
                </button>
+            </div>
+          </div>
+
+          {/* Earned Badges */}
+          <div className="bg-white p-8 rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-900/40">
+                <Trophy size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-emerald-950 uppercase italic tracking-tight">Earned Badges</h3>
+                <p className="text-[10px] text-emerald-900/40 font-black uppercase tracking-widest">Your milestone achievements</p>
+              </div>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Day Streak Badges */}
+              <div>
+                <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Consistency (Day Streak)</h4>
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 5 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                    <img src="https://i.ibb.co/rf2bDs03/day5.png" alt="5 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">5 Day<br/>Streak</span>
+                  </div>
+                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 10 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                    <img src="https://i.ibb.co/KjNrCF0Q/day10.png" alt="10 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">10 Day<br/>Streak</span>
+                  </div>
+                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 20 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                    <img src="https://i.ibb.co/d0pwjqRw/day25.png" alt="20 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">20 Day<br/>Streak</span>
+                  </div>
+                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 25 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                    <img src="https://i.ibb.co/d0pwjqRw/day25.png" alt="25 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">25 Day<br/>Streak</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Questions Solved Badges */}
+              <div>
+                <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Endurance (Missions Cleared)</h4>
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                  {[50, 100, 300, 500, 1000].map(req => {
+                    const achieved = (JSON.parse(localStorage.getItem('userStats') || '{}').totalSolved || 0) >= req;
+                    const getBadgeInfo = (req: number) => {
+                       switch(req) {
+                          case 50: return { img: 'https://i.ibb.co/7d9yGDc8/50.png', name: 'Tapasya Starter' };
+                          case 100: return { img: 'https://i.ibb.co/My6jJ607/100.png', name: 'Tapasya Warrior' };
+                          case 300: return { img: 'https://i.ibb.co/vvK33M3Q/300.png', name: 'Problem Crusher' };
+                          case 500: return { img: 'https://i.ibb.co/m5VHGh7J/Chat-GPT-Image-Jun-6-2026-01-37-44-PM.png', name: 'Tapasya Master' };
+                          case 1000: return { img: 'https://i.ibb.co/qLSYXW1t/file-00000000c88472078520c8a8552cfb9f.png', name: 'Tapasya Grandmaster' };
+                          default: return { img: '', name: '' };
+                       }
+                    };
+                    const badge = getBadgeInfo(req);
+                    return (
+                      <div key={req} className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                        {achieved && <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />}
+                        <img src={badge.img} alt={badge.name} className="w-16 h-16 object-contain drop-shadow-xl" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">{badge.name}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Accuracy Badges */}
+              <div>
+                <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Precision (Accuracy)</h4>
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                  {[80, 90, 95].map(req => {
+                    const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+                    const acc = stats.totalSolved > 0 ? (stats.correctAnswers / stats.totalSolved) * 100 : 0;
+                    const achieved = acc >= req && stats.totalSolved >= 10; // Need at least 10 solved to get accuracy badges
+                    return (
+                      <div key={req} className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-5 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                        {achieved && <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />}
+                        <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2", achieved ? "bg-emerald-500 text-white border-white" : "bg-emerald-100 text-emerald-300 border-transparent")}>
+                           <CheckCircle2 size={24} />
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">&ge;{req}%<br/>Accuracy</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
 

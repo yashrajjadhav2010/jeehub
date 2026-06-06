@@ -21,7 +21,8 @@ export default function Subjects() {
   const [allChapters, setAllChapters] = useState<Record<SubjectId, any[]>>({
     physics: [],
     chemistry: [],
-    maths: []
+    maths: [],
+    'mock-tests': []
   });
   const [userStats, setUserStats] = useState<UserStats>({
     totalSolved: 0,
@@ -29,7 +30,7 @@ export default function Subjects() {
     totalTime: 0,
     streak: 0,
     lastPracticeDate: null,
-    subjectProgress: { physics: 0, chemistry: 0, maths: 0 },
+    subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0 },
     chapterAccuracy: {},
     weakTopics: [],
     strongTopics: []
@@ -296,7 +297,7 @@ export default function Subjects() {
           <motion.div 
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="space-y-12"
+            className="space-y-4 md:space-y-6"
           >
             {/* Main Grid - Mosaic Bento Layout */}
       <div className="grid grid-cols-12 gap-4 md:gap-6">
@@ -384,7 +385,7 @@ export default function Subjects() {
                 transition={{ delay: 0.2 + (i * 0.1) }}
                 whileHover={{ y: -5 }}
                 className={cn(
-                  "group relative h-full min-h-[300px] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl transition-all duration-500",
+                  "group relative h-full min-h-[300px] md:min-h-0 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl transition-all duration-500",
                   sub.accentColor === 'orange' ? "bg-orange-950 text-orange-400" : "bg-red-950 text-red-400"
                 )}
               >
@@ -404,7 +405,7 @@ export default function Subjects() {
                     <span className="font-mono text-[10px] font-bold text-white/40 tracking-widest uppercase">ID: {sub.shortTitle}-0{i+2}</span>
                   </div>
 
-                  <div className="flex-1">
+                  <div className="flex-1 mt-auto md:mt-0">
                     <h3 className="text-4xl font-black text-white heading-display uppercase tracking-tight mb-3">{sub.title}</h3>
                     <p className="text-white/60 text-xs font-medium leading-relaxed mb-6 line-clamp-2">
                       {sub.desc}
@@ -418,7 +419,7 @@ export default function Subjects() {
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-white/10 mt-auto flex items-center justify-between">
+                  <div className="pt-6 border-t border-white/10 mt-6 md:mt-auto flex items-center justify-between">
                     <div className="flex flex-col">
                       <span className="text-[10px] uppercase font-black tracking-widest text-white/30 mb-1">Status</span>
                       <span className="text-sm font-bold text-white">{sub.status}</span>
@@ -433,6 +434,52 @@ export default function Subjects() {
           ))}
         </div>
       </div>
+
+      {/* Mock Tests Span Entire Width below */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Link to="/mock-tests">
+          <div className="group relative w-full h-[250px] md:h-[300px] rounded-[2.5rem] overflow-hidden border border-purple-900/20 shadow-2xl transition-all duration-700 bg-purple-950">
+            <img 
+              src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200"
+              className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 group-hover:scale-105 transition-all duration-1000"
+              alt="Mock Tests"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-purple-950 via-purple-950/40 to-transparent" />
+            
+            <div className="absolute top-8 left-8 flex items-center gap-3">
+               <div className="w-10 h-10 rounded-full border border-white/20 backdrop-blur-md flex items-center justify-center text-purple-400">
+                  <Target size={20} />
+               </div>
+               <span className="font-mono text-[10px] font-bold text-white/50 tracking-widest uppercase">ID: MOCK-T</span>
+            </div>
+
+            <div className="absolute top-8 right-8">
+              <div className="px-4 py-2 bg-purple-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-purple-500/20">
+                Simulation
+              </div>
+            </div>
+
+            <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+               <div>
+                  <h2 className="text-4xl md:text-5xl font-black heading-display text-white uppercase tracking-tight mb-3">
+                    Full Mock Tests
+                  </h2>
+                  <p className="text-purple-200/60 max-w-lg text-sm md:text-base font-medium">
+                    Test your readiness against complete 3-hour JEE standard simulation exams across all three subjects.
+                  </p>
+               </div>
+               <div className="w-16 h-16 shrink-0 rounded-full bg-white text-purple-950 flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
+                 <ArrowRight size={32} />
+               </div>
+            </div>
+          </div>
+        </Link>
+      </motion.div>
 
       {/* Stats / Progress Rail - JetBrains Mono inspired */}
       <div className="mt-12 p-8 bg-white border border-emerald-900/10 rounded-[2.5rem] shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative">

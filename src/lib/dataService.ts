@@ -30,7 +30,8 @@ export async function getAllData() {
   const subjects: Record<SubjectId, Chapter[]> = {
     physics: [],
     chemistry: [],
-    maths: []
+    maths: [],
+    'mock-tests': []
   };
 
   for (const path in modules) {

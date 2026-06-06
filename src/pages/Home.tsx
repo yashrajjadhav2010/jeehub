@@ -12,7 +12,7 @@ export default function Home() {
     totalTime: 0,
     streak: 0,
     lastPracticeDate: new Date().toISOString(),
-    subjectProgress: { physics: 0, chemistry: 0, maths: 0 },
+    subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0 },
     chapterAccuracy: {},
     weakTopics: [],
     strongTopics: []

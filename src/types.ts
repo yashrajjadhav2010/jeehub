@@ -1,11 +1,12 @@
-export type SubjectId = 'physics' | 'chemistry' | 'maths';
+export type SubjectId = 'physics' | 'chemistry' | 'maths' | 'mock-tests';
 
-export type Difficulty = 'easy' | 'medium' | 'hard' | 'pyq';
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'pyq' | 'mock';
 
 export interface Question {
   id: string;
   question: string;
-  options: string[];
+  type?: 'mcq' | 'integer';
+  options?: string[];
   answer: number;
   explanation?: string;
   difficulty?: Difficulty;

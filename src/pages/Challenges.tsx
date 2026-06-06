@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Trophy, Clock, Zap, Target, ArrowRight, Shield, Flame, Swords, Info } from 'lucide-react';
+import { Trophy, Clock, Zap, Target, ArrowRight, Shield, Flame, Swords, Info, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { cn, calculatePredictedRank } from '../lib/utils';
@@ -23,6 +23,8 @@ export default function Challenges() {
   };
 
   const totalPoints = (correctAnswers * 10) + (missionsCompleted * 100);
+  const currentQuestions = stats?.totalSolved || 0;
+  const currentStreak = stats?.streak || 0;
 
   const activeChallenges = [
     {
@@ -68,12 +70,6 @@ export default function Challenges() {
     navigate(path);
   };
 
-  const milestones = [
-    { label: 'Rookie Aspirant', status: 'Completed', req: '5 Missions' },
-    { label: 'Mission Analyst', status: 'In Progress', req: '25 Missions' },
-    { label: 'Grandmaster Operator', status: 'Locked', req: '100 Missions' }
-  ];
-
   return (
     <div className="space-y-12 pb-20 px-4 md:px-0">
       <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
@@ -97,7 +93,7 @@ export default function Challenges() {
             </div>
             <div>
               <p className="text-[9px] sm:text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Active Streak</p>
-              <p className="text-lg sm:text-xl font-black text-emerald-950">5 DAYS</p>
+              <p className="text-lg sm:text-xl font-black text-emerald-950">{stats?.streak || 0} DAYS</p>
             </div>
           </div>
           <div className="flex-1 min-w-[140px] p-4 bg-emerald-950 rounded-2xl flex items-center gap-4 shadow-2xl">
@@ -124,35 +120,52 @@ export default function Challenges() {
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900/30 px-2">Active Objectives</h3>
-           <div className="space-y-4">
+           <div className="space-y-6">
              {activeChallenges.map((challenge, idx) => (
                <motion.div
                  key={challenge.id}
-                 initial={{ opacity: 0, x: -20 }}
-                 animate={{ opacity: 1, x: 0 }}
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="group p-1 bg-emerald-50 hover:bg-primary/5 rounded-[2.5rem] transition-all cursor-pointer"
+                 className="group relative"
                >
-                  <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.3rem] border border-emerald-100 group-hover:border-primary/20 flex flex-col md:flex-row items-center gap-6 sm:gap-8">
-                     <div className={cn("w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl flex items-center justify-center text-white shadow-xl flex-shrink-0 group-hover:scale-110 transition-transform", challenge.color)}>
+                  <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 rounded-[3rem]", challenge.color)} />
+                  <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-emerald-50 hover:border-emerald-200 shadow-xl shadow-emerald-900/5 hover:shadow-emerald-900/10 flex flex-col md:flex-row items-center gap-6 sm:gap-8 transition-all relative z-10 overflow-hidden">
+                     <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity pointer-events-none scale-150 -translate-y-4">
+                        <challenge.icon size={160} />
+                     </div>
+                     
+                     <div className={cn("w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-[1.5rem] flex items-center justify-center text-white shadow-lg flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500", challenge.color)}>
                        <challenge.icon className="size-[24px] sm:size-[32px]" />
                      </div>
-                     <div className="flex-1 space-y-2 text-center md:text-left min-w-0">
-                        <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mb-2">
-                          <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">{challenge.type}</span>
-                          <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-orange-500 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">{challenge.intensity} Intensity</span>
+                     
+                     <div className="flex-1 space-y-3 text-center md:text-left min-w-0">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mb-1">
+                          <span className={cn("text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border", 
+                            challenge.intensity === 'Critical' ? "text-red-600 bg-red-50 border-red-100" :
+                            challenge.intensity === 'High' ? "text-orange-600 bg-orange-50 border-orange-100" :
+                            "text-emerald-600 bg-emerald-50 border-emerald-100"
+                          )}>
+                            {challenge.intensity} Intensity
+                          </span>
+                          <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-emerald-900/40 bg-emerald-50/50 px-3 py-1 rounded-lg border border-emerald-100/50">
+                            {challenge.type}
+                          </span>
                         </div>
-                        <h4 className="text-xl sm:text-2xl font-black text-emerald-950 uppercase italic tracking-tighter">{challenge.title}</h4>
-                        <p className="text-xs sm:text-sm font-medium text-emerald-900/40 leading-relaxed max-w-md">{challenge.description}</p>
+                        <div>
+                           <h4 className="text-xl sm:text-2xl font-black text-emerald-950 uppercase tracking-tight">{challenge.title}</h4>
+                           <p className="text-xs sm:text-sm font-medium text-emerald-800/60 leading-relaxed max-w-md mt-1">{challenge.description}</p>
+                        </div>
                      </div>
-                     <div className="flex flex-col items-center gap-4 w-full md:w-auto">
-                        <div className="flex items-center gap-2">
-                           <Clock size={14} className="text-emerald-900/30" />
+                     
+                     <div className="flex flex-col items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50/50 rounded-xl border border-emerald-50">
+                           <Clock size={14} className="text-emerald-900/40" />
                            <span className="text-[10px] sm:text-xs font-black text-emerald-900/60 uppercase tracking-widest">{challenge.timeLimit}</span>
                         </div>
                         <button 
                          onClick={() => handleInitiate(challenge.path)}
-                         className="w-full md:w-auto px-8 py-3 bg-emerald-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all md:group-hover:px-10"
+                         className={cn("w-full md:w-auto px-8 py-3.5 text-white rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-lg hover:shadow-xl md:group-hover:px-10", challenge.color)}
                         >
                           Initiate
                         </button>
@@ -163,27 +176,81 @@ export default function Challenges() {
            </div>
         </div>
 
-        <div className="space-y-6">
-           <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900/30 px-2">Operator Milestones</h3>
-           <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 space-y-8">
-             {milestones.map((m, i) => (
-               <div key={i} className="space-y-3">
-                 <div className="flex justify-between items-center">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950">{m.label}</span>
-                   <span className={cn(
-                     "text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded",
-                     m.status === 'Completed' ? "bg-emerald-100 text-emerald-600" : "bg-emerald-50 text-emerald-400"
-                   )}>{m.status}</span>
+         <div className="space-y-6">
+           <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-900/30 px-2">Operator Badges</h3>
+           <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 space-y-6">
+             <div className="space-y-6">
+               {/* Day Streak Badges */}
+               <div>
+                 <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Consistency (Day Streak)</h4>
+                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                   <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", currentStreak >= 5 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                     <img src="https://i.ibb.co/rf2bDs03/day5.png" alt="5 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">5 Day<br/>Streak</span>
+                   </div>
+                   <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", currentStreak >= 10 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                     <img src="https://i.ibb.co/KjNrCF0Q/day10.png" alt="10 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">10 Day<br/>Streak</span>
+                   </div>
+                   <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", currentStreak >= 20 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                     <img src="https://i.ibb.co/d0pwjqRw/day25.png" alt="20 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">20 Day<br/>Streak</span>
+                   </div>
+                   <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", currentStreak >= 25 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                     <img src="https://i.ibb.co/d0pwjqRw/day25.png" alt="25 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
+                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">25 Day<br/>Streak</span>
+                   </div>
                  </div>
-                 <div className="h-2 bg-emerald-50 rounded-full overflow-hidden">
-                    <div className={cn(
-                      "h-full transition-all duration-1000",
-                      m.status === 'Completed' ? "w-full bg-emerald-500" : "w-1/3 bg-primary"
-                    )} />
-                 </div>
-                 <p className="text-[9px] font-black text-emerald-900/20 uppercase tracking-widest">Requirement: {m.req}</p>
                </div>
-             ))}
+
+               {/* Questions Solved Badges */}
+               <div>
+                 <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Endurance (Missions Cleared)</h4>
+                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                   {[50, 100, 300, 500, 1000].map(req => {
+                     const achieved = currentQuestions >= req;
+                     const getBadgeInfo = (req: number) => {
+                        switch(req) {
+                           case 50: return { img: 'https://i.ibb.co/7d9yGDc8/50.png', name: 'Tapasya Starter' };
+                           case 100: return { img: 'https://i.ibb.co/My6jJ607/100.png', name: 'Tapasya Warrior' };
+                           case 300: return { img: 'https://i.ibb.co/vvK33M3Q/300.png', name: 'Problem Crusher' };
+                           case 500: return { img: 'https://i.ibb.co/m5VHGh7J/Chat-GPT-Image-Jun-6-2026-01-37-44-PM.png', name: 'Tapasya Master' };
+                           case 1000: return { img: 'https://i.ibb.co/qLSYXW1t/file-00000000c88472078520c8a8552cfb9f.png', name: 'Tapasya Grandmaster' };
+                           default: return { img: '', name: '' };
+                        }
+                     };
+                     const badge = getBadgeInfo(req);
+                     return (
+                       <div key={req} className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                         {achieved && <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />}
+                         <img src={badge.img} alt={badge.name} className="w-16 h-16 object-contain drop-shadow-xl" />
+                         <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">{badge.name}</span>
+                       </div>
+                     );
+                   })}
+                 </div>
+               </div>
+
+               {/* Accuracy Badges */}
+               <div>
+                 <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Precision (Accuracy)</h4>
+                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                   {[80, 90, 95].map(req => {
+                     const acc = currentQuestions > 0 ? ((stats?.correctAnswers || 0) / currentQuestions) * 100 : 0;
+                     const achieved = acc >= req && currentQuestions >= 10; // Need at least 10 solved to get accuracy badges
+                     return (
+                       <div key={req} className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-5 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                         {achieved && <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />}
+                         <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2", achieved ? "bg-emerald-500 text-white border-white" : "bg-emerald-100 text-emerald-300 border-transparent")}>
+                            <CheckCircle2 size={24} />
+                         </div>
+                         <span className="text-[9px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">&ge;{req}%<br/>Accuracy</span>
+                       </div>
+                     );
+                   })}
+                 </div>
+               </div>
+             </div>
              
              <div className="pt-6 border-t border-emerald-50">
                <div className="p-6 bg-primary/5 rounded-3xl border border-primary/10 text-center space-y-4">

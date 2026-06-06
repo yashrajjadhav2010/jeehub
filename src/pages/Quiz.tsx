@@ -83,7 +83,7 @@ export default function Quiz() {
         const data = await loadQuizSet(subjectId, chapterId, setId);
         if (data) {
           setQuizSet(data);
-          setTimeLeft(data.questions.length * 90);
+          setTimeLeft(subjectId === 'mock-tests' ? 10800 : data.questions.length * 90);
           const initialAnswers = data.questions.reduce((acc, q) => {
             acc[q.id] = null;
             return acc;
@@ -405,10 +405,45 @@ export default function Quiz() {
         <div className="flex-1 flex flex-col bg-white overflow-hidden">
            {/* Section Tabs */}
            <div className="flex bg-emerald-50/30 border-b border-emerald-100 p-2 gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              <button className="px-4 md:px-10 py-2.5 md:py-3 bg-emerald-950 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-xl md:rounded-2xl shadow-xl shadow-emerald-950/20 flex items-center gap-2 md:gap-3 border border-white/5 shrink-0">
-                 <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 animate-[pulse_2s_infinite]" />
-                 SECTOR: {subjectId}
-              </button>
+              {subjectId === 'mock-tests' ? (
+                <>
+                  <button 
+                    onClick={() => setCurrentIdx(0)}
+                    className={cn(
+                      "px-4 md:px-10 py-2.5 md:py-3 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-3 shrink-0 transition-all",
+                      currentIdx < 25 ? "bg-emerald-950 text-white shadow-xl shadow-emerald-950/20" : "bg-emerald-100/50 text-emerald-900/60 hover:bg-emerald-100/80"
+                    )}
+                  >
+                     <div className={cn("w-1.5 h-1.5 md:w-2 md:h-2 rounded-full", currentIdx < 25 ? "bg-emerald-400 animate-[pulse_2s_infinite]" : "bg-emerald-900/20")} />
+                     PHYSICS
+                  </button>
+                  <button 
+                    onClick={() => setCurrentIdx(25)}
+                    className={cn(
+                      "px-4 md:px-10 py-2.5 md:py-3 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-3 shrink-0 transition-all",
+                      currentIdx >= 25 && currentIdx < 50 ? "bg-emerald-950 text-white shadow-xl shadow-emerald-950/20" : "bg-emerald-100/50 text-emerald-900/60 hover:bg-emerald-100/80"
+                    )}
+                  >
+                     <div className={cn("w-1.5 h-1.5 md:w-2 md:h-2 rounded-full", currentIdx >= 25 && currentIdx < 50 ? "bg-emerald-400 animate-[pulse_2s_infinite]" : "bg-emerald-900/20")} />
+                     CHEMISTRY
+                  </button>
+                  <button 
+                    onClick={() => setCurrentIdx(50)}
+                    className={cn(
+                      "px-4 md:px-10 py-2.5 md:py-3 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-3 shrink-0 transition-all",
+                      currentIdx >= 50 ? "bg-emerald-950 text-white shadow-xl shadow-emerald-950/20" : "bg-emerald-100/50 text-emerald-900/60 hover:bg-emerald-100/80"
+                    )}
+                  >
+                     <div className={cn("w-1.5 h-1.5 md:w-2 md:h-2 rounded-full", currentIdx >= 50 ? "bg-emerald-400 animate-[pulse_2s_infinite]" : "bg-emerald-900/20")} />
+                     MATHEMATICS
+                  </button>
+                </>
+              ) : (
+                <button className="px-4 md:px-10 py-2.5 md:py-3 bg-emerald-950 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-xl md:rounded-2xl shadow-xl shadow-emerald-950/20 flex items-center gap-2 md:gap-3 border border-white/5 shrink-0">
+                   <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 animate-[pulse_2s_infinite]" />
+                   SECTOR: {subjectId}
+                </button>
+              )}
               <div className="flex-1" />
            </div>
            
@@ -455,63 +490,92 @@ export default function Quiz() {
                    </div>
 
                    <div className="grid grid-cols-1 gap-4 md:gap-6">
-                      {currentQuestion.options.map((option, idx) => {
-                        const isCorrect = idx === currentQuestion.answer;
-                        const isSelected = answers[currentQuestion.id] === idx;
-                        
-                        return (
-                          <label key={idx} className={cn(
-                            "flex items-center gap-4 md:gap-8 p-4 md:p-8 rounded-2xl md:rounded-[2.5rem] transition-all border-2 relative overflow-hidden group",
-                            !solutionViewed[currentQuestion.id] ? "cursor-pointer" : "cursor-default opacity-80",
-                            answers[currentQuestion.id] === idx 
-                              ? (showSolution ? "border-emerald-50 bg-white" : "border-primary bg-white shadow-2xl shadow-primary/10 -translate-y-1")
-                              : (showSolution ? "border-emerald-50" : "border-emerald-50 hover:bg-white hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-900/5"),
-                            showSolution && isCorrect && "border-emerald-500 bg-emerald-50/50 opacity-100",
-                            showSolution && isSelected && !isCorrect && "border-red-500 bg-red-50/50 opacity-100"
-                          )}>
-                            <div className={cn(
-                              "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border-2 flex items-center justify-center transition-all font-black text-sm md:text-base shadow-sm shrink-0",
-                              answers[currentQuestion.id] === idx 
-                                ? (showSolution ? "border-emerald-100 text-emerald-300" : "border-primary bg-primary text-white scale-110 shadow-primary/20")
-                                : (showSolution ? "border-emerald-100 text-emerald-300" : "border-emerald-100 text-emerald-300 group-hover:border-emerald-300 group-hover:text-emerald-500"),
-                              showSolution && isCorrect && "border-emerald-500 bg-emerald-500 text-white",
-                              showSolution && isSelected && !isCorrect && "border-red-500 bg-red-500 text-white"
-                            )}>
-                              {idx + 1}
-                            </div>
-                            <span className={cn(
-                              "text-base md:text-xl font-bold text-emerald-950 transition-transform tracking-tight flex-1",
-                              !solutionViewed[currentQuestion.id] && "group-hover:translate-x-1"
-                            )}>
-                              <ReactMarkdown 
-                                remarkPlugins={[remarkMath]} 
-                                rehypePlugins={[rehypeKatex]}
-                              >
-                                {option}
-                              </ReactMarkdown>
-                            </span>
-                            <input 
-                              type="radio" 
-                              name="quiz-option" 
-                              className="sr-only"
-                              disabled={solutionViewed[currentQuestion.id]}
-                              checked={answers[currentQuestion.id] === idx}
-                              onChange={() => {
-                                if (!solutionViewed[currentQuestion.id]) {
-                                  setAnswers(prev => ({ ...prev, [currentQuestion.id]: idx }));
-                                }
-                              }}
-                            />
-                            
-                            {answers[currentQuestion.id] === idx && !showSolution && (
-                              <motion.div 
-                                layoutId="active-bg"
-                                className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent -z-10"
-                              />
+                      {(currentQuestion.type === 'integer' || !currentQuestion.options || currentQuestion.options.length === 0) ? (
+                        <div className="flex flex-col items-start gap-4">
+                          <label className="text-sm font-black uppercase tracking-widest text-emerald-800">Numerical Value Answer</label>
+                          <input 
+                            type="number"
+                            disabled={solutionViewed[currentQuestion.id]}
+                            value={answers[currentQuestion.id] === null ? '' : answers[currentQuestion.id]}
+                            onChange={(e) => {
+                              if (!solutionViewed[currentQuestion.id]) {
+                                const val = e.target.value === '' ? null : Number(e.target.value);
+                                setAnswers(prev => ({ ...prev, [currentQuestion.id]: val }));
+                              }
+                            }}
+                            className={cn(
+                              "w-full max-w-sm px-6 py-4 bg-white border-2 rounded-2xl md:rounded-[2rem] text-xl font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all",
+                              solutionViewed[currentQuestion.id] 
+                                ? (answers[currentQuestion.id] === currentQuestion.answer ? "border-emerald-500 bg-emerald-50" : "border-red-500 bg-red-50")
+                                : "border-emerald-100 focus:border-emerald-500 hover:border-emerald-200"
                             )}
-                          </label>
-                        );
-                      })}
+                            placeholder="Enter your integer answer"
+                          />
+                          {showSolution && answers[currentQuestion.id] !== currentQuestion.answer && (
+                            <div className="px-4 py-2 bg-emerald-500/10 text-emerald-700 rounded-xl text-sm font-bold border border-emerald-500/20">
+                              Correct Answer: {currentQuestion.answer}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        currentQuestion.options.map((option, idx) => {
+                          const isCorrect = idx === currentQuestion.answer;
+                          const isSelected = answers[currentQuestion.id] === idx;
+                          
+                          return (
+                            <label key={idx} className={cn(
+                              "flex items-center gap-4 md:gap-8 p-4 md:p-8 rounded-2xl md:rounded-[2.5rem] transition-all border-2 relative overflow-hidden group",
+                              !solutionViewed[currentQuestion.id] ? "cursor-pointer" : "cursor-default opacity-80",
+                              answers[currentQuestion.id] === idx 
+                                ? (showSolution ? "border-emerald-50 bg-white" : "border-primary bg-white shadow-2xl shadow-primary/10 -translate-y-1")
+                                : (showSolution ? "border-emerald-50" : "border-emerald-50 hover:bg-white hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-900/5"),
+                              showSolution && isCorrect && "border-emerald-500 bg-emerald-50/50 opacity-100",
+                              showSolution && isSelected && !isCorrect && "border-red-500 bg-red-50/50 opacity-100"
+                            )}>
+                              <div className={cn(
+                                "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border-2 flex items-center justify-center transition-all font-black text-sm md:text-base shadow-sm shrink-0",
+                                answers[currentQuestion.id] === idx 
+                                  ? (showSolution ? "border-emerald-100 text-emerald-300" : "border-primary bg-primary text-white scale-110 shadow-primary/20")
+                                  : (showSolution ? "border-emerald-100 text-emerald-300" : "border-emerald-100 text-emerald-300 group-hover:border-emerald-300 group-hover:text-emerald-500"),
+                                showSolution && isCorrect && "border-emerald-500 bg-emerald-500 text-white",
+                                showSolution && isSelected && !isCorrect && "border-red-500 bg-red-500 text-white"
+                              )}>
+                                {idx + 1}
+                              </div>
+                              <span className={cn(
+                                "text-base md:text-xl font-bold text-emerald-950 transition-transform tracking-tight flex-1",
+                                !solutionViewed[currentQuestion.id] && "group-hover:translate-x-1"
+                              )}>
+                                <ReactMarkdown 
+                                  remarkPlugins={[remarkMath]} 
+                                  rehypePlugins={[rehypeKatex]}
+                                >
+                                  {option}
+                                </ReactMarkdown>
+                              </span>
+                              <input 
+                                type="radio" 
+                                name="quiz-option" 
+                                className="sr-only"
+                                disabled={solutionViewed[currentQuestion.id]}
+                                checked={answers[currentQuestion.id] === idx}
+                                onChange={() => {
+                                  if (!solutionViewed[currentQuestion.id]) {
+                                    setAnswers(prev => ({ ...prev, [currentQuestion.id]: idx }));
+                                  }
+                                }}
+                              />
+                              
+                              {answers[currentQuestion.id] === idx && !showSolution && (
+                                <motion.div 
+                                  layoutId="active-bg"
+                                  className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent -z-10"
+                                />
+                              )}
+                            </label>
+                          );
+                        })
+                      )}
                    </div>
 
                     {showSolution && (
@@ -635,7 +699,7 @@ export default function Quiz() {
                    Clear
                  </button>
                  
-                 {answers[currentQuestion.id] !== null && (
+                 {answers[currentQuestion.id] !== null && subjectId !== 'mock-tests' && (
                   <div className="flex gap-2">
                     <button 
                       onClick={() => {
@@ -693,39 +757,39 @@ export default function Quiz() {
               </button>
            </div>
            
-           <div className="p-6 md:p-8 shrink-0 bg-emerald-50/30">
-              <div className="flex items-center gap-3 mb-6 md:mb-8">
-                 <div className="w-1.5 md:w-2 h-6 md:h-8 bg-primary rounded-full" />
-                 <h3 className="text-[11px] md:text-sm font-black text-emerald-950 uppercase tracking-[0.3em]">Telemetry</h3>
+           <div className="p-3 md:p-4 shrink-0 bg-emerald-50/30">
+              <div className="flex items-center gap-2 mb-2 md:mb-3">
+                 <div className="w-1 md:w-1.5 h-4 md:h-5 bg-primary rounded-full" />
+                 <h3 className="text-[9px] md:text-[10px] font-black text-emerald-950 uppercase tracking-[0.3em]">Telemetry</h3>
               </div>
               
-              <div className="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-emerald-100 shadow-sm space-y-6 md:space-y-8">
-                <div className="flex justify-between items-center bg-primary/5 p-4 rounded-2xl border border-primary/10">
+              <div className="bg-white rounded-[1rem] md:rounded-[1.5rem] p-3 md:p-4 border border-emerald-100 shadow-sm space-y-2 md:space-y-3">
+                <div className="flex justify-between items-center bg-primary/5 p-2 md:p-3 rounded-xl border border-primary/10">
                    <div className="flex flex-col">
-                      <span className="text-[8px] font-black uppercase tracking-[0.2em] text-primary/40">Total Remaining</span>
-                      <span className="text-xl font-black text-primary tabular-nums">{formatTime(timeLeft)}</span>
+                      <span className="text-[7px] font-black uppercase tracking-[0.2em] text-primary/40">Total Remaining</span>
+                      <span className="text-base md:text-lg font-black text-primary tabular-nums">{formatTime(timeLeft)}</span>
                    </div>
-                   <Clock size={24} className="text-primary animate-pulse" />
+                   <Clock size={16} className="text-primary animate-pulse" />
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <div className="space-y-1">
-                    <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-emerald-800/40">Engagement</p>
-                    <p className="text-2xl md:text-3xl font-black heading-display text-emerald-950">{stats.answered}<span className="text-xs md:text-sm text-emerald-300">/{quizSet.questions.length}</span></p>
+                  <div className="space-y-0.5">
+                    <p className="text-[7px] md:text-[8px] font-black uppercase tracking-widest text-emerald-800/40">Engagement</p>
+                    <p className="text-lg md:text-xl font-black heading-display text-emerald-950">{stats.answered}<span className="text-[10px] text-emerald-300">/{quizSet.questions.length}</span></p>
                   </div>
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-emerald-50 flex items-center justify-center">
-                    <Activity size={20} className="md:size-24 text-primary animate-pulse" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <Activity size={14} className="md:size-16 text-primary animate-pulse" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="bg-emerald-50/50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-emerald-100/50">
-                    <p className="text-[8px] md:text-[9px] font-black uppercase text-emerald-700/50 mb-1">Reviewed</p>
-                    <p className="text-lg md:text-xl font-black text-orange-600">{stats.marked}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-emerald-50/50 p-2 md:p-2.5 rounded-lg border border-emerald-100/50">
+                    <p className="text-[7px] font-black uppercase text-emerald-700/50 mb-0.5">Reviewed</p>
+                    <p className="text-sm md:text-base font-black text-orange-600">{stats.marked}</p>
                   </div>
-                  <div className="bg-red-50/50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-red-100/50">
-                    <p className="text-[8px] md:text-[9px] font-black uppercase text-red-700/50 mb-1">Skipped</p>
-                    <p className="text-lg md:text-xl font-black text-red-600">{stats.notAnswered}</p>
+                  <div className="bg-red-50/50 p-2 md:p-2.5 rounded-lg border border-red-100/50">
+                    <p className="text-[7px] font-black uppercase text-red-700/50 mb-0.5">Skipped</p>
+                    <p className="text-sm md:text-base font-black text-red-600">{stats.notAnswered}</p>
                   </div>
                 </div>
               </div>
