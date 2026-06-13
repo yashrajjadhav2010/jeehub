@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronRight, Layers, Layout, Play, Clock, BarChart, Binary } from 'lucide-react';
 import { SubjectId, Chapter } from '../types';
 import { getAllData } from '../lib/dataService';
-import { cn, calculatePredictedRank } from '../lib/utils';
+import { cn, calculatePredictedRank, formatRank } from '../lib/utils';
 
 export default function ChapterSelection() {
   const { subjectId } = useParams<{ subjectId: SubjectId }>();
@@ -25,7 +25,8 @@ export default function ChapterSelection() {
     if (saved) setStats(JSON.parse(saved));
   }, [subjectId]);
 
-  const rank = calculatePredictedRank(stats);
+  const rankNumber = calculatePredictedRank(stats);
+  const rank = formatRank(rankNumber);
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center h-[50vh] gap-4">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink, Library } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Home from './pages/Home';
 import Subjects from './pages/Subjects';
@@ -16,6 +16,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import ErrorBook from './pages/ErrorBook';
 import MockTests from './pages/MockTests';
+import Study from './pages/Study';
+import MaterialViewer from './pages/MaterialViewer';
 import DeviceNotice from './components/DeviceNotice';
 import { cn } from './lib/utils';
 
@@ -34,6 +36,7 @@ function Navbar() {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: BookOpen, label: 'Subjects', path: '/subjects' },
+    { icon: Library, label: 'Study', path: '/study' },
     { icon: BrainCircuit, label: 'Solver', path: '/doubt-solver' },
     { icon: Trophy, label: 'Challenges', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
@@ -351,6 +354,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/subjects" element={<Subjects />} />
+          <Route path="/study" element={<Study />} />
+          <Route path="/study/:materialId" element={<MaterialViewer />} />
           <Route path="/mock-tests" element={<MockTests />} />
           <Route path="/subjects/:subjectId" element={<ChapterSelection />} />
           <Route path="/quiz/:subjectId/:chapterId/:setId" element={<Quiz />} />

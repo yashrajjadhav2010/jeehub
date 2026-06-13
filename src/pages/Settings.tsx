@@ -78,7 +78,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 pb-20">
+    <div className="max-w-4xl mx-auto space-y-12 pb-20 px-4 xl:px-0 w-full overflow-hidden">
       <section className="text-center md:text-left">
         <h1 className="text-3xl sm:text-4xl font-black heading-display tracking-tight text-emerald-950 uppercase italic">
           Terminal <span className="text-primary not-italic">Settings</span>
@@ -166,20 +166,20 @@ export default function Settings() {
               {/* Day Streak Badges */}
               <div>
                 <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Consistency (Day Streak)</h4>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 5 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                  <div className={cn("min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 5 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
                     <img src="https://i.ibb.co/rf2bDs03/day5.png" alt="5 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">5 Day<br/>Streak</span>
                   </div>
-                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 10 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                  <div className={cn("min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 10 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
                     <img src="https://i.ibb.co/KjNrCF0Q/day10.png" alt="10 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">10 Day<br/>Streak</span>
                   </div>
-                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 20 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                  <div className={cn("min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 20 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
                     <img src="https://i.ibb.co/d0pwjqRw/day25.png" alt="20 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">20 Day<br/>Streak</span>
                   </div>
-                  <div className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 25 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                  <div className={cn("min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0", streak >= 25 ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
                     <img src="https://i.ibb.co/d0pwjqRw/day25.png" alt="25 Day Streak" className="w-16 h-16 object-contain drop-shadow-xl" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">25 Day<br/>Streak</span>
                   </div>
@@ -189,7 +189,7 @@ export default function Settings() {
               {/* Questions Solved Badges */}
               <div>
                 <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Endurance (Missions Cleared)</h4>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
                   {[50, 100, 300, 500, 1000].map(req => {
                     const achieved = (JSON.parse(localStorage.getItem('userStats') || '{}').totalSolved || 0) >= req;
                     const getBadgeInfo = (req: number) => {
@@ -204,7 +204,7 @@ export default function Settings() {
                     };
                     const badge = getBadgeInfo(req);
                     return (
-                      <div key={req} className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                      <div key={req} className={cn("min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
                         {achieved && <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />}
                         <img src={badge.img} alt={badge.name} className="w-16 h-16 object-contain drop-shadow-xl" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">{badge.name}</span>
@@ -217,13 +217,13 @@ export default function Settings() {
               {/* Accuracy Badges */}
               <div>
                 <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">Precision (Accuracy)</h4>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
                   {[80, 90, 95].map(req => {
                     const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
                     const acc = stats.totalSolved > 0 ? (stats.correctAnswers / stats.totalSolved) * 100 : 0;
                     const achieved = acc >= req && stats.totalSolved >= 10; // Need at least 10 solved to get accuracy badges
                     return (
-                      <div key={req} className={cn("min-w-[120px] snap-center flex flex-col items-center gap-3 p-5 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
+                      <div key={req} className={cn("min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-5 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden", achieved ? "bg-emerald-50 border-emerald-200" : "bg-white border-emerald-50 opacity-40 grayscale")}>
                         {achieved && <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />}
                         <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2", achieved ? "bg-emerald-500 text-white border-white" : "bg-emerald-100 text-emerald-300 border-transparent")}>
                            <CheckCircle2 size={24} />

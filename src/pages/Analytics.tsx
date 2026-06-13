@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, BarChart3, TrendingUp, Target, BrainCircuit, Activity, Clock, Award, CheckCircle2, Swords, Calendar, Loader2, Sparkles, AlertCircle, Info, BookOpen } from 'lucide-react';
 import { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { cn, calculatePredictedRank } from '../lib/utils';
+import { cn, calculatePredictedRank, formatRank, getAdmissionBenchmark } from '../lib/utils';
 import { UserStats } from '../types';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
@@ -221,10 +221,10 @@ export default function Analytics() {
                    <Swords size={60} className="text-white" />
                 </div>
               </div>
-              <div className="relative z-10 space-y-4">
+               <div className="relative z-10 space-y-4">
                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Predicted Rank</p>
                  <div>
-                   <p className="text-4xl font-black text-white heading-display italic tracking-tighter">{calculateRank()}</p>
+                   <p className="text-4xl font-black text-white heading-display italic tracking-tighter">{formatRank(calculateRank())}</p>
                    <div className="group relative inline-flex items-center gap-1.5 mt-2 cursor-pointer">
                      <Info size={12} className="text-emerald-400/50 group-hover:text-emerald-400 transition-colors" />
                      <p className="text-[9px] font-black uppercase tracking-widest text-emerald-100/30 group-hover:text-emerald-100 transition-colors">Based on performance history</p>
@@ -232,6 +232,10 @@ export default function Analytics() {
                        Rank is calculated on the basis of correct question solved and it can vary.
                      </div>
                    </div>
+                 </div>
+                 <div className="pt-4 mt-4 border-t border-emerald-800/50">
+                    <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Admission Benchmark</p>
+                    <p className="text-sm font-medium text-emerald-50 leading-tight">{getAdmissionBenchmark(calculateRank())}</p>
                  </div>
               </div>
            </div>

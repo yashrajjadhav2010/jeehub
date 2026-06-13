@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair, Cpu, Sparkles, MessageSquare, HelpCircle, CheckCircle, Star } from 'lucide-react';
+import { Zap, Target, TrendingUp, Calendar, ArrowRight, BrainCircuit, Trophy, ChevronRight, Activity, ShieldCheck, BarChart3, Rocket, Layers, Ghost, Crosshair, Cpu, Sparkles, MessageSquare, HelpCircle, CheckCircle, Star, Library, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserStats, SubjectId } from '../types';
 import { cn, formatTime } from '../lib/utils';
+import LibraryDashboard from '../components/LibraryDashboard';
 
 export default function Home() {
   const [stats, setStats] = useState<UserStats>({
@@ -342,6 +343,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Study Library Section */}
+      <LibraryDashboard />
 
       {/* Feature Introduction: Core Capabilities */}
       <section className="py-10 md:py-20 relative">
