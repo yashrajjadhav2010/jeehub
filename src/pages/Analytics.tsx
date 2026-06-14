@@ -251,59 +251,70 @@ export default function Analytics() {
               </div>
            </div>
 
-           <div className="bg-emerald-50 rounded-[1.5rem] p-8 border border-emerald-100 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                 <Calendar size={100} className="text-primary" />
+           <div className="bg-emerald-950 rounded-[2.5rem] p-8 md:p-10 border border-emerald-800 relative overflow-hidden group shadow-2xl">
+              <div className="absolute inset-0 bg-grid-emerald-500/[0.03] bg-[size:20px_20px] pointer-events-none" />
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                 <BrainCircuit size={160} className="text-emerald-500" />
               </div>
-              <div className="relative z-10 flex flex-col h-full">
-                 <h3 className="text-lg font-bold flex items-center gap-2 text-emerald-900 mb-4">
-                    <Sparkles className="text-primary" size={20} /> AI Weekly Planner
+              
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col h-full text-white">
+                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/10 rounded-full text-emerald-300 text-[10px] font-black uppercase tracking-widest mb-6 self-start backdrop-blur-sm">
+                   <Sparkles size={12} className="animate-pulse" /> AI Strategic Planner
+                 </div>
+                 
+                 <h3 className="text-3xl md:text-4xl font-black heading-display uppercase tracking-tight text-white mb-4">
+                    Weekly <span className="text-emerald-400">Blueprint</span>
                  </h3>
                  {!studyPlan ? (
-                    <div className="flex-1 flex flex-col justify-center items-start">
-                       <p className="text-sm text-emerald-800/70 mb-6 font-medium leading-relaxed max-w-sm">
+                    <div className="flex-1 flex flex-col justify-center items-start mt-2">
+                       <p className="text-sm text-gray-400 mb-8 font-medium leading-relaxed max-w-sm">
                          Generate a personalized 7-day study plan based on your recent skill radar performance and Error Book conceptual gaps. Aggressively target weak areas and fortify your strengths.
                        </p>
                        <button 
                          onClick={generateStudyPlan}
                          disabled={isGeneratingPlan}
-                         className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold text-sm rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+                         className="flex items-center gap-3 px-8 py-4 bg-emerald-500 text-emerald-950 font-black text-xs uppercase tracking-[0.2em] rounded-xl hover:bg-emerald-400 transition-all disabled:opacity-50 shadow-[0_8px_30px_rgb(16,185,129,0.3)] active:scale-95 border-2 border-emerald-400"
                        >
                          {isGeneratingPlan ? (
-                           <><Loader2 size={16} className="animate-spin" /> Analyzing Radar...</>
+                           <><Loader2 size={16} className="animate-spin" /> Compiling Intel...</>
                          ) : (
-                           <><BrainCircuit size={16} /> Generate Week Plan</>
+                           <><BrainCircuit size={16} /> Generate Protocol</>
                          )}
                        </button>
                        {planError && (
-                         <div className="mt-4 flex items-center gap-2 text-red-500 text-xs font-bold bg-red-50 px-3 py-2 rounded-lg border border-red-100">
+                         <div className="mt-6 flex items-center gap-2 text-rose-400 text-xs font-bold bg-rose-500/10 px-4 py-3 rounded-xl border border-rose-500/20 backdrop-blur-sm">
                            <AlertCircle size={14} /> {planError}
                          </div>
                        )}
                     </div>
                  ) : (
-                    <div className="flex-1 flex flex-col space-y-4">
-                       <div className="flex items-center justify-between">
-                         <span className="text-xs font-bold uppercase tracking-widest text-primary">Your Week Setup</span>
-                         <button onClick={generateStudyPlan} className="text-[10px] uppercase font-bold text-emerald-600/50 hover:text-primary transition-colors flex items-center gap-1">
-                           <Loader2 size={10} className={isGeneratingPlan ? "animate-spin" : ""} /> Regenerate Plan
+                    <div className="flex-1 flex flex-col mt-4 h-full">
+                       <div className="flex items-center justify-between mb-4">
+                         <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">Your Week Setup</span>
+                         <button onClick={generateStudyPlan} className="text-[10px] uppercase font-black text-white/50 hover:text-white transition-colors flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+                           <Loader2 size={12} className={isGeneratingPlan ? "animate-spin" : ""} /> Regenerate Plan
                          </button>
                        </div>
-                       <div className="max-h-[300px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+                       <div className="h-[280px] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
                          {studyPlan.map((day, idx) => (
-                           <div key={idx} className="bg-white p-4 rounded-xl border border-emerald-100/50 shadow-sm">
-                             <div className="flex justify-between items-start mb-2">
-                               <h4 className="font-bold text-emerald-950 text-sm">{day.day} <span className="text-emerald-700/50 text-xs ml-2">— {day.focus}</span></h4>
+                           <div key={idx} className="bg-black/20 p-5 rounded-2xl border border-white/5 backdrop-blur-sm hover:border-emerald-500/30 transition-colors">
+                             <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-2">
+                               <h4 className="font-black text-emerald-400 text-sm uppercase tracking-wider">{day.day}</h4>
+                               <span className="text-white/50 text-xs font-medium px-2 py-1 bg-white/5 rounded-md inline-block">{day.focus}</span>
                              </div>
-                             <ul className="space-y-1 mb-2">
+                             <ul className="space-y-2 mb-4 mt-2">
                                {day.tasks.map((task, i) => (
-                                 <li key={i} className="text-xs text-emerald-800 flex gap-2">
-                                   <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
-                                   <span className="leading-tight">{task}</span>
+                                 <li key={i} className="text-sm text-gray-300 flex items-start gap-3">
+                                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                   <span className="leading-relaxed whitespace-pre-wrap">{task}</span>
                                  </li>
                                ))}
                              </ul>
-                             <p className="text-[10px] text-emerald-700/50 italic bg-emerald-50/50 p-2 rounded -mx-2 -mb-2 mt-3">{day.rationale}</p>
+                             <div className="bg-emerald-900/30 p-3 rounded-xl border border-emerald-500/20 mt-4">
+                               <p className="text-[11px] text-emerald-200/70 italic leading-relaxed">{day.rationale}</p>
+                             </div>
                            </div>
                          ))}
                        </div>

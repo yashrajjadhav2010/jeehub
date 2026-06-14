@@ -266,30 +266,53 @@ body {
 
 .markdown-body table {
   width: 100%;
-  overflow-x: auto;
-  display: block;
-  border-collapse: collapse;
-  margin-bottom: 1.25rem;
 }
 
 .markdown-body th, .markdown-body td {
-  border: 1px solid #e5e7eb;
-  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
   text-align: left;
 }
 
+.markdown-body th:last-child, .markdown-body td:last-child {
+  border-right: none;
+}
+
+.markdown-body tr:last-child td {
+  border-bottom: none;
+}
+
 .markdown-body th {
-  background-color: #f9fafb;
-  font-weight: 600;
+  background-color: #f0fdf4;
+  color: #064e3b;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.markdown-body tr:hover td {
+  background-color: #f8faf9;
+}
+
+/* Prevent KaTeX errors from appearing as jarring red text */
+.katex-error {
+  color: inherit !important;
 }
 
 /* Dark Mode Implementation */
 html.dark-mode {
   filter: invert(1) hue-rotate(180deg);
-  background-color: #f8faf9;
+  background-color: #ffffff;
   min-height: 100vh;
 }
 
+html.dark-mode body {
+  background-color: #ffffff;
+}
+
+/* Specific elements that also shouldn't be inverted */
 html.dark-mode img,
 html.dark-mode video,
 html.dark-mode iframe,
@@ -297,7 +320,12 @@ html.dark-mode svg:not(.lucide) {
   filter: invert(1) hue-rotate(180deg);
 }
 
-/* Specific elements that also shouldn't be inverted */
+/* Remove glowing neon effects in dark mode */
+html.dark-mode [class*="blur-["],
+html.dark-mode .neon-glow {
+  display: none !important;
+}
+
 html.dark-mode .mesh-bg,
 html.dark-mode .noise-overlay,
 html.dark-mode .preserve-dark,

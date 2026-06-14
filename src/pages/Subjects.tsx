@@ -22,7 +22,8 @@ export default function Subjects() {
     physics: [],
     chemistry: [],
     maths: [],
-    'mock-tests': []
+    'mock-tests': [],
+    'pyq': []
   });
   const [userStats, setUserStats] = useState<UserStats>({
     totalSolved: 0,
@@ -30,7 +31,7 @@ export default function Subjects() {
     totalTime: 0,
     streak: 0,
     lastPracticeDate: null,
-    subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0 },
+    subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0, 'pyq': 0 },
     chapterAccuracy: {},
     weakTopics: [],
     strongTopics: []
@@ -69,51 +70,101 @@ export default function Subjects() {
     return vals.reduce((a, b) => a + b, 0) / vals.length;
   }, [userStats]);
 
-  const subjects = [
-    { 
-      id: 'physics' as SubjectId, 
-      title: 'Physics', 
-      shortTitle: 'PHY',
+  const unifiedCards = [
+    {
+      id: 'physics' as SubjectId,
+      link: `/subjects/physics`,
+      title: 'Physics',
+      shortTitle: 'PHY-01',
       desc: 'Master the laws of nature from Mechanics to Modern Physics. Detailed simulations and conceptual deep-dives.',
-      color: 'from-emerald-600/30 to-emerald-900/10', 
-      accentColor: 'emerald',
       img: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&q=80&w=800',
       icon: Atom,
-      accent: 'text-emerald-400',
-      topics: ['Vectors', 'Kinematics', 'Mechanics', 'Waves', 'Modern Physics'],
-      stats: `${allChapters.physics.reduce((acc, c) => acc + c.sets.length, 0)} Modules`,
+      color: 'bg-emerald-950',
+      accentColor: 'text-emerald-400',
+      btnColor: 'bg-emerald-500',
+      stats: `${allChapters.physics.reduce((acc, c) => acc + c.sets.length, 0)} Units`,
       score: `${userStats.subjectProgress.physics}%`,
-      status: userStats.subjectProgress.physics > 0 ? 'In Progress' : 'Initiate'
+      status: userStats.subjectProgress.physics > 0 ? 'In Progress' : 'Initiate',
+      span: 'md:col-span-12 lg:col-span-8',
+      height: 'h-[380px] lg:h-[460px]',
+      titleClass: 'text-5xl lg:text-7xl',
+      delay: 0.1
     },
-    { 
-      id: 'chemistry' as SubjectId, 
-      title: 'Chemistry', 
-      shortTitle: 'CHM',
+    {
+      id: 'chemistry' as SubjectId,
+      link: `/subjects/chemistry`,
+      title: 'Chemistry',
+      shortTitle: 'CHM-02',
       desc: 'Understand atoms, molecules and complex reactions. Focus on Organic synthesis and Inorganic trends.',
-      color: 'from-orange-600/30 to-orange-900/10', 
-      accentColor: 'orange',
       img: 'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?auto=format&fit=crop&q=80&w=800',
       icon: FlaskConical,
-      accent: 'text-orange-400',
-      topics: ['Organic', 'Inorganic', 'Physical', 'IUPAC'],
-      stats: `${allChapters.chemistry.reduce((acc, c) => acc + c.sets.length, 0)} Modules`,
+      color: 'bg-orange-950',
+      accentColor: 'text-orange-400',
+      btnColor: 'bg-orange-500',
+      stats: `${allChapters.chemistry.reduce((acc, c) => acc + c.sets.length, 0)} Units`,
       score: `${userStats.subjectProgress.chemistry}%`,
-      status: userStats.subjectProgress.chemistry > 0 ? 'Active' : 'Standby'
+      status: userStats.subjectProgress.chemistry > 0 ? 'Active' : 'Standby',
+      span: 'md:col-span-6 lg:col-span-4',
+      height: 'h-[350px] lg:h-[460px]',
+      titleClass: 'text-4xl sm:text-5xl',
+      delay: 0.2
     },
-    { 
-      id: 'maths' as SubjectId, 
-      title: 'Mathematics', 
-      shortTitle: 'MAT',
+    {
+      id: 'maths' as SubjectId,
+      link: `/subjects/maths`,
+      title: 'Mathematics',
+      shortTitle: 'MAT-03',
       desc: 'Build logical reasoning and problem-solving speed. Advanced Calculus and Algebra mastery.',
-      color: 'from-red-600/30 to-red-900/10', 
-      accentColor: 'red',
       img: 'https://images.unsplash.com/photo-1509228468518-180dd482195e?auto=format&fit=crop&q=80&w=800',
       icon: Binary,
-      accent: 'text-red-400',
-      topics: ['Algebra', 'Calculus', 'Coordinate Geometry'],
-      stats: `${allChapters.maths.reduce((acc, c) => acc + c.sets.length, 0)} Modules`,
+      color: 'bg-red-950',
+      accentColor: 'text-red-400',
+      btnColor: 'bg-red-500',
+      stats: `${allChapters.maths.reduce((acc, c) => acc + c.sets.length, 0)} Units`,
       score: `${userStats.subjectProgress.maths}%`,
-      status: userStats.subjectProgress.maths > 80 ? 'Advanced' : userStats.subjectProgress.maths > 0 ? 'Active' : 'Baseline'
+      status: userStats.subjectProgress.maths > 80 ? 'Advanced' : userStats.subjectProgress.maths > 0 ? 'Active' : 'Baseline',
+      span: 'md:col-span-6 lg:col-span-4',
+      height: 'h-[320px] lg:h-[380px]',
+      titleClass: 'text-4xl',
+      delay: 0.3
+    },
+    {
+      id: 'pyq' as any,
+      link: `/subjects/pyq`,
+      title: 'Previous Year',
+      shortTitle: 'PYQ-04',
+      desc: 'Master real patterns. Attempt authentic historical questions from past main and advanced papers.',
+      img: 'https://images.unsplash.com/photo-1555529902-5261145633bf?auto=format&fit=crop&q=80&w=1200',
+      icon: Clock,
+      color: 'bg-blue-950',
+      accentColor: 'text-blue-400',
+      btnColor: 'bg-blue-600',
+      stats: `${allChapters.pyq.reduce((acc, c) => acc + c.sets.length, 0)} Exams`,
+      score: `${userStats.subjectProgress.pyq || 0}%`,
+      status: 'Historical',
+      span: 'md:col-span-6 lg:col-span-4',
+      height: 'h-[320px] lg:h-[380px]',
+      titleClass: 'text-4xl',
+      delay: 0.4
+    },
+    {
+      id: 'mock-tests' as any,
+      link: `/mock-tests`,
+      title: 'Mock Tests',
+      shortTitle: 'SIM-05',
+      desc: 'Test your readiness against complete 3-hour standard rigorous exams out of your comfort zone.',
+      img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
+      icon: Target,
+      color: 'bg-purple-950',
+      accentColor: 'text-purple-400',
+      btnColor: 'bg-purple-600',
+      stats: `${allChapters['mock-tests'].reduce((acc, c) => acc + c.sets.length, 0)} Tests`,
+      score: `${userStats.subjectProgress['mock-tests'] || 0}%`,
+      status: 'Simulation',
+      span: 'md:col-span-6 lg:col-span-4',
+      height: 'h-[320px] lg:h-[380px]',
+      titleClass: 'text-4xl',
+      delay: 0.5
     }
   ];
 
@@ -124,7 +175,7 @@ export default function Subjects() {
     const results: SearchResult[] = [];
 
     // Search Subjects
-    subjects.forEach(sub => {
+    unifiedCards.forEach(sub => {
       if (sub.title.toLowerCase().includes(query) || sub.desc.toLowerCase().includes(query)) {
         results.push({
           type: 'subject',
@@ -300,186 +351,84 @@ export default function Subjects() {
             className="space-y-4 md:space-y-6"
           >
             {/* Main Grid - Mosaic Bento Layout */}
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
-        
-        {/* Physics - High Impact Large Card */}
-        <div className="col-span-12 lg:col-span-8">
-          <Link to={`/subjects/${subjects[0].id}`}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ y: -5 }}
-              className={cn(
-                "group relative h-[400px] md:h-[600px] rounded-[2.5rem] overflow-hidden border border-emerald-900/10 shadow-2xl transition-all duration-700",
-                "bg-emerald-950"
-              )}
-            >
-              <img 
-                src={subjects[0].img} 
-                className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000" 
-                alt="Physics"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/60 to-transparent" />
-              
-              <div className="absolute top-8 left-8 flex items-center gap-3">
-                 <div className="w-10 h-10 rounded-full border border-white/20 backdrop-blur-md flex items-center justify-center text-emerald-400">
-                    <Atom size={20} />
-                 </div>
-                 <span className="font-mono text-[10px] font-bold text-white/50 tracking-widest uppercase">ID: PHY-01</span>
-              </div>
-
-              <div className="absolute top-8 right-8">
-                <div className="px-4 py-2 bg-emerald-500 text-white rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20">
-                  {subjects[0].status}
-                </div>
-              </div>
-
-              <div className="absolute bottom-10 left-10 right-10">
-                <div className="flex flex-col gap-6">
-                  <div>
-                    <h2 className="text-5xl md:text-7xl font-black heading-display text-white uppercase tracking-tighter mb-4 leading-none">
-                      {subjects[0].title}
-                    </h2>
-                    <p className="text-emerald-100/70 max-w-md font-medium text-sm md:text-base leading-relaxed">
-                      {subjects[0].desc}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {subjects[0].topics.map(t => (
-                      <span key={t} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-mono text-emerald-200/60 uppercase tracking-wider">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="pt-8 border-t border-white/10 flex items-center justify-between">
-                    <div className="flex gap-8">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-1">Modules</span>
-                        <span className="text-xl font-black text-white">{subjects[0].stats}</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] uppercase tracking-widest text-white/30 font-black mb-1">Accuracy</span>
-                        <span className="text-xl font-black text-emerald-400">{subjects[0].score}</span>
-                      </div>
-                    </div>
-                    <div className="w-16 h-16 rounded-full bg-white text-emerald-950 flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
-                      <ArrowRight size={32} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
-        </div>
-
-        {/* Chemistry & Maths Vertical Column */}
-        <div className="col-span-12 lg:col-span-4 flex flex-col gap-4 md:gap-6">
-          {subjects.slice(1).map((sub, i) => (
-            <Link key={sub.id} to={`/subjects/${sub.id}`} className="flex-1">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + (i * 0.1) }}
-                whileHover={{ y: -5 }}
-                className={cn(
-                  "group relative h-full min-h-[300px] md:min-h-0 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl transition-all duration-500",
-                  sub.accentColor === 'orange' ? "bg-orange-950 text-orange-400" : "bg-red-950 text-red-400"
-                )}
-              >
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 mt-6 md:mt-8">
+        {unifiedCards.map((card, i) => (
+          <motion.div
+            key={card.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: card.delay }}
+            className={cn(card.span)}
+          >
+            <Link to={card.link} className="block w-full h-full">
+              <div className={cn(
+                "group relative w-full rounded-[2.5rem] overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-1",
+                card.height,
+                card.color
+              )}>
                 <img 
-                  src={sub.img} 
-                  className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-700" 
-                  alt={sub.title}
+                  src={card.img} 
+                  className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000 mix-blend-overlay" 
+                  alt={card.title}
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-black/20 group-hover:opacity-0 transition-opacity duration-500" />
                 
-                <div className="relative p-8 h-full flex flex-col">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className={cn("w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center", sub.accent)}>
-                      <sub.icon size={24} />
-                    </div>
-                    <span className="font-mono text-[10px] font-bold text-white/40 tracking-widest uppercase">ID: {sub.shortTitle}-0{i+2}</span>
+                <div className="absolute top-6 left-6 right-6 flex items-start justify-between z-10">
+                  <div className={cn(
+                    "w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transition-colors duration-500",
+                    card.accentColor,
+                    `group-hover:${card.btnColor} group-hover:text-white`
+                  )}>
+                    <card.icon size={24} strokeWidth={1.5} />
                   </div>
+                  <div className={cn(
+                    "px-4 py-2 rounded-full backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest shadow-lg",
+                    card.status === 'Initiate' || card.status === 'Standby' || card.status === 'Baseline' 
+                      ? 'bg-white/10 text-white' 
+                      : `${card.btnColor} text-white`
+                  )}>
+                    {card.status}
+                  </div>
+                </div>
 
-                  <div className="flex-1 mt-auto md:mt-0">
-                    <h3 className="text-4xl font-black text-white heading-display uppercase tracking-tight mb-3">{sub.title}</h3>
-                    <p className="text-white/60 text-xs font-medium leading-relaxed mb-6 line-clamp-2">
-                      {sub.desc}
+                <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-6 z-10">
+                  <div className="flex-1">
+                    <span className="font-mono text-[10px] font-bold text-white/50 tracking-widest uppercase mb-3 block">
+                      ID: {card.shortTitle}
+                    </span>
+                    <h2 className={cn("heading-display text-white uppercase tracking-tighter mb-3 leading-none", card.titleClass)}>
+                      {card.title}
+                    </h2>
+                    <p className="text-white/60 font-medium text-xs sm:text-sm leading-relaxed max-w-lg line-clamp-2">
+                      {card.desc}
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                       {sub.topics.slice(0, 3).map(t => (
-                         <span key={t} className="px-2 py-1 bg-white/5 rounded text-[8px] font-bold text-white/50 uppercase tracking-widest border border-white/5">
-                           {t}
-                         </span>
-                       ))}
-                    </div>
                   </div>
 
-                  <div className="pt-6 border-t border-white/10 mt-6 md:mt-auto flex items-center justify-between">
+                  <div className="flex items-end gap-5 shrink-0">
                     <div className="flex flex-col">
-                      <span className="text-[10px] uppercase font-black tracking-widest text-white/30 mb-1">Status</span>
-                      <span className="text-sm font-bold text-white">{sub.status}</span>
+                      <span className="text-[10px] uppercase tracking-widest text-white/40 font-black mb-1">Modules</span>
+                      <span className="text-xl sm:text-2xl font-black text-white">{card.stats.split(' ')[0]}</span>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                      <ArrowRight size={20} />
+                    <div className="w-[1px] h-8 bg-white/10 mb-1" />
+                    <div className="flex flex-col">
+                      <span className="text-[10px] uppercase tracking-widest text-white/40 font-black mb-1">Accuracy</span>
+                      <span className={cn("text-xl sm:text-2xl font-black", card.accentColor)}>{card.score}</span>
+                    </div>
+                    <div className={cn(
+                      "w-12 h-12 rounded-full text-white flex items-center justify-center group-hover:rotate-45 transition-transform shadow-2xl ml-2",
+                      card.btnColor
+                    )}>
+                      <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform" />
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Mock Tests Span Entire Width below */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        <Link to="/mock-tests">
-          <div className="group relative w-full h-[250px] md:h-[300px] rounded-[2.5rem] overflow-hidden border border-purple-900/20 shadow-2xl transition-all duration-700 bg-purple-950">
-            <img 
-              src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200"
-              className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 group-hover:scale-105 transition-all duration-1000"
-              alt="Mock Tests"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-950 via-purple-950/40 to-transparent" />
-            
-            <div className="absolute top-8 left-8 flex items-center gap-3">
-               <div className="w-10 h-10 rounded-full border border-white/20 backdrop-blur-md flex items-center justify-center text-purple-400">
-                  <Target size={20} />
-               </div>
-               <span className="font-mono text-[10px] font-bold text-white/50 tracking-widest uppercase">ID: MOCK-T</span>
-            </div>
-
-            <div className="absolute top-8 right-8">
-              <div className="px-4 py-2 bg-purple-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-purple-500/20">
-                Simulation
               </div>
-            </div>
-
-            <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-               <div>
-                  <h2 className="text-4xl md:text-5xl font-black heading-display text-white uppercase tracking-tight mb-3">
-                    Full Mock Tests
-                  </h2>
-                  <p className="text-purple-200/60 max-w-lg text-sm md:text-base font-medium">
-                    Test your readiness against complete 3-hour JEE standard simulation exams across all three subjects.
-                  </p>
-               </div>
-               <div className="w-16 h-16 shrink-0 rounded-full bg-white text-purple-950 flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
-                 <ArrowRight size={32} />
-               </div>
-            </div>
-          </div>
-        </Link>
-      </motion.div>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Stats / Progress Rail - JetBrains Mono inspired */}
       <div className="mt-12 p-8 bg-white border border-emerald-900/10 rounded-[2.5rem] shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative">

@@ -1,4 +1,4 @@
-export type SubjectId = 'physics' | 'chemistry' | 'maths' | 'mock-tests';
+export type SubjectId = 'physics' | 'chemistry' | 'maths' | 'mock-tests' | 'pyq';
 
 export type Difficulty = 'easy' | 'medium' | 'hard' | 'pyq' | 'mock';
 

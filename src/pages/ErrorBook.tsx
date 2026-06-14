@@ -3,6 +3,7 @@ import { ArrowLeft, BookOpen, AlertCircle, CheckCircle2, Trash2, ArrowRight, Fil
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
@@ -211,7 +212,7 @@ export default function ErrorBook() {
                              {idx + 1}
                           </div>
                           <div className="font-semibold text-emerald-950 flex-1">
-                             <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                             <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
                                 {String(opt)}
                              </ReactMarkdown>
                           </div>

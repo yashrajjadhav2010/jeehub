@@ -87,29 +87,36 @@ export default function Settings() {
       </section>
 
       <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-6 min-w-0">
           {/* Identity Section */}
-          <div className="bg-white p-8 rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 space-y-8">
-            <div className="flex items-center gap-4">
-              <div 
-                className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary relative overflow-hidden cursor-pointer group"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {profilePic ? (
-                  <>
-                    <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Camera size={20} className="text-white" />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <User size={28} />
-                    <div className="absolute inset-0 bg-primary/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Camera size={20} className="text-white" />
-                    </div>
-                  </>
-                )}
+          <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border-2 border-emerald-50 shadow-xl shadow-emerald-900/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-400/10 to-primary/5 blur-3xl -z-10 rounded-full translate-x-1/3 -translate-y-1/3 group-hover:scale-110 transition-transform duration-700 neon-glow" />
+            
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center relative z-10 w-full">
+              
+              <div className="flex flex-col items-center gap-3 shrink-0 mx-auto md:mx-0">
+                <div 
+                  className="w-24 h-24 md:w-32 md:h-32 bg-emerald-50 rounded-full md:rounded-[2rem] flex items-center justify-center text-primary relative overflow-hidden cursor-pointer shadow-xl border-4 border-white ring-[4px] md:ring-[6px] ring-emerald-50 group/pfp transition-all hover:scale-105 hover:ring-emerald-100"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {profilePic ? (
+                    <>
+                      <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-emerald-950/60 flex flex-col items-center justify-center opacity-0 group-hover/pfp:opacity-100 transition-all backdrop-blur-sm -translate-y-2 group-hover/pfp:translate-y-0">
+                        <Camera size={24} className="text-white mb-1 shadow-lg md:w-7 md:h-7" />
+                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/90">Change</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <User size={36} className="text-emerald-900/20 md:w-12 md:h-12" />
+                      <div className="absolute inset-0 bg-primary/95 flex flex-col items-center justify-center opacity-0 group-hover/pfp:opacity-100 transition-all backdrop-blur-sm scale-110 group-hover/pfp:scale-100">
+                        <Camera size={24} className="text-white mb-1 shadow-lg md:w-7 md:h-7" />
+                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/90">Upload</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
               <input 
                 type="file" 
@@ -118,35 +125,39 @@ export default function Settings() {
                 accept="image/*" 
                 className="hidden" 
               />
-              <div>
-                <h3 className="text-lg font-black text-emerald-950 uppercase italic tracking-tight">Identity Protocol</h3>
-                <p className="text-[10px] text-emerald-900/40 font-black uppercase tracking-widest">Update your operator handle & photo</p>
+              <div className="space-y-5 flex-1 w-full text-center md:text-left">
+                <div>
+                  <h3 className="text-xl md:text-3xl font-black text-emerald-950 uppercase italic tracking-tight mb-1 md:mb-2">Operator Profile</h3>
+                  <p className="text-[9px] md:text-xs text-emerald-900/50 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] px-2 md:px-0">Update your identity and command handle</p>
+                </div>
+                
+                <div className="space-y-4 md:space-y-5 max-w-md mx-auto md:mx-0 w-full px-2 md:px-0">
+                   <div className="space-y-2 text-left relative">
+                     <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-emerald-900/50 ml-3 md:ml-4 absolute -top-2.5 bg-white px-2">Display Name</label>
+                     <input 
+                       type="text" 
+                       value={name}
+                       onChange={(e) => setName(e.target.value)}
+                       placeholder="Enter your operational name..."
+                       className="w-full px-4 py-3.5 md:px-5 md:py-4 bg-transparent rounded-xl md:rounded-2xl border-2 border-emerald-100 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-emerald-950 text-sm md:text-lg placeholder:text-emerald-900/20"
+                     />
+                   </div>
+                   
+                   <button 
+                    onClick={handleSaveName}
+                    className={cn(
+                      "w-full md:w-auto px-6 py-3.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl group/btn mx-auto md:mx-0",
+                      success 
+                        ? "bg-emerald-500 text-white shadow-emerald-500/20" 
+                        : "bg-[#0d0d0d] text-white shadow-[#0d0d0d]/20 hover:scale-[1.02] hover:-translate-y-1"
+                    )}
+                   >
+                     {success ? <CheckCircle2 size={16} className="animate-in zoom-in" /> : <Save size={16} className="group-hover/btn:rotate-12 transition-transform" />}
+                     {success ? 'IDENTITY SECURED' : 'SAVE PROFILE'}
+                   </button>
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-4">
-               <div className="space-y-2">
-                 <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 px-2">Operational Name</label>
-                 <input 
-                   type="text" 
-                   value={name}
-                   onChange={(e) => setName(e.target.value)}
-                   className="w-full px-6 py-4 bg-emerald-50 rounded-2xl border-2 border-emerald-50 focus:border-primary focus:bg-white outline-none transition-all font-bold text-emerald-950 placeholder:text-emerald-900/20"
-                 />
-               </div>
-               
-               <button 
-                onClick={handleSaveName}
-                className={cn(
-                  "w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl",
-                  success 
-                    ? "bg-emerald-500 text-white shadow-emerald-500/20" 
-                    : "bg-primary text-white shadow-primary/20 hover:scale-[1.02]"
-                )}
-               >
-                 {success ? <CheckCircle2 size={18} /> : <Save size={18} />}
-                 {success ? 'IDENTITY UPDATED' : 'SAVE CHANGES'}
-               </button>
             </div>
           </div>
 
@@ -277,7 +288,7 @@ export default function Settings() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 min-w-0">
           {/* Danger Zone */}
           <div className="bg-red-50 p-8 rounded-[2.5rem] border-2 border-red-100 space-y-6">
             <div className="flex items-center gap-4 text-red-600">

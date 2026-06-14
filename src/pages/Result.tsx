@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trophy, ArrowRight, Home, RefreshCw, CheckCircle2, XCircle, Info, Timer, Target, BrainCircuit, TrendingUp, RefreshCcw, X, MessageSquare } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
@@ -13,6 +14,41 @@ export default function Result() {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [explainingIds, setExplainingIds] = useState<string[]>([]);
+
+  const handleExplain = async (q: any, i: number) => {
+    if (q.explanation || explainingIds.includes(q.id)) return;
+    
+    setExplainingIds(prev => [...prev, q.id]);
+    
+    try {
+      const res = await fetch('/api/explain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: q.question,
+          options: q.options || [],
+          answer: q.answer
+        })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setResult((prev: any) => {
+          if (!prev) return prev;
+          const newResult = { ...prev };
+          const newQuestions = [...newResult.quizSet.questions];
+          newQuestions[i] = { ...newQuestions[i], explanation: data.explanation };
+          newResult.quizSet = { ...newResult.quizSet, questions: newQuestions };
+          return newResult;
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setExplainingIds(prev => prev.filter(id => id !== q.id));
+    }
+  };
 
   useEffect(() => {
     const data = localStorage.getItem('lastQuizResult');
@@ -65,7 +101,7 @@ export default function Result() {
         totalTime: 0,
         streak: 1,
         missionsCompleted: 0,
-        subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0 },
+        subjectProgress: { physics: 0, chemistry: 0, maths: 0, 'mock-tests': 0, 'pyq': 0 },
         dailyActivity: {}
       };
 
@@ -249,14 +285,27 @@ export default function Result() {
                            )}
                         </div>
 
-                        {q.explanation && (
-                          <div className="p-6 bg-emerald-50/50 border border-emerald-50 rounded-2xl">
+                        {q.explanation ? (
+                          <div className="p-6 bg-emerald-50/50 border border-emerald-50 rounded-2xl mt-6">
                              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/50 mb-2">Step-by-Step Logic</p>
                              <div className="text-emerald-800 text-sm font-medium markdown-body">
                                 <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                                   {q.explanation}
                                 </ReactMarkdown>
                              </div>
+                          </div>
+                        ) : (
+                          <div className="mt-6 flex justify-start">
+                             <button 
+                                onClick={() => handleExplain(q, idx)}
+                                disabled={explainingIds.includes(q.id)}
+                                className={cn(
+                                  "px-6 py-3 bg-primary/10 text-primary font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary/20 transition-all flex items-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+                                )}
+                             >
+                                <BrainCircuit size={16} className={cn(explainingIds.includes(q.id) && "animate-pulse")} />
+                                {explainingIds.includes(q.id) ? 'Synthesizing Logic...' : 'Explain with Axiom AI'}
+                             </button>
                           </div>
                         )}
                      </div>

@@ -15,7 +15,10 @@ export default function Study() {
        { id: 'laws-of-motion', title: 'Laws of Motion', subject: 'Physics', type: 'Formula Sheet', time: 'Updated', icon: Atom },
     ],
     'short-notes': [
+       { id: 'periodic-properties', title: 'Periodic Properties', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Beaker },
        { id: 'vectors-short-notes', title: 'Vectors & 3D', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Calculator },
+       { id: 'work-power-energy-short-notes', title: 'Work, Power & Energy', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: Atom },
+       { id: 'rotational-motion-short-notes', title: 'Rotational Motion', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: Atom },
     ],
     'mind-maps': [],
     'cheat-sheets': []
@@ -48,7 +51,7 @@ export default function Study() {
       bookmark: 'bg-[#e86665]',
       tabs: ['bg-[#f5c64b]', 'bg-[#e86665]', 'bg-[#9071df]'],
       latch: false,
-      count: '1 Chapters'
+      count: '4 Chapters'
     },
     {
       id: 'mind-maps',
@@ -77,6 +80,8 @@ export default function Study() {
   ];
 
   const recentMaterials = [
+    { id: 'work-power-energy-short-notes', title: 'Work, Power & Energy', subject: 'Physics', type: 'Revision Notes', time: 'Just Now', icon: Atom },
+    { id: 'periodic-properties', title: 'Periodic Properties', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Beaker },
     { id: 'kinematics-equations', title: 'Kinematics Equations', subject: 'Physics', type: 'Formula Sheet', time: 'Latest', icon: Atom },
     { id: 'laws-of-motion', title: 'Laws of Motion', subject: 'Physics', type: 'Formula Sheet', time: 'Updated', icon: Atom },
     { id: 'vectors-short-notes', title: 'Vectors & 3D', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Calculator },

@@ -132,6 +132,31 @@ app.post("/api/suggestions", async (req, res) => {
   }
 });
 
+// API route for AI question explanation
+app.post("/api/explain", async (req, res) => {
+  try {
+    const { question, options, answer } = req.body;
+    
+    const aiClient = getGeminiClient();
+    if (aiClient) {
+      const response = await aiClient.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: `Explain the step-by-step solution for the following question mathematically and logically:\n\nQuestion: ${question}\nOptions: ${JSON.stringify(options)}\nCorrect Answer Index: ${answer}\n\nProvide the final answer at the end clearly. Keep your response in Markdown, using LaTeX formatting (Use SINGLE $ for inline math like $x^2$, and DOUBLE $$ for block math like $$x^2+y^2=z^2$$). IMPORTANT: Ensure all LaTeX environments like \\begin{cases} are properly closed with \\end{cases} and avoid syntax errors. Keep it concise and instructional. Do not show code, just text with math formulas.`,
+        config: {
+            systemInstruction: "You are Axiom, an expert JEE preparation AI. Explain the question's core concepts very clearly and directly. Use markdown with proper mathematical syntax.",
+            temperature: 0.2
+        }
+      });
+      return res.json({ explanation: response.text });
+    }
+    
+    throw new Error("No AI service available");
+  } catch (error: any) {
+    console.error("AI Explanation Error:", error.message);
+    res.status(500).json({ error: "Failed to generate AI explanation. Please check API Key. " + error.message });
+  }
+});
+
 // API route for AI Study Planner
 app.post("/api/study-plan", async (req, res) => {
   try {

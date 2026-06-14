@@ -3,6 +3,7 @@ import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquar
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
@@ -175,7 +176,54 @@ export default function DoubtSolver() {
   const [dailyCount, setDailyCount] = useState(0);
   const [dailyImageCount, setDailyImageCount] = useState(0);
 
+  const [suggestions, setSuggestions] = useState<any[]>([
+    { title: "Newton's Laws", desc: "Complex pulley systems", icon: Target },
+    { title: "Integration", desc: "Definite integrals of trig functions", icon: Binary },
+    { title: "Organic Chem", desc: "SN1 vs SN2 mechanisms", icon: FlaskConical },
+    { title: "Modern Physics", desc: "De Broglie wavelength", icon: Zap }
+  ]);
+
   useEffect(() => {
+    try {
+      const errorBookRaw = localStorage.getItem('errorBook');
+      if (errorBookRaw) {
+        const errorBook = JSON.parse(errorBookRaw);
+        if (errorBook.length > 0) {
+          // Get unique chapterIds from recent errors
+          const recentErrors = [...errorBook].reverse();
+          const uniqueChapters = Array.from(new Set(recentErrors.map(item => item.chapterId).filter(Boolean))).slice(0, 4) as string[];
+          
+          if (uniqueChapters.length > 0) {
+            const icons = [Target, Binary, FlaskConical, Zap];
+            const newSuggestions: any[] = uniqueChapters.map((ch: string, i) => {
+              const formattedTitle = ch.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+              return {
+                title: formattedTitle,
+                desc: "Review missed concepts from this topic",
+                icon: icons[i % icons.length]
+              };
+            });
+            
+            // Fill the rest with default
+            const defaults = [
+              { title: "Newton's Laws", desc: "Complex pulley systems", icon: Target },
+              { title: "Integration", desc: "Definite integrals of trig functions", icon: Binary },
+              { title: "Organic Chem", desc: "SN1 vs SN2 mechanisms", icon: FlaskConical },
+              { title: "Modern Physics", desc: "De Broglie wavelength", icon: Zap }
+            ];
+            
+            while (newSuggestions.length < 4) {
+               newSuggestions.push(defaults[newSuggestions.length]);
+            }
+            
+            setSuggestions(newSuggestions.slice(0, 4));
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
     try {
       const name = localStorage.getItem('operatorName');
       const pfp = localStorage.getItem('operatorPfp');
@@ -314,7 +362,11 @@ export default function DoubtSolver() {
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      if (messages.length > 0 || loading) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      } else {
+        scrollRef.current.scrollTop = 0;
+      }
     }
   }, [messages, loading]);
 
@@ -508,7 +560,7 @@ export default function DoubtSolver() {
 
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto w-full relative z-10 scroll-smooth" ref={scrollRef}>
-        <div className="max-w-3xl mx-auto w-full flex flex-col pt-4 md:pt-8 pb-40">
+        <div className="max-w-3xl mx-auto w-full flex flex-col pt-0 md:pt-4 pb-40">
           
           <AnimatePresence mode="popLayout">
             {messages.length === 0 && !loading && (
@@ -516,46 +568,70 @@ export default function DoubtSolver() {
                 key="empty-state"
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center"
+                className="flex flex-col items-center justify-center min-h-[50vh] px-4 text-center mt-2 md:mt-4"
               >
-                <div className="mb-4 md:mb-8 scale-75 md:scale-100">
+                <div className="absolute inset-0 bg-grid-emerald-500/[0.02] bg-[size:20px_20px] pointer-events-none" />
+                
+                <div className="relative mb-6 md:mb-10 scale-75 md:scale-100 group">
+                  <div className="absolute inset-0 bg-emerald-500/20 blur-[60px] rounded-full group-hover:bg-emerald-500/30 transition-colors duration-700" />
                   <AxiomMascot size="lg" />
                 </div>
-                <h2 className="text-xl md:text-3xl font-black heading-display uppercase tracking-tight mb-2">
-                  Hi, I'm Axiom!
-                </h2>
-                <p className="text-sm md:text-base text-gray-500 mb-8 max-w-sm font-medium">
-                  Your premium AI assistant for JEE prep. What can I help you solve today?
-                </p>
+                
+                <div className="relative">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-emerald-700 text-[10px] font-black uppercase tracking-widest mb-4 md:mb-6"
+                  >
+                    <Sparkles size={12} className="animate-pulse" /> Axiom AI 2.0 Online
+                  </motion.div>
+                  
+                  <h2 className="text-2xl md:text-5xl font-black heading-display uppercase tracking-tighter mb-3 md:mb-4 text-[#0d0d0d]">
+                    How can I <span className="text-emerald-600">help you</span> today?
+                  </h2>
+                  <p className="text-xs md:text-base text-gray-500 mb-6 md:mb-10 max-w-lg mx-auto font-medium leading-relaxed px-4">
+                    Clear your JEE doubts instantly with step-by-step guidance.
+                  </p>
+                </div>
                 
                 {localStorage.getItem('axiom_chat_history') && (
-                  <button 
+                  <motion.button 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
                     onClick={loadHistory}
-                    className="mb-8 flex items-center gap-2 px-6 py-3 text-sm font-bold uppercase tracking-widest text-[#10a37f] bg-[#10a37f]/5 hover:bg-[#10a37f]/10 rounded-2xl border border-[#10a37f]/20 transition-all active:scale-95"
+                    className="mb-8 md:mb-10 flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-white bg-emerald-950 hover:bg-black rounded-full shadow-[0_8px_30px_rgb(16,185,129,0.2)] transition-all active:scale-95 group"
                   >
-                    <RotateCcw size={16} />
+                    <RotateCcw size={14} className="md:w-4 md:h-4 group-hover:-rotate-90 transition-transform duration-500" />
                     Restore Previous Session
-                  </button>
+                  </motion.button>
                 )}
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 w-full max-w-xl">
-                  {[
-                    "Newton's Laws of Motion",
-                    "Integration of tan³x",
-                    "Periodic trends in Chemistry",
-                    "Heisenberg Principle"
-                  ].map((sample, i) => (
-                    <motion.button
-                      key={sample}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      onClick={() => setInput(sample)}
-                      className="p-3 md:p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-100 transition-all text-left text-[11px] md:text-sm text-gray-600 font-bold uppercase tracking-tight"
-                    >
-                      {sample}
-                    </motion.button>
-                  ))}
+                <div className="w-full max-w-2xl relative z-10 pb-4 md:pb-0">
+                  <p className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Try asking about</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4">
+                    {suggestions.map((sample, i) => (
+                      <motion.button
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 + i * 0.1 }}
+                        onClick={() => setInput(sample.title + ": " + sample.desc)}
+                        className="p-3 md:p-5 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-emerald-200 transition-all text-left group"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gray-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                            <sample.icon size={18} />
+                          </div>
+                          <div>
+                            <div className="text-xs md:text-sm text-gray-900 font-bold mb-0.5 md:mb-1">{sample.title}</div>
+                            <div className="text-[10px] md:text-[12px] text-gray-500 font-medium line-clamp-1">{sample.desc}</div>
+                          </div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -564,51 +640,67 @@ export default function DoubtSolver() {
               <motion.div
                 key={idx}
                 layout
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20, delay: idx * 0.02 }}
                 className={cn(
-                  "flex w-full px-4 md:px-6 py-6 md:py-8",
-                  msg.role === 'assistant' ? "bg-gray-50/50 border-y border-gray-100/50" : "bg-white"
+                  "flex w-full mb-6 max-w-4xl mx-auto px-4",
+                  msg.role === 'user' ? "justify-end" : "justify-start"
                 )}
               >
-                <div className="max-w-3xl mx-auto w-full flex gap-4 md:gap-6">
-                  {msg.role === 'user' ? (
-                    <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center shrink-0 text-white font-bold text-xs shadow-sm bg-[#10a37f]">
+                {msg.role === 'user' ? (
+                  <div className="flex gap-4 flex-row-reverse max-w-[85%] md:max-w-[75%]">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden flex items-center justify-center shrink-0 text-white font-black text-xs md:text-sm shadow-xl bg-gradient-to-br from-emerald-500 to-emerald-700 ring-4 ring-emerald-50/50">
                       {operatorPfp ? (
                         <img src={operatorPfp} alt="User" className="w-full h-full object-cover" />
                       ) : (
                         operatorName
                       )}
                     </div>
-                  ) : (
-                    <AxiomMascot size="sm" />
-                  )}
-                  
-                  <div className="flex-1 min-w-0 flex flex-col space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                        {msg.role === 'user' ? 'You' : 'Axiom Solves'}
-                      </span>
-                    </div>
-                    <div className="text-[15px] leading-[1.65] md:text-base text-[#374151] markdown-body overflow-x-auto break-words pb-2">
-                      {msg.role === 'user' ? (
+                    <div className="flex flex-col space-y-2 items-end">
+                      <div className="flex items-center gap-2 px-2">
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">You</span>
+                      </div>
+                      <div className="text-[14px] md:text-[15px] leading-relaxed break-words bg-emerald-950 text-white rounded-3xl rounded-tr-sm p-4 md:p-6 shadow-sm">
                         <div className="flex flex-col gap-4">
                           {msg.image && (
-                            <img src={msg.image} alt="User attachment" className="max-w-xs md:max-w-sm rounded-[1rem] shadow-sm border border-emerald-900/5 object-contain" />
+                            <div className="relative rounded-2xl overflow-hidden border border-white/10 mt-1">
+                               <img src={msg.image} alt="User attachment" className="max-w-[200px] md:max-w-xs object-cover" />
+                            </div>
                           )}
-                          <p className="whitespace-pre-wrap">{msg.content}</p>
+                          <p className="whitespace-pre-wrap font-medium">{msg.content}</p>
                         </div>
-                      ) : (
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkMath]} 
-                          rehypePlugins={[rehypeKatex]}
-                        >
-                          {msg.content}
-                        </ReactMarkdown>
-                      )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex flex-col w-full max-w-full">
+                    <div className="flex items-center gap-3 mb-2 px-2">
+                      <div className="shrink-0">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full shadow-md border border-emerald-100 flex items-center justify-center relative inner-shadow-emerald ring-4 ring-gray-50 scale-90 md:scale-100">
+                          <AxiomMascot size="sm" />
+                        </div>
+                      </div>
+                      <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-emerald-700">Axiom Solves</span>
+                    </div>
+                    
+                    <div className="text-[14px] md:text-[15px] leading-relaxed markdown-body w-full text-gray-800 px-2 py-2">
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkMath, remarkGfm]} 
+                        rehypePlugins={[rehypeKatex]}
+                        components={{
+                          table: ({node, ...props}) => (
+                            <div className="w-full overflow-x-auto my-4 md:my-6 rounded-xl border border-gray-100 shadow-sm">
+                              <table className="w-full text-left border-collapse min-w-[500px]" {...props} />
+                            </div>
+                          )
+                        }}
+                      >
+                        {msg.content}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             ))}
 

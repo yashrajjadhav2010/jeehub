@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ChevronLeft, ChevronRight, ArrowRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X, Sparkles, Loader2, Zap } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, ArrowRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X, Sparkles, Loader2, Zap, AlertCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
@@ -31,6 +32,7 @@ export default function Quiz() {
   const [aiAnalysis, setAiAnalysis] = useState<Record<string, string>>({});
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiLimitError, setAiLimitError] = useState<string | null>(null);
+  const [showSubmitAlert, setShowSubmitAlert] = useState(false);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -83,18 +85,62 @@ export default function Quiz() {
         const data = await loadQuizSet(subjectId, chapterId, setId);
         if (data) {
           setQuizSet(data);
-          setTimeLeft(subjectId === 'mock-tests' ? 10800 : data.questions.length * 90);
-          const initialAnswers = data.questions.reduce((acc, q) => {
-            acc[q.id] = null;
-            return acc;
-          }, {} as Record<string, number | null>);
-          setAnswers(initialAnswers);
+          const sessionKey = `quiz_session_${subjectId}_${chapterId}_${setId}`;
+          const savedSession = localStorage.getItem(sessionKey);
+          
+          if (savedSession) {
+            try {
+              const parsed = JSON.parse(savedSession);
+              setAnswers(parsed.answers);
+              setTimeLeft(parsed.timeLeft);
+              setCurrentIdx(parsed.currentIdx);
+              setVisited(parsed.visited);
+              setMarkedForReview(parsed.markedForReview);
+              setSolutionViewed(parsed.solutionViewed);
+              setIsStarted(true); // Auto-resume if session exists
+            } catch (e) {
+              console.error("Error parsing saved session", e);
+              setTimeLeft(subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90);
+              const initialAnswers = data.questions.reduce((acc, q) => {
+                acc[q.id] = null;
+                return acc;
+              }, {} as Record<string, number | null>);
+              setAnswers(initialAnswers);
+            }
+          } else {
+            setTimeLeft(subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90);
+            const initialAnswers = data.questions.reduce((acc, q) => {
+              acc[q.id] = null;
+              return acc;
+            }, {} as Record<string, number | null>);
+            setAnswers(initialAnswers);
+          }
         }
       }
       setLoading(false);
     }
     loadData();
   }, [subjectId, chapterId, setId]);
+
+  // Save session state to localStorage
+  useEffect(() => {
+    if (isStarted && !isFinished && subjectId && chapterId && setId) {
+      const sessionKey = `quiz_session_${subjectId}_${chapterId}_${setId}`;
+      const sessionData = {
+        answers,
+        timeLeft,
+        currentIdx,
+        visited,
+        markedForReview,
+        solutionViewed
+      };
+      localStorage.setItem(sessionKey, JSON.stringify(sessionData));
+    }
+    if (isFinished && subjectId && chapterId && setId) {
+      const sessionKey = `quiz_session_${subjectId}_${chapterId}_${setId}`;
+      localStorage.removeItem(sessionKey);
+    }
+  }, [answers, timeLeft, currentIdx, visited, markedForReview, solutionViewed, isStarted, isFinished, subjectId, chapterId, setId]);
 
   useEffect(() => {
     if (timeLeft <= 0 || isFinished || !isStarted) return;
@@ -150,6 +196,8 @@ export default function Quiz() {
   const handleSaveNext = () => {
     if (currentIdx < (quizSet?.questions.length || 0) - 1) {
       selectIdx(currentIdx + 1);
+    } else {
+      setShowSubmitAlert(true);
     }
   };
 
@@ -369,7 +417,7 @@ export default function Quiz() {
           </div>
 
           <button 
-            onClick={handleFinish}
+            onClick={() => setShowSubmitAlert(true)}
             className="md:hidden bg-primary text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg shadow-primary/20 border border-white/10"
           >
             Submit
@@ -405,7 +453,7 @@ export default function Quiz() {
         <div className="flex-1 flex flex-col bg-white overflow-hidden">
            {/* Section Tabs */}
            <div className="flex bg-emerald-50/30 border-b border-emerald-100 p-2 gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              {subjectId === 'mock-tests' ? (
+              {subjectId === 'mock-tests' || subjectId === 'pyq' ? (
                 <>
                   <button 
                     onClick={() => setCurrentIdx(0)}
@@ -482,7 +530,7 @@ export default function Quiz() {
 
                    <div className="text-xl md:text-2xl text-emerald-950 font-black heading-display mb-8 md:mb-16 leading-relaxed whitespace-pre-wrap tracking-tight">
                       <ReactMarkdown 
-                        remarkPlugins={[remarkMath]} 
+                        remarkPlugins={[remarkMath, remarkGfm]} 
                         rehypePlugins={[rehypeKatex]}
                       >
                         {_qText}
@@ -547,7 +595,7 @@ export default function Quiz() {
                                 !solutionViewed[currentQuestion.id] && "group-hover:translate-x-1"
                               )}>
                                 <ReactMarkdown 
-                                  remarkPlugins={[remarkMath]} 
+                                  remarkPlugins={[remarkMath, remarkGfm]} 
                                   rehypePlugins={[rehypeKatex]}
                                 >
                                   {option}
@@ -589,7 +637,7 @@ export default function Quiz() {
                               <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white/30 mb-4 md:mb-6 border-b border-white/5 pb-4">Internal Mission Log: Solution</p>
                               <div className="text-white/90 font-medium text-sm md:text-lg italic whitespace-pre-wrap">
                                   <ReactMarkdown 
-                                    remarkPlugins={[remarkMath]} 
+                                    remarkPlugins={[remarkMath, remarkGfm]} 
                                     rehypePlugins={[rehypeKatex]}
                                   >
                                     {_eText || "No expert breakdown available for this engagement."}
@@ -645,7 +693,7 @@ export default function Quiz() {
                                 ) : (
                                   <div className="prose prose-invert prose-emerald prose-sm md:prose-lg max-w-none prose-headings:text-primary prose-headings:uppercase prose-headings:tracking-tighter prose-headings:italic prose-pre:bg-black/40 prose-pre:backdrop-blur-xl prose-pre:text-emerald-50 prose-pre:rounded-[2rem] prose-pre:border prose-pre:border-white/5">
                                     <ReactMarkdown 
-                                      remarkPlugins={[remarkMath]} 
+                                      remarkPlugins={[remarkMath, remarkGfm]} 
                                       rehypePlugins={[rehypeKatex]}
                                     >
                                       {aiAnalysis[currentQuestion.id]}
@@ -699,7 +747,7 @@ export default function Quiz() {
                    Clear
                  </button>
                  
-                 {answers[currentQuestion.id] !== null && subjectId !== 'mock-tests' && (
+                 {answers[currentQuestion.id] !== null && subjectId !== 'mock-tests' && subjectId !== 'pyq' && (
                   <div className="flex gap-2">
                     <button 
                       onClick={() => {
@@ -846,7 +894,7 @@ export default function Quiz() {
                  Exit
               </button>
               <button 
-                onClick={handleFinish}
+                onClick={() => setShowSubmitAlert(true)}
                 className="bg-emerald-950 text-white py-3.5 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-xl md:rounded-2xl hover:bg-black transition-all shadow-xl shadow-emerald-950/20 font-black"
               >
                  Submit
@@ -867,6 +915,51 @@ export default function Quiz() {
            )}
         </AnimatePresence>
       </div>
+
+      {/* Submit Confirmation Alert */}
+      <AnimatePresence>
+        {showSubmitAlert && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-[2rem] p-6 max-w-sm w-full shadow-2xl overflow-hidden relative"
+            >
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500" />
+              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6">
+                <AlertCircle size={32} />
+              </div>
+              <h3 className="text-2xl font-black text-emerald-950 heading-display uppercase tracking-tight mb-2">Submit Test?</h3>
+              <p className="text-emerald-900/60 font-medium text-sm mb-8">
+                Are you sure you want to submit your test? Make sure you have reviewed all your answers.
+              </p>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setShowSubmitAlert(false)}
+                  className="flex-1 px-4 py-3 bg-emerald-50 text-emerald-900 font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-emerald-100 transition-colors"
+                >
+                  Review
+                </button>
+                <button
+                  onClick={() => {
+                    setShowSubmitAlert(false);
+                    handleFinish();
+                  }}
+                  className="flex-1 px-4 py-3 bg-red-500 text-white font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
+                >
+                  Submit
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

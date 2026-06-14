@@ -31,7 +31,8 @@ export async function getAllData() {
     physics: [],
     chemistry: [],
     maths: [],
-    'mock-tests': []
+    'mock-tests': [],
+    'pyq': []
   };
 
   for (const path in modules) {

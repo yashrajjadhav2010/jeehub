@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Bookmark, BrainCircuit, CheckCheck, Clock, Download, FileText, Info, AlertTriangle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { cn } from '../lib/utils';
@@ -16,6 +17,222 @@ interface MaterialData {
 }
 
 const mockDb: Record<string, MaterialData> = {
+  'rotational-motion-short-notes': {
+    id: 'rotational-motion-short-notes',
+    title: 'Rotational Motion',
+    subject: 'Physics',
+    category: 'Revision Notes',
+    content: `### ROTATIONAL MOTION - JEE SHORT NOTES
+
+**1. ROTATIONAL MOTION**
+Motion of a body about a fixed axis. (e.g., Ceiling Fan, Wheel, Earth Rotation)
+
+---
+
+**2. ANGULAR DISPLACEMENT & VELOCITY**
+* **Angular Displacement ($\\theta$):** $\\theta = \\frac{s}{R}$. Unit: Radian (rad). 1 Revolution = $2\\pi$ rad.
+* **Angular Velocity ($\\omega$):** $\\omega = \\frac{d\\theta}{dt}$. Unit: rad/s. Relation with linear velocity: $v = R\\omega$.
+* **Angular Acceleration ($\\alpha$):** $\\alpha = \\frac{d\\omega}{dt}$. Unit: rad/$s^2$. Relation with tangential acceleration: $a_t = R\\alpha$.
+
+---
+
+**3. ROTATIONAL KINEMATICS**
+Similar to linear kinematics:
+* $\\omega = \\omega_0 + \\alpha t$
+* $\\theta = \\omega_0 t + \\frac{1}{2}\\alpha t^2$
+* $\\omega^2 = \\omega_0^2 + 2\\alpha\\theta$
+
+---
+
+**4. TORQUE ($\\tau$)**
+Rotational equivalent of force.
+* $\\vec{\\tau} = \\vec{r} \\times \\vec{F}$
+* Magnitude: $\\tau = rF \\sin\\theta$. Unit: N·m
+* Direction: Given by Right Hand Rule.
+
+---
+
+**5. MOMENT OF INERTIA (I)**
+Rotational equivalent of mass. Depends on mass distribution.
+* **Point Masses:** $I = \\Sigma mr^2$
+* **Continuous Body:** $I = \\int r^2 dm$. Unit: kg·$m^2$
+* **Radius of Gyration (K):** $I = MK^2 \\implies K = \\sqrt{\\frac{I}{M}}$. Unit: metre (m).
+
+---
+
+**6. THEOREMS OF MOMENT OF INERTIA**
+* **Parallel Axis Theorem:** $I = I_{cm} + Md^2$ (where d = Distance between axes)
+* **Perpendicular Axis Theorem (For Plane Lamina):** $I_z = I_x + I_y$
+
+---
+
+**7. MOMENT OF INERTIA OF STANDARD BODIES & RADIUS OF GYRATION**
+* **Ring about Centre:** $I = MR^2 \\implies K = R$
+* **Disc about Centre / Solid Cylinder:** $I = \\frac{1}{2}MR^2 \\implies K = \\frac{R}{\\sqrt{2}}$
+* **Hollow Cylinder:** $I = MR^2$
+* **Solid Sphere:** $I = \\frac{2}{5}MR^2 \\implies K = \\sqrt{\\frac{2}{5}}R$
+* **Hollow Sphere:** $I = \\frac{2}{3}MR^2$
+* **Rod about Centre:** $I = \\frac{1}{12}ML^2 \\implies K = \\frac{L}{\\sqrt{12}}$
+* **Rod about End:** $I = \\frac{1}{3}ML^2$
+
+---
+
+**8. NEWTON'S SECOND LAW FOR ROTATION**
+* $\\tau_{net} = I\\alpha$ *(Most Important Formula)*
+
+---
+
+**9. ANGULAR MOMENTUM (L)**
+* **General:** $\\vec{L} = \\vec{r} \\times \\vec{p}$
+* **For Circular Motion:** $L = mvr$
+* **For Rigid Body:** $L = I\\omega$ (Unit: kg·$m^2$/s)
+    * Ring: $L = MR^2\\omega$, Disc: $L = \\frac{1}{2}MR^2\\omega$
+
+---
+
+**10. CONSERVATION OF ANGULAR MOMENTUM**
+* If External Torque = 0, then $\\vec{L} = \\text{Constant}$.
+* $I_1\\omega_1 = I_2\\omega_2$
+
+---
+
+**11. WORK, ENERGY & POWER IN ROTATION**
+* **Rotational Kinetic Energy:** $K = \\frac{1}{2}I\\omega^2$ *(Most Important Formula)*
+* **Work Done:** $W = \\tau\\theta$ (Unit: Joule)
+* **Power:** $P = \\tau\\omega$ (Unit: Watt)
+
+---
+
+**12. ROLLING MOTION**
+Combination of Translation and Rotation.
+* **Pure Rolling Condition:** $v = R\\omega$
+* **Total Kinetic Energy:** $K_{total} = K_{trans} + K_{rot} = \\frac{1}{2}Mv^2 + \\frac{1}{2}I\\omega^2$
+
+---
+
+**13. ROLLING DOWN AN INCLINE**
+* **Acceleration:** $a = \\frac{g\\sin\\theta}{1 + \\frac{I}{MR^2}}$
+* Smaller $I \\implies$ Greater Acceleration.
+* **Order of Acceleration down incline:**
+  Ring < Hollow Sphere < Disc < Solid Sphere
+
+---
+
+**14. JEE MUST-REMEMBER FACTS**
+* Torque causes angular acceleration.
+* Moment of inertia depends on mass distribution.
+* Angular momentum conserved if external torque is zero.
+* Ring has maximum I among common bodies for the same mass and radius.
+* Solid sphere reaches bottom first on rough incline.`
+  },
+  'work-power-energy-short-notes': {
+    id: 'work-power-energy-short-notes',
+    title: 'Work, Power & Energy',
+    subject: 'Physics',
+    category: 'Revision Notes',
+    content: `### WORK POWER ENERGY - JEE SHORT NOTES
+
+**1. WORK**
+Work is said to be done when a force causes displacement.
+* **Formula:** $W = \\vec{F} \\cdot \\vec{s} = Fs \\cos\\theta$ (Where F = Force, s = Displacement, $\\theta$ = Angle)
+* **Unit:** Joule (J)
+* **Dimension:** $[M L^2 T^{-2}]$
+
+---
+
+**2. SPECIAL CASES OF WORK**
+* **$\\theta = 0^\\circ$:** $W = Fs$ (Maximum Positive Work)
+* **$\\theta = 90^\\circ$:** $W = 0$ (No Work Done)
+* **$\\theta = 180^\\circ$:** $W = -Fs$ (Maximum Negative Work)
+
+---
+
+**3. WORK DONE BY VARIABLE FORCE**
+* $W = \\int F dx$
+* Area under F-x graph = Work Done
+
+---
+
+**4. ENERGY**
+Capacity to do work. Unit: Joule (J). Types: Kinetic Energy, Potential Energy, Mechanical Energy.
+
+---
+
+**5. KINETIC ENERGY (K.E.)**
+Energy possessed due to motion.
+* $K = \\frac{1}{2}mv^2$
+* **Unit:** Joule; **Dimension:** $[M L^2 T^{-2}]$
+* **In terms of momentum (p):** $K = \\frac{p^2}{2m}$
+    * For same momentum: $K \\propto \\frac{1}{m}$
+    * For same kinetic energy: $p \\propto \\sqrt{m}$
+
+---
+
+**6. WORK-ENERGY THEOREM**
+Net Work Done = Change in Kinetic Energy
+* $W_{net} = \\Delta K$ *(Most Important Theorem)*
+
+---
+
+**7. POTENTIAL ENERGY (P.E.)**
+Energy possessed due to position or configuration.
+* **Gravitational Potential Energy (Near Earth Surface):** $U = mgh$ (h = Height from reference level)
+* **Spring Potential Energy:** $U = \\frac{1}{2}kx^2$ (k = Spring Constant, x = Compression/Extension) *(Most Important Formula)*
+
+---
+
+**8. CONSERVATIVE & NON-CONSERVATIVE FORCES**
+* **Conservative Force:** Work done is path independent. (e.g., Gravitational Force, Electrostatic Force, Spring Force)
+    * $F = -\\frac{dU}{dx}$ (Slope of U-x graph = -Force)
+* **Non-Conservative Force:** Work done depends on path. (e.g., Friction, Air Resistance)
+
+---
+
+**9. MECHANICAL ENERGY**
+Total Energy: $E = K + U$
+* **Conservation of Mechanical Energy:** If only conservative forces act, Total Mechanical Energy remains constant: $K_1 + U_1 = K_2 + U_2$
+
+---
+
+**10. POWER**
+Rate of doing work. Unit: Watt (W) = 1 J/s.
+* **Average Power:** $P_{avg} = \\frac{W}{t}$
+* **Instantaneous Power:** $P = \\frac{dW}{dt} = \\vec{F} \\cdot \\vec{v}$ *(Most Important Formula)*
+
+---
+
+**11. EFFICIENCY**
+* $\\eta = \\frac{\\text{Output Power}}{\\text{Input Power}}$
+* Percentage Efficiency: $\\eta\\% = \\eta \\times 100$
+
+---
+
+**12. SPRING FORCE & WORK DONE**
+* **Hooke's Law:** $F = -kx$ (Negative sign indicates restoring nature)
+* **Work done by spring:** $W = \\frac{1}{2}k(x_1^2 - x_2^2)$
+    * Special Case ($0 \\to x$): $W = -\\frac{1}{2}kx^2$
+
+---
+
+**13. COLLISIONS**
+* Momentum is conserved in all collisions.
+* **Elastic Collision:** Momentum conserved, Kinetic Energy conserved.
+* **Inelastic Collision:** Momentum conserved, Kinetic Energy not conserved.
+
+---
+
+**14. ESCAPE VELOCITY**
+Minimum velocity needed to escape Earth's gravity.
+* $V_e = \\sqrt{2gR}$ *(Most Important Formula)*
+
+---
+
+**15. JEE MUST-REMEMBER FACTS**
+* Work, Energy, and Power are all scalar quantities.
+* Work done by centripetal force = 0.
+* Mechanical energy is conserved only when non-conservative forces are absent.
+* P = Fv when force and velocity are along the same direction.`
+  },
   'vectors-short-notes': {
     id: 'vectors-short-notes',
     title: 'Vectors - JEE Short Notes',
@@ -222,6 +439,144 @@ const mockDb: Record<string, MaterialData> = {
 **6. CUTTING OF STRINGS & SPRINGS**
 * **Springs:** The spring force ($kx$) does **not** change instantaneously just after a cut is made elsewhere in the system (unless the spring itself is cut), because deformation $x$ requires time to change.
 * **Strings:** Tension ($T$) changes **instantaneously** (drops to zero or adjusts to a new value immediately) because a string cannot sustain any slack or requires no macroscopic deformation to transmit force.`
+  },
+  'periodic-properties': {
+    id: 'periodic-properties',
+    title: 'Periodic Properties',
+    subject: 'Chemistry',
+    category: 'Revision Notes',
+    content: `### PERIODIC PROPERTIES - JEE SHORT NOTES
+
+**1. EFFECTIVE NUCLEAR CHARGE (Zeff)**
+* Attraction experienced by valence electrons towards the nucleus.
+* Zeff = Z – S
+  where Z = Atomic Number
+        S = Shielding Constant
+
+**Trend:**
+* Across a Period: Increases
+* Down a Group: Slightly Increases
+
+Higher Zeff $\\implies$ Smaller Atomic Size, Higher Ionization Energy, Higher Electronegativity.
+
+---
+
+**2. ATOMIC RADIUS**
+Distance between the nucleus and the outermost shell.
+
+**Trend:**
+* Across a Period: Decreases (Due to increase in Zeff)
+* Down a Group: Increases (Due to addition of new shells)
+
+Example: Li > Be > B > C > N > O > F
+
+---
+
+**3. IONIC RADIUS**
+**Cations (+):**
+* Smaller than parent atom.
+* Example: Na⁺ < Na
+
+**Anions (−):**
+* Larger than parent atom.
+* Example: Cl⁻ > Cl
+
+**Isoelectronic Species:**
+* Greater nuclear charge $\\implies$ Smaller size
+* Order: N³⁻ > O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺
+
+---
+
+**4. IONIZATION ENERGY (IE)**
+Energy required to remove the most loosely bound electron.
+
+**Trend:**
+* Across a Period: Increases
+* Down a Group: Decreases
+
+**Important Exceptions:**
+* Be > B (Electron removed from 2p orbital in B)
+* N > O (Extra stability of half-filled p³ configuration)
+
+Highest IE: Noble Gases
+Lowest IE: Alkali Metals
+
+---
+
+**5. ELECTRON AFFINITY (EA)**
+Energy released when an electron is added to a gaseous atom.
+
+**Trend:**
+* Across a Period: Generally Increases
+* Down a Group: Generally Decreases
+
+**Important Exceptions:**
+* Cl > F
+* Noble gases have nearly zero or positive EA.
+
+Order: Cl > F > Br > I
+
+---
+
+**6. ELECTRONEGATIVITY (EN)**
+Tendency of an atom to attract shared electron pair.
+
+**Trend:**
+* Across a Period: Increases
+* Down a Group: Decreases
+
+Highest Electronegativity: Fluorine (4.0)
+Lowest Electronegativity: Francium
+
+---
+
+**7. METALLIC CHARACTER**
+Tendency to lose electrons.
+
+**Trend:**
+* Across a Period: Decreases
+* Down a Group: Increases
+
+Most Metallic Element: Cesium / Francium
+
+---
+
+**8. NON-METALLIC CHARACTER**
+Tendency to gain electrons.
+
+**Trend:**
+* Across a Period: Increases
+* Down a Group: Decreases
+
+Most Non-Metallic Element: Fluorine
+
+---
+
+**9. OXIDIZING AND REDUCING NATURE**
+**Oxidizing Power:** Ability to gain electrons.
+Order: F₂ > Cl₂ > Br₂ > I₂
+
+**Reducing Power:** Ability to lose electrons.
+Order: Li < Na < K < Rb < Cs
+
+---
+
+**10. ACIDIC AND BASIC CHARACTER OF OXIDES**
+**Across a Period:** Basic $\\to$ Amphoteric $\\to$ Acidic
+Example: Na₂O $\\to$ MgO $\\to$ Al₂O₃ $\\to$ SiO₂ $\\to$ P₂O₅ $\\to$ SO₃
+
+**Down a Group:**
+* Basic character increases.
+* Acidic character decreases.
+
+---
+
+**MOST IMPORTANT JEE EXCEPTIONS**
+1. Be > B (Ionization Energy)
+2. N > O (Ionization Energy)
+3. Cl > F (Electron Affinity)
+4. Ga < Al (Atomic Radius Anomaly)
+5. Noble Gases $\\to$ Highest IE and nearly zero EA`
   }
 };
 
@@ -273,10 +628,15 @@ export default function MaterialViewer() {
            {/* We add a custom wrapper for react-markdown to style math properly */}
            <div className="markdown-body">
              <ReactMarkdown 
-               remarkPlugins={[remarkMath]} 
+               remarkPlugins={[remarkMath, remarkGfm]} 
                rehypePlugins={[rehypeKatex]}
                components={{
                  h3: ({node, ...props}) => <h3 className="flex items-center gap-2 pt-6 border-t-2 border-emerald-50" {...props} />,
+                 table: ({node, ...props}) => (
+                   <div className="w-full overflow-x-auto my-4 md:my-6 rounded-xl border border-gray-100 shadow-sm">
+                     <table className="w-full text-left border-collapse min-w-[500px]" {...props} />
+                   </div>
+                 )
                }}
              >
                {data.content}
