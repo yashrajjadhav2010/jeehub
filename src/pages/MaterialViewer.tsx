@@ -591,21 +591,29 @@ export default function MaterialViewer() {
     if (materialId && mockDb[materialId]) {
       setData(mockDb[materialId]);
     } else {
-      setData(mockDb['vectors-short-notes']); // Fallback to vectors for now
+      setData({
+        id: materialId || 'unknown',
+        title: 'Material Not Found',
+        subject: 'System',
+        category: 'Error',
+        content: `### HTTP 404: Not Found\n\nThe requested material ID \`${materialId}\` is not available in the database.\n\nKeys available: ${Object.keys(mockDb).join(', ')}`
+      });
     }
   }, [materialId]);
 
   if (!data) return null;
 
   return (
-    <div className="space-y-8 pb-20 max-w-4xl mx-auto px-4 sm:px-0">
-      <Link to="/study" className="inline-flex items-center gap-2 text-emerald-900/40 hover:text-primary transition-colors text-sm font-bold uppercase tracking-wide group">
-        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-        Back to Archive
-      </Link>
+    <div className="space-y-6 sm:space-y-8 pb-20 max-w-4xl mx-auto">
+      <div className="px-4 sm:px-0">
+        <Link to="/study" className="inline-flex items-center gap-2 text-emerald-900/40 hover:text-primary transition-colors text-sm font-bold uppercase tracking-wide group mt-4 sm:mt-0">
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+          Back to Archive
+        </Link>
+      </div>
 
-      <div className="bg-white rounded-[2rem] sm:rounded-[3rem] border-2 border-emerald-50 shadow-2xl shadow-emerald-900/5 p-6 sm:p-12">
-        <header className="mb-10 sm:mb-12 border-b-2 border-emerald-50 pb-8 sm:pb-10">
+      <div className="bg-white sm:rounded-[3rem] border-y-2 sm:border-2 border-emerald-50 sm:shadow-2xl sm:shadow-emerald-900/5 p-5 px-6 sm:p-12">
+        <header className="mb-8 sm:mb-12 border-b-2 border-emerald-50 pb-6 sm:pb-10">
           <div className="flex items-center gap-2 sm:gap-3 mb-4">
             <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest">
               {data.subject}
@@ -645,18 +653,20 @@ export default function MaterialViewer() {
         </article>
       </div>
       
-      <div className="bg-emerald-50/50 p-6 sm:p-8 rounded-3xl border-2 border-emerald-100/50 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-4 text-emerald-900/60">
-           <Info size={24} className="text-emerald-400" />
-           <p className="text-sm font-medium">Was this material helpful for your revision?</p>
-        </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button className="flex-1 sm:flex-none px-6 py-3 bg-white text-emerald-900 font-bold text-xs uppercase tracking-widest border-2 border-emerald-100 rounded-xl hover:border-primary/50 transition-colors shadow-sm">
-             Needs Improvement
-          </button>
-          <button className="flex-1 sm:flex-none px-6 py-3 bg-primary text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-emerald-500 transition-colors shadow-lg shadow-primary/20 flex justify-center items-center gap-2">
-             <Bookmark size={14} /> Save
-          </button>
+      <div className="px-4 sm:px-0">
+        <div className="bg-emerald-50/50 p-6 sm:p-8 rounded-3xl border-2 border-emerald-100/50 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4 text-emerald-900/60">
+             <Info size={24} className="text-emerald-400" />
+             <p className="text-sm font-medium">Was this material helpful for your revision?</p>
+          </div>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <button className="flex-1 sm:flex-none px-6 py-3 bg-white text-emerald-900 font-bold text-xs uppercase tracking-widest border-2 border-emerald-100 rounded-xl hover:border-primary/50 transition-colors shadow-sm">
+               Needs Improvement
+            </button>
+            <button className="flex-1 sm:flex-none px-6 py-3 bg-primary text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-emerald-500 transition-colors shadow-lg shadow-primary/20 flex justify-center items-center gap-2">
+               <Bookmark size={14} /> Save
+            </button>
+          </div>
         </div>
       </div>
     </div>
