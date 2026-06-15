@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Book, FileText, Network, Beaker, Calculator, Atom, Download, Search, ArrowRight, Zap, Target, ScrollText, Bookmark } from 'lucide-react';
+import { Book, FileText, Network, Beaker, Calculator, Atom, Download, Search, ArrowRight, Zap, Target, ScrollText, Bookmark, Activity, Waves, RotateCcw, Crosshairs, Settings2, Compass, PenTool, BatteryCharging, RefreshCw, TriangleRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -11,16 +11,29 @@ export default function Study() {
 
   const materialsDb: Record<string, any[]> = {
     'formulas': [
-       { id: 'kinematics-equations', title: 'Kinematics Equations', subject: 'Physics', type: 'Formula Sheet', time: 'Latest', icon: Atom },
-       { id: 'laws-of-motion', title: 'Laws of Motion', subject: 'Physics', type: 'Formula Sheet', time: 'Updated', icon: Atom },
+       { id: 'kinematics-equations', title: 'Kinematics Equations', subject: 'Physics', type: 'Formula Sheet', time: 'Latest', icon: Activity, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
+       { id: 'laws-of-motion', title: 'Laws of Motion', subject: 'Physics', type: 'Formula Sheet', time: 'Updated', icon: Target, iconColor: 'text-amber-500', iconBg: 'bg-amber-50', iconBorder: 'border-amber-100' },
     ],
     'short-notes': [
-       { id: 'periodic-properties', title: 'Periodic Properties', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Beaker },
-       { id: 'vectors-short-notes', title: 'Vectors & 3D', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Calculator },
-       { id: 'work-power-energy-short-notes', title: 'Work, Power & Energy', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: Atom },
-       { id: 'rotational-motion-short-notes', title: 'Rotational Motion', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: Atom },
+       { id: 'unit-and-dimension', title: 'Unit & Dimension', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: TriangleRight, iconColor: 'text-lime-500', iconBg: 'bg-lime-50', iconBorder: 'border-lime-100' },
+       { id: 'periodic-properties', title: 'Periodic Properties', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Beaker, iconColor: 'text-fuchsia-500', iconBg: 'bg-fuchsia-50', iconBorder: 'border-fuchsia-100' },
+       { id: 'vectors-short-notes', title: 'Vector & Calculus', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Compass, iconColor: 'text-sky-500', iconBg: 'bg-sky-50', iconBorder: 'border-sky-100' },
+       { id: 'work-power-energy-short-notes', title: 'Work, Power & Energy', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: BatteryCharging, iconColor: 'text-yellow-500', iconBg: 'bg-yellow-50', iconBorder: 'border-yellow-100' },
+       { id: 'rotational-motion-short-notes', title: 'Rotational Motion', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: RefreshCw, iconColor: 'text-orange-500', iconBg: 'bg-orange-50', iconBorder: 'border-orange-100' },
+       { id: 'atomic-structure', title: 'Atomic Structure', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Atom, iconColor: 'text-purple-500', iconBg: 'bg-purple-50', iconBorder: 'border-purple-100' },
+       { id: 'waves', title: 'Waves', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: Waves, iconColor: 'text-cyan-500', iconBg: 'bg-cyan-50', iconBorder: 'border-cyan-100' },
     ],
-    'mind-maps': [],
+    'mind-maps': [
+       { id: 'kinematics-mindmap', title: 'Kinematics', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Activity, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
+       { id: 'laws-of-motion-mindmap', title: 'Laws of Motion', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Target, iconColor: 'text-amber-500', iconBg: 'bg-amber-50', iconBorder: 'border-amber-100' },
+       { id: 'unit-dimension-mindmap', title: 'Unit & Dimension', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: TriangleRight, iconColor: 'text-lime-500', iconBg: 'bg-lime-50', iconBorder: 'border-lime-100' },
+       { id: 'periodic-properties-mindmap', title: 'Periodic Properties', subject: 'Chemistry', type: 'Mind Map', time: 'Latest', icon: Beaker, iconColor: 'text-fuchsia-500', iconBg: 'bg-fuchsia-50', iconBorder: 'border-fuchsia-100' },
+       { id: 'vectors-mindmap', title: 'Vector & Calculus', subject: 'Mathematics/Physics', type: 'Mind Map', time: 'Latest', icon: Compass, iconColor: 'text-sky-500', iconBg: 'bg-sky-50', iconBorder: 'border-sky-100' },
+       { id: 'work-power-energy-mindmap', title: 'Work, Power & Energy', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: BatteryCharging, iconColor: 'text-yellow-500', iconBg: 'bg-yellow-50', iconBorder: 'border-yellow-100' },
+       { id: 'rotational-motion-mindmap', title: 'Rotational Motion', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: RefreshCw, iconColor: 'text-orange-500', iconBg: 'bg-orange-50', iconBorder: 'border-orange-100' },
+       { id: 'atomic-structure-mindmap', title: 'Atomic Structure', subject: 'Chemistry', type: 'Mind Map', time: 'Latest', icon: Atom, iconColor: 'text-purple-500', iconBg: 'bg-purple-50', iconBorder: 'border-purple-100' },
+       { id: 'waves-mindmap', title: 'Waves', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Waves, iconColor: 'text-cyan-500', iconBg: 'bg-cyan-50', iconBorder: 'border-cyan-100' },
+    ],
     'cheat-sheets': []
   };
 
@@ -51,7 +64,7 @@ export default function Study() {
       bookmark: 'bg-[#e86665]',
       tabs: ['bg-[#f5c64b]', 'bg-[#e86665]', 'bg-[#9071df]'],
       latch: false,
-      count: '4 Chapters'
+      count: '7 Chapters'
     },
     {
       id: 'mind-maps',
@@ -63,7 +76,7 @@ export default function Study() {
       bookmark: 'bg-[#bc90e9]',
       tabs: ['bg-[#f5c64b]', 'bg-[#f5c64b]', 'bg-[#f5c64b]', 'bg-[#f5c64b]'],
       latch: false,
-      count: '0 Maps'
+      count: '9 Maps'
     },
     {
       id: 'cheat-sheets',
@@ -80,11 +93,11 @@ export default function Study() {
   ];
 
   const recentMaterials = [
-    { id: 'work-power-energy-short-notes', title: 'Work, Power & Energy', subject: 'Physics', type: 'Revision Notes', time: 'Just Now', icon: Atom },
-    { id: 'periodic-properties', title: 'Periodic Properties', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Beaker },
-    { id: 'kinematics-equations', title: 'Kinematics Equations', subject: 'Physics', type: 'Formula Sheet', time: 'Latest', icon: Atom },
-    { id: 'laws-of-motion', title: 'Laws of Motion', subject: 'Physics', type: 'Formula Sheet', time: 'Updated', icon: Atom },
-    { id: 'vectors-short-notes', title: 'Vectors & 3D', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Calculator },
+    { id: 'work-power-energy-short-notes', title: 'Work, Power & Energy', subject: 'Physics', type: 'Revision Notes', time: 'Just Now', icon: BatteryCharging, iconColor: 'text-yellow-500', iconBg: 'bg-yellow-50', iconBorder: 'border-yellow-100' },
+    { id: 'rotational-motion-short-notes', title: 'Rotational Motion', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: RefreshCw, iconColor: 'text-orange-500', iconBg: 'bg-orange-50', iconBorder: 'border-orange-100' },
+    { id: 'atomic-structure', title: 'Atomic Structure', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Atom, iconColor: 'text-purple-500', iconBg: 'bg-purple-50', iconBorder: 'border-purple-100' },
+    { id: 'vectors-short-notes', title: 'Vector & Calculus', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Compass, iconColor: 'text-sky-500', iconBg: 'bg-sky-50', iconBorder: 'border-sky-100' },
+    { id: 'kinematics-equations', title: 'Kinematics Equations', subject: 'Physics', type: 'Formula Sheet', time: 'Latest', icon: Activity, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
   ];
 
   const rawDisplayedMaterials = activeCategory ? materialsDb[activeCategory] : recentMaterials;
@@ -220,7 +233,7 @@ export default function Study() {
               {displayedMaterials.length > 0 ? displayedMaterials.map((item, i) => (
                 <Link to={item.id ? `/study/${item.id}` : `/study/vectors-short-notes`} key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl border-2 border-emerald-50 hover:border-primary/20 bg-emerald-50/20 hover:bg-emerald-50/50 transition-all gap-4 group cursor-pointer block">
                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-emerald-100 flex items-center justify-center shrink-0 text-emerald-900/40 group-hover:text-primary transition-colors">
+                      <div className={cn("w-12 h-12 rounded-xl shadow-sm border flex items-center justify-center shrink-0 transition-colors", item.iconBg || "bg-white", item.iconBorder || "border-emerald-100", item.iconColor || "text-emerald-900/40 group-hover:text-primary")}>
                          <item.icon size={20} />
                       </div>
                       <div>
@@ -266,6 +279,24 @@ export default function Study() {
                      Ask the Engine <ArrowRight size={14} />
                   </Link>
                </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-white shadow-xl shadow-black/10 relative overflow-hidden border border-white/5">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+                <div className="relative z-10 space-y-6">
+                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10">
+                        <Beaker size={24} className="text-blue-400" />
+                    </div>
+                    <div className="space-y-2">
+                        <h4 className="text-xl font-black uppercase italic tracking-tight">Interactive Periodic Table</h4>
+                        <p className="text-xs font-medium text-gray-400 leading-relaxed">
+                            Explore elements, their properties, electron configurations, and test your knowledge with the built-in quiz mode.
+                        </p>
+                    </div>
+                    <Link to="/study/periodic-table" className="w-full py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-500 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
+                        Open Table <ArrowRight size={14} />
+                    </Link>
+                </div>
             </div>
          </div>
       </div>

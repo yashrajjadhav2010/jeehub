@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Bookmark, BrainCircuit, CheckCheck, Clock, Download, FileText, Info, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Bookmark, BrainCircuit, CheckCheck, Clock, Download, FileText, Info, AlertTriangle, Network, Layers } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -577,8 +577,485 @@ Example: Na₂O $\\to$ MgO $\\to$ Al₂O₃ $\\to$ SiO₂ $\\to$ P₂O₅ $\\to$
 3. Cl > F (Electron Affinity)
 4. Ga < Al (Atomic Radius Anomaly)
 5. Noble Gases $\\to$ Highest IE and nearly zero EA`
+  },
+  'kinematics-mindmap': {
+    id: 'kinematics-mindmap',
+    title: 'Kinematics Mind Map',
+    subject: 'Physics',
+    category: 'Mind Map',
+    content: `### KINEMATICS - JEE MIND MAP
+
+* **MOTION IN 1D**
+  * **Distance vs Displacement** -> Path length vs Shortest path
+  * **Speed vs Velocity** -> Scalar vs Vector
+  * **Acceleration** -> Rate of change of velocity
+  * **Graph Analysis** -> s-t (slope=v), v-t (slope=a, area=s), a-t (area=$\\Delta v$)
+  * **Equations of Motion** -> $v = u+at$, $s=ut+\\frac{1}{2}at^2$, $v^2=u^2+2as$ (valid for constant acceleration)
+  * **Motion under Gravity** -> Free fall, $a = -g$
+
+* **MOTION IN 2D / 3D**
+  * **Vectors** -> Addition, Subtraction, Resolution
+  * **Equations in Vector Form** -> $\\vec{v} = \\vec{u} + \\vec{a}t$
+  * **Projectile Motion**
+    * Trajectory -> $y = x\\tan\\theta - \\frac{gx^2}{2u^2\\cos^2\\theta}$
+    * Time of Flight -> $T = \\frac{2u\\sin\\theta}{g}$
+    * Maximum Height -> $H = \\frac{u^2\\sin^2\\theta}{2g}$
+    * Horizontal Range -> $R = \\frac{u^2\\sin2\\theta}{g}$
+  * **Relative Motion**
+    * $\\vec{v}_{AB} = \\vec{v}_A - \\vec{v}_B$
+    * River-Boat Problems -> Shortest path vs Shortest time
+    * Rain-Man Problems -> $\\vec{v}_{rm} = \\vec{v}_r - \\vec{v}_m$
+
+* **CIRCULAR MOTION (Kinematics)**
+  * **Angular Variables** -> $\\theta, \\omega, \\alpha$
+  * **Relation with Linear** -> $v = R\\omega$, $a_t = R\\alpha$
+  * **Accelerations** -> Centripetal ($a_c = \\frac{v^2}{R}$), Tangential ($a_t$)
+  * **Total Acceleration** -> $a = \\sqrt{a_c^2 + a_t^2}$
+
+* **TIPS FOR JEE**
+  * Always set a sign convention and stick to it.
+  * For relative motion, try to bring one body to rest.`
+  },
+  'laws-of-motion-mindmap': {
+    id: 'laws-of-motion-mindmap',
+    title: 'Laws of Motion Mind Map',
+    subject: 'Physics',
+    category: 'Mind Map',
+    content: `### LAWS OF MOTION - JEE MIND MAP
+
+* **NEWTON'S LAWS**
+  * **First Law** -> Inertia (Rest, Motion, Direction)
+  * **Second Law** -> $\\vec{F} = \\frac{d\\vec{p}}{dt} = m\\vec{a}$ (if mass is constant)
+  * **Third Law** -> Action-Reaction pairs (act on different bodies)
+
+* **FORCES IN NATURE & MECHANICS**
+  * **Weight ($mg$)** -> Always vertically downwards
+  * **Normal Reaction ($N$)** -> Perpendicular to contact surfaces
+  * **Tension ($T$)** -> Pulling force along strings
+  * **Spring Force ($F_s = -kx$)** -> Restoring force
+  * **Friction ($f$)** -> Opposes relative motion
+
+* **FREE BODY DIAGRAMS (FBD)**
+  * Isolate the body.
+  * Draw all external forces acting *on* the body.
+  * Resolve forces along and perpendicular to acceleration.
+  * Apply $\\Sigma F_x = ma_x$, $\\Sigma F_y = ma_y$.
+
+* **FRICTION**
+  * **Static Friction ($f_s$)** -> Self-adjusting up to limiting value $f_{s,max} = \\mu_s N$
+  * **Kinetic Friction ($f_k$)** -> Constant when sliding, $f_k = \\mu_k N$
+  * Angle of Friction & Angle of Repose
+
+* **DYNAMICS OF CIRCULAR MOTION**
+  * **Centripetal Force** -> Net force towards center = $\\frac{mv^2}{R}$
+  * Conical Pendulum, Banking of Roads, Turning of Car
+
+* **PSEUDO FORCE**
+  * Concept -> Used in non-inertial (accelerating) frames
+  * Magnitude -> $-m\\vec{a}_{frame}$
+  * Direction -> Opposite to frame's acceleration
+
+* **TIPS FOR JEE**
+  * Massless string -> uniform tension.
+  * Pulley massless & frictionless -> same tension on both sides.`
+  },
+  'unit-dimension-mindmap': {
+    id: 'unit-dimension-mindmap',
+    title: 'Unit & Dimension Mind Map',
+    subject: 'Physics',
+    category: 'Mind Map',
+    content: `### UNIT & DIMENSION - JEE MIND MAP
+
+* **PHYSICAL QUANTITIES & UNITS**
+  * **Fundamental** -> Mass (kg), Length (m), Time (s), Temp (K), Current (A), Amount (mol), Luminous Intensity (cd)
+  * **Derived** -> Combinations of fundamental units (e.g., Velocity, Force)
+  * **Supplementary** -> Plane Angle (rad), Solid Angle (sr)
+
+* **DIMENSIONAL ANALYSIS**
+  * **Significance** -> Expressing physical quantities in terms of [M, L, T, A, K, mol, cd]
+  * **Applications**
+    * Checking correctness of equations (Principle of Homogeneity)
+    * Deriving relations among physical quantities
+    * Converting units from one system to another
+
+* **SIGNIFICANT FIGURES & ROUNDING OFF**
+  * Non-zero digits are significant.
+  * Zeros between non-zeros are significant.
+  * Trailing zeros in a decimal number are significant.
+  * Operations -> Follow rule of lowest significant figures (multiplication/division) or least decimal places (addition/subtraction).
+
+* **ERRORS IN MEASUREMENT**
+  * **Types** -> Systematic, Random, Least Count Error
+  * **Error Calculation**
+    * Absolute Error, Mean Absolute Error
+    * Relative/Fractional Error
+    * Percentage Error
+  * **Propagation of Errors**
+    * Addition/Subtraction -> $\\Delta Z = \\Delta A + \\Delta B$
+    * Multiplication/Division -> $\\frac{\\Delta Z}{Z} = \\frac{\\Delta A}{A} + \\frac{\\Delta B}{B}$
+    * Powers -> $\\frac{\\Delta Z}{Z} = n\\frac{\\Delta A}{A}$
+
+* **VERNIER CALLIPERS & SCREW GAUGE**
+  * **Vernier Callipers** -> $LC = 1\\text{MSD} - 1\\text{VSD}$
+  * **Screw Gauge** -> $LC = \\frac{\\text{Pitch}}{\\text{No. of divisions on circular scale}}$`
+  },
+  'periodic-properties-mindmap': {
+    id: 'periodic-properties-mindmap',
+    title: 'Periodic Properties Mind Map',
+    subject: 'Chemistry',
+    category: 'Mind Map',
+    content: `### PERIODIC PROPERTIES - JEE MIND MAP
+
+* **MODERN PERIODIC TABLE**
+  * Based on Atomic Number (Moseley's Law)
+  * Groups (1-18) and Periods (1-7)
+  * s, p, d, f blocks
+
+* **EFFECTIVE NUCLEAR CHARGE ($Z_{eff}$)**
+  * $Z_{eff} = Z - \\sigma$ (Slater's Rules)
+  * Driving force for most periodic trends
+  * Increases across a period, remains nearly constant down a group
+
+* **ATOMIC RADIUS**
+  * Meaning: distance from nucleus to outermost electron
+  * Covalent, Metallic, Van der Waals Radius
+  * **Trend:** Decreases across a period, Increases down a group
+  * **Exceptions:** 3d series (nearly constant in middle), Ga < Al, Lanthanide contraction
+
+* **IONIC RADIUS**
+  * Cation < Neutral Atom
+  * Anion > Neutral Atom
+  * Isoelectronic Series: Radius $\\propto \\frac{1}{Z}$
+
+* **IONIZATION ENTHALPY (IE)**
+  * Energy required to remove an electron from an isolated gaseous atom
+  * **Trend:** Increases across a period, Decreases down a group
+  * **Exceptions:** Be > B, N > O, Mg > Al, P > S (due to half/fully-filled stability)
+
+* **ELECTRON GAIN ENTHALPY ($\\Delta_{eg}H$) / ELECTRON AFFINITY (EA)**
+  * Enthalpy change when an electron is added to an isolated gaseous atom
+  * **Trend:** Becomes more negative across a period, less negative down a group
+  * **Exceptions:** Cl > F, S > O, P > N (due to interelectronic repulsion in small 2p orbitals)
+
+* **ELECTRONEGATIVITY (EN)**
+  * Tendency to attract shared electron pair
+  * **Scales:** Pauling, Mulliken, Allred-Rochow
+  * **Trend:** Increases across a period, Decreases down a group
+  * Highest for Fluorine`
+  },
+  'vectors-mindmap': {
+    id: 'vectors-mindmap',
+    title: 'Vector & Calculus Mind Map',
+    subject: 'Mathematics/Physics',
+    category: 'Mind Map',
+    content: `### VECTOR & CALCULUS - JEE MIND MAP
+
+* **TYPES OF VECTORS**
+  * Null, Unit, Equal, Collinear, Coplanar, Position Vector
+
+* **VECTOR ADDITION**
+  * **Triangle Law** & **Parallelogram Law**
+  * Resultant Magnitude -> $R = \\sqrt{A^2 + B^2 + 2AB\\cos\\theta}$
+  * Resultant Direction -> $\\tan\\alpha = \\frac{B\\sin\\theta}{A + B\\cos\\theta}$
+  * Polygon Law -> Multiple vectors
+
+* **RESOLUTION OF VECTORS**
+  * 2D $\\to$ $A_x = A\\cos\\theta$, $A_y = A\\sin\\theta$
+  * 3D $\\to$ Components along X, Y, Z axes using direction cosines ($\\cos\\alpha, \\cos\\beta, \\cos\\gamma$)
+
+* **VECTOR MULTIPLICATION**
+  * **Dot / Scalar Product** -> $\\vec{A} \\cdot \\vec{B} = AB\\cos\\theta$. Commutative. Used to find angle between vectors. Work, Power.
+  * **Cross / Vector Product** -> $\\vec{A} \\times \\vec{B} = AB\\sin\\theta \\hat{n}$. Anti-commutative. Directed by Right-Hand Rule. Torque, Angular momentum. Area of parallelogram.
+
+* **BASIC CALCULUS FOR PHYSICS**
+  * **Differentiation**
+    * Meaning: Rate of change, slope of tangent
+    * Rules: Power rule, Product rule, Quotient rule, Chain rule
+    * Maxima & Minima -> $\\frac{dy}{dx} = 0$, $\\frac{d^2y}{dx^2} < 0$ (Max), $> 0$ (Min)
+  * **Integration**
+    * Meaning: Area under the curve
+    * Definite and Indefinite Integrals
+    * Standard formulas: $\\int x^n dx$, $\\int \\sin x dx$, $\\int \\cos x dx$`
+  },
+  'work-power-energy-mindmap': {
+    id: 'work-power-energy-mindmap',
+    title: 'Work, Power & Energy Mind Map',
+    subject: 'Physics',
+    category: 'Mind Map',
+    content: `### WORK, POWER & ENERGY - JEE MIND MAP
+
+* **WORK (W)**
+  * $W = \\vec{F} \\cdot \\vec{s} = Fs\\cos\\theta$
+  * **Variable Force:** $W = \\int \\vec{F} \\cdot d\\vec{s}$
+  * Work done is Area under F-x curve.
+  * Depends on the frame of reference.
+
+* **ENERGY**
+  * **Kinetic Energy (K):** $K = \\frac{1}{2}mv^2 = \\frac{p^2}{2m}$
+  * **Potential Energy (U):** Defined only for conservative forces.
+    * $F = -\\frac{dU}{dx}$
+    * Gravitational PE: $U = mgh$
+    * Spring PE: $U = \\frac{1}{2}kx^2$
+
+* **WORK-ENERGY THEOREM**
+  * $W_{net} = \\Delta K$
+  * Net work done by ALL forces (conservative, non-conservative, pseudo) = Change in KE.
+
+* **CONSERVATION OF MECHANICAL ENERGY**
+  * When $W_{non-conservative} = 0$, then $K_i + U_i = K_f + U_f$
+  * Mechanical Energy ($E = K + U$) remains constant.
+
+* **POWER (P)**
+  * Rate of doing work.
+  * Average Power: $P_{avg} = \\frac{W}{\\Delta t}$
+  * Instantaneous Power: $P_{inst} = \\frac{dW}{dt} = \\vec{F} \\cdot \\vec{v}$
+
+* **VERTICAL CIRCULAR MOTION**
+  * Minimum velocity at bottom to complete circle: $v_{min} = \\sqrt{5gR}$
+  * Tension at bottom: $T_{bottom} = 6mg$ (when critical velocity)
+  * String vs Rod conditions differ.
+
+* **COLLISIONS**
+  * **Coefficient of Restitution (e):** $e = \\frac{\\text{Velocity of Separation}}{\\text{Velocity of Approach}}$
+  * **Elastic ($e=1$):** Both Momentum & KE conserved.
+  * **Inelastic ($0<e<1$):** Only Momentum conserved.
+  * **Perfectly Inelastic ($e=0$):** Bodies stick together.`
+  },
+  'rotational-motion-mindmap': {
+    id: 'rotational-motion-mindmap',
+    title: 'Rotational Motion Mind Map',
+    subject: 'Physics',
+    category: 'Mind Map',
+    content: `### ROTATIONAL MOTION - JEE MIND MAP
+
+* **RIGID BODY DYNAMICS**
+  * Kinematics -> $\\omega, \\alpha, \\theta$
+  * Center of Mass (COM) frame analysis
+
+* **MOMENT OF INERTIA (I)**
+  * $I = \\int r^2 dm$
+  * Standard Objects: Ring ($MR^2$), Disc ($\\frac{MR^2}{2}$), Solid Sphere ($\\frac{2MR^2}{5}$), Hollow Sphere ($\\frac{2MR^2}{3}$), Rod ($\\frac{ML^2}{12}$)
+  * **Theorems:**
+    * Parallel Axis: $I = I_{cm} + Md^2$
+    * Perpendicular Axis: $I_z = I_x + I_y$ (for 2D bodies)
+
+* **TORQUE & EQUILIBRIUM**
+  * $\\vec{\\tau} = \\vec{r} \\times \\vec{F} = I\\alpha$
+  * Translational equilibrium: $\\Sigma \\vec{F} = 0$
+  * Rotational equilibrium: $\\Sigma \\vec{\\tau} = 0$ (about any axis)
+  * Couple and Moment of Couple
+
+* **ANGULAR MOMENTUM (L)**
+  * $\\vec{L} = \\vec{r} \\times \\vec{p} = I\\omega$
+  * **Conservation of Angular Momentum:** If $\\tau_{ext} = 0$, then $\\vec{L} = \\text{constant}$
+
+* **ROTATIONAL KINETIC ENERGY**
+  * $K_{rot} = \\frac{1}{2}I\\omega^2$
+  * **Rolling Motion:** Combined Translation & Rotation. Total E = $K_{trans} + K_{rot}$
+  * Pure Rolling condition: $v_{cm} = R\\omega$, $a_{cm} = R\\alpha$ (no slipping)
+
+* **ROLLING ON INCLINED PLANE**
+  * Acceleration: $a = \\frac{g\\sin\\theta}{1 + \\frac{k^2}{R^2}}$
+  * Velocity at bottom: $v = \\sqrt{\\frac{2gh}{1 + \\frac{k^2}{R^2}}}$
+  * Condition for Pure Rolling: Friction $f = \\frac{mg\\sin\\theta}{1 + \\frac{R^2}{k^2}} \\le \\mu mg\\cos\\theta$
+
+* **COLLISION OF POINT MASS WITH RIGID BODY**
+  * Conserve Angular Momentum about the hinge/pivot.`
+  },
+  'atomic-structure-mindmap': {
+    id: 'atomic-structure-mindmap',
+    title: 'Atomic Structure Mind Map',
+    subject: 'Chemistry',
+    category: 'Mind Map',
+    content: `### ATOMIC STRUCTURE - JEE MIND MAP
+
+* **SUBATOMIC PARTICLES**
+  * Electron (J.J. Thomson)
+  * Proton (Goldstein)
+  * Neutron (Chadwick)
+
+* **MODELS OF ATOM**
+  * Thomson's Plum Pudding Model
+  * Rutherford's Nuclear Model -> Alpha scattering, defined nucleus
+  * **Bohr's Model** -> For H and H-like species
+    * Postulates: Stationary orbits, Quantization of Angular Momentum ($mvr = \\frac{nh}{2\\pi}$)
+    * Radius: $r_n = 0.529 \\frac{n^2}{Z} \\text{ \\AA}$
+    * Velocity: $v_n = 2.18 \\times 10^6 \\frac{Z}{n} \\text{ m/s}$
+    * Energy: $E_n = -13.6 \\frac{Z^2}{n^2} \\text{ eV}$
+
+* **HYDROGEN SPECTRUM**
+  * Lyman (UV) -> $n_1=1$
+  * Balmer (Visible) -> $n_1=2$
+  * Paschen, Brackett, Pfund (IR) -> $n_1=3, 4, 5$
+  * Rydberg Formula: $\\frac{1}{\\lambda} = R_H Z^2 \\left( \\frac{1}{n_1^2} - \\frac{1}{n_2^2} \\right)$
+
+* **WAVE NATURE OF MATTER & UNCERTAINTY**
+  * **De Broglie Wavelength:** $\\lambda = \\frac{h}{p} = \\frac{h}{mv} = \\frac{h}{\\sqrt{2mE_K}}$
+  * **Heisenberg's Uncertainty Principle:** $\\Delta x \\cdot \\Delta p \\ge \\frac{h}{4\\pi}$
+
+* **QUANTUM MECHANICAL MODEL**
+  * Schrodinger Wave Equation
+  * **Quantum Numbers:**
+    * Principal ($n$) -> Shell, size, energy
+    * Azimuthal ($l$) -> Subshell, shape ($0$ to $n-1$)
+    * Magnetic ($m_l$) -> Orbital, orientation ($-l$ to $+l$)
+    * Spin ($m_s$) -> Spin state of electron ($+\\frac{1}{2}, -\\frac{1}{2}$)
+
+* **FILLING OF ELECTRONS**
+  * **Aufbau Principle** -> Increasing order of energy $(n+l)$ rule
+  * **Pauli's Exclusion Principle** -> No two electrons can have same 4 quantum numbers
+  * **Hund's Rule of Maximum Multiplicity** -> Pairing occurs only after each orbital is singly occupied`
+  },
+  'waves-mindmap': {
+    id: 'waves-mindmap',
+    title: 'Waves Mind Map',
+    subject: 'Physics',
+    category: 'Mind Map',
+    content: `### WAVES - JEE MIND MAP
+
+* **INTRODUCTION & TYPES**
+  * Definition -> Transfer of energy and momentum without bulk transport of matter.
+  * Mechanical (Transverse & Longitudinal) vs Non-Mechanical
+  * Wave Equation: $y = f(t - x/v)$ or $y = f(t + x/v)$
+  * General 1D Wave Eq: $\\frac{\\partial^2 y}{\\partial x^2} = \\frac{1}{v^2}\\frac{\\partial^2 y}{\\partial t^2}$
+
+* **PROGRESSIVE WAVES**
+  * Standard Form: $y = A\\sin(\\omega t - kx + \\phi)$
+  * Wave velocity $v = \\frac{\\omega}{k} = f\\lambda$
+  * Particle velocity $v_p = \\frac{\\partial y}{\\partial t} = -v \\cdot \\frac{\\partial y}{\\partial x}$
+
+* **WAVES ON A STRING**
+  * Velocity: $v = \\sqrt{\\frac{T}{\\mu}}$ ($T$=Tension, $\\mu$=mass/length)
+  * Power Transmission: $P = \\frac{1}{2}\\mu \\omega^2 A^2 v$
+  * Intensity: $I = \\frac{P}{Area} = \\frac{1}{2}\\rho \\omega^2 A^2 v$
+
+* **SUPERPOSITION & INTERFERENCE**
+  * $y = y_1 + y_2$
+  * Constructive -> Path diff $= n\\lambda$, Phase diff $= 2n\\pi$, $I_{max} = (\\sqrt{I_1}+\\sqrt{I_2})^2$
+  * Destructive -> Path diff $= (2n-1)\\frac{\\lambda}{2}$, Phase diff $= (2n-1)\\pi$, $I_{min} = (\\sqrt{I_1}-\\sqrt{I_2})^2$
+
+* **STANDING WAVES (Stationary Waves)**
+  * $y = 2A\\cos(kx)\\sin(\\omega t)$
+  * Nodes (Amplitude = 0) and Antinodes (Amplitude = Max)
+  * Distance between consecutive Node & Antinode = $\\lambda/4$
+  * **Strings fixed at both ends:** $f_n = \\frac{n}{2L}\\sqrt{\\frac{T}{\\mu}}$
+
+* **SOUND WAVES**
+  * Longitudinal pressure waves.
+  * Velocity in fluid: $v = \\sqrt{\\frac{B}{\\rho}}$ (Newton's formula, Laplace Correction $\\to v = \\sqrt{\\frac{\\gamma P}{\\rho}}$)
+  * Velocity in Solid: $v = \\sqrt{\\frac{Y}{\\rho}}$
+
+* **ACOUSTIC PHENOMENA**
+  * **Organ Pipes:**
+    * Open Both Ends: All harmonics present. $f_n = \\frac{nv}{2L}$
+    * Closed One End: Only odd harmonics. $f_{2n-1} = \\frac{(2n-1)v}{4L}$
+  * **Beats:** $f_{beat} = |f_1 - f_2|$
+  * **Doppler Effect:** $f' = f \\left(\\frac{v \\pm v_o}{v \\mp v_s}\\right)`
   }
 };
+
+function MindMapViewer({ data }: { data: MaterialData }) {
+  const lines = data.content.split('\n');
+  const titleLine = lines.find(l => l.startsWith('###'));
+  const title = titleLine ? titleLine.replace('###', '').trim() : data.title;
+
+  const sections: { title: string; content: string }[] = [];
+  let currentTitle = '';
+  let currentContent: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line === titleLine) continue;
+    if (line.trim() === '') {
+       currentContent.push('');
+       continue;
+    }
+
+    const isTopLevel = line.match(/^(\s*)\*\s+\*\*(.*?)\*\*/);
+    
+    if (isTopLevel && isTopLevel[1].length === 0) {
+      if (currentTitle) {
+        sections.push({ title: currentTitle, content: currentContent.join('\n') });
+      }
+      currentTitle = isTopLevel[2].trim();
+      currentContent = [];
+      const remainder = line.replace(/^\*\s+\*\*.*?\*\*/, '').trim();
+      if (remainder) {
+         currentContent.push(`* ${remainder.replace(/^->\s*/, '')}`);
+      }
+    } else {
+      if (currentTitle) {
+        currentContent.push(line.replace(/^ {2}/, '')); 
+      }
+    }
+  }
+  if (currentTitle) {
+    sections.push({ title: currentTitle, content: currentContent.join('\n') });
+  }
+
+  return (
+    <div className="relative pb-8 font-sans mt-4">
+      {/* Title node */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="mx-auto bg-emerald-950 text-white rounded-[2.5rem] p-8 sm:p-12 max-w-3xl text-center shadow-2xl shadow-emerald-900/20 mb-16 relative z-10 overflow-hidden"
+      >
+         <div className="absolute inset-0 bg-[linear-gradient(to_right,#022c22_1px,transparent_1px),linear-gradient(to_bottom,#022c22_1px,transparent_1px)] bg-[size:14px_24px] opacity-20 pointer-events-none" />
+         
+         <div className="relative z-10 flex items-center justify-center gap-3 mb-8">
+            <span className="px-4 py-1.5 bg-white/10 backdrop-blur-md text-emerald-100 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] border border-white/10 shadow-sm">
+              {data.subject}
+            </span>
+            <span className="text-emerald-400 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em]">
+              {data.category}
+            </span>
+         </div>
+         
+         <Network size={40} className="mx-auto mb-6 text-emerald-400/80 relative z-10" />
+         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black heading-display tracking-widest uppercase text-white mb-8 leading-tight relative z-10">{title}</h2>
+         
+         <div className="relative z-10 flex items-center justify-center gap-6 text-emerald-300">
+            <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest"><Clock size={14} /> 5 Min Review</span>
+            <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest"><CheckCheck size={14} /> Nodes Extracted</span>
+         </div>
+      </motion.div>
+
+      {/* Nodes grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 masonry-grid content-start items-start">
+        {sections.map((section, idx) => (
+          <motion.div 
+            key={idx}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: 0.1 + (idx % 2) * 0.1, ease: "easeOut" }}
+            className="bg-white rounded-3xl p-6 sm:p-8 border border-emerald-100 shadow-xl shadow-emerald-900/5 hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-900/10 transition-all duration-300 flex flex-col group overflow-hidden relative"
+          >
+             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-110 opacity-60" />
+             
+             <div className="flex items-start gap-4 mb-5 pb-5 border-b border-emerald-50 relative">
+               <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm shrink-0">
+                 {idx + 1}
+               </div>
+               <h3 className="text-lg sm:text-xl font-bold text-emerald-950 uppercase tracking-tight mt-1.5 leading-snug">{section.title}</h3>
+             </div>
+             
+             <div className="prose prose-sm max-w-none text-gray-600 prose-ul:pl-5 prose-p:my-2 prose-ul:my-2 prose-li:my-1 prose-strong:text-emerald-950 prose-strong:font-bold prose-code:text-emerald-700 relative">
+                <ReactMarkdown 
+                 remarkPlugins={[remarkMath, remarkGfm]} 
+                 rehypePlugins={[rehypeKatex]}
+                >
+                  {section.content}
+                </ReactMarkdown>
+             </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function MaterialViewer() {
   const { materialId } = useParams();
@@ -612,45 +1089,53 @@ export default function MaterialViewer() {
         </Link>
       </div>
 
-      <div className="bg-white sm:rounded-[3rem] border-y-2 sm:border-2 border-emerald-50 sm:shadow-2xl sm:shadow-emerald-900/5 p-5 px-6 sm:p-12">
-        <header className="mb-8 sm:mb-12 border-b-2 border-emerald-50 pb-6 sm:pb-10">
-          <div className="flex items-center gap-2 sm:gap-3 mb-4">
-            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest">
-              {data.subject}
-            </span>
-            <span className="w-1 h-1 rounded-full bg-emerald-200" />
-            <span className="text-emerald-900/40 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-              {data.category}
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black heading-display tracking-tight text-emerald-950 uppercase mb-4">
-            {data.title}
-          </h1>
-          <div className="flex items-center gap-6 text-emerald-900/40">
-             <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"><Clock size={14} /> 5 Min Read</span>
-             <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"><CheckCheck size={14} /> JEE Syllabus Aligned</span>
-          </div>
-        </header>
+      <div className={cn("px-4 sm:px-0 transition-all duration-500", 
+         data.category === 'Mind Map' ? "max-w-4xl" : "bg-white sm:rounded-[3rem] border-y-2 sm:border-2 border-emerald-50 sm:shadow-2xl sm:shadow-emerald-900/5 p-5 px-6 sm:p-12")}
+      >
+        {data.category !== 'Mind Map' && (
+          <header className="mb-8 sm:mb-12 border-b-2 border-emerald-50 pb-6 sm:pb-10">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4">
+              <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest">
+                {data.subject}
+              </span>
+              <span className="w-1 h-1 rounded-full bg-emerald-200" />
+              <span className="text-emerald-900/40 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                {data.category}
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black heading-display tracking-tight text-emerald-950 uppercase mb-4">
+              {data.title}
+            </h1>
+            <div className="flex items-center gap-6 text-emerald-900/40">
+               <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"><Clock size={14} /> 5 Min Read</span>
+               <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"><CheckCheck size={14} /> JEE Syllabus Aligned</span>
+            </div>
+          </header>
+        )}
 
-        <article className="prose prose-emerald prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-emerald-950 prose-p:text-emerald-900/80 prose-strong:text-emerald-900 prose-li:marker:text-primary prose-a:text-primary hover:prose-a:text-emerald-600">
-           {/* We add a custom wrapper for react-markdown to style math properly */}
-           <div className="markdown-body">
-             <ReactMarkdown 
-               remarkPlugins={[remarkMath, remarkGfm]} 
-               rehypePlugins={[rehypeKatex]}
-               components={{
-                 h3: ({node, ...props}) => <h3 className="flex items-center gap-2 pt-6 border-t-2 border-emerald-50" {...props} />,
-                 table: ({node, ...props}) => (
-                   <div className="w-full overflow-x-auto my-4 md:my-6 rounded-xl border border-gray-100 shadow-sm">
-                     <table className="w-full text-left border-collapse min-w-[500px]" {...props} />
-                   </div>
-                 )
-               }}
-             >
-               {data.content}
-             </ReactMarkdown>
-           </div>
-        </article>
+        {data.category === 'Mind Map' ? (
+          <MindMapViewer data={data} />
+        ) : (
+          <article className="prose prose-emerald prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-emerald-950 prose-p:text-emerald-900/80 prose-strong:text-emerald-900 prose-li:marker:text-primary prose-a:text-primary hover:prose-a:text-emerald-600">
+             {/* We add a custom wrapper for react-markdown to style math properly */}
+             <div className="markdown-body">
+               <ReactMarkdown 
+                 remarkPlugins={[remarkMath, remarkGfm]} 
+                 rehypePlugins={[rehypeKatex]}
+                 components={{
+                   h3: ({node, ...props}) => <h3 className="flex items-center gap-2 pt-6 border-t-2 border-emerald-50" {...props} />,
+                   table: ({node, ...props}) => (
+                     <div className="w-full overflow-x-auto my-4 md:my-6 rounded-xl border border-gray-100 shadow-sm">
+                       <table className="w-full text-left border-collapse min-w-[500px]" {...props} />
+                     </div>
+                   )
+                 }}
+               >
+                 {data.content}
+               </ReactMarkdown>
+             </div>
+          </article>
+        )}
       </div>
       
       <div className="px-4 sm:px-0">

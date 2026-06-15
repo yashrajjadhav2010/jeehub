@@ -34,8 +34,7 @@ export async function getTopicSuggestions(subject?: string, performance?: string
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || `Groq API responded with ${response.status}`);
+      throw new Error("Our AI service is currently experiencing high latency. Please try again in a few moments.");
     }
 
     const data = await response.json();
@@ -104,8 +103,7 @@ Build a proper weekly planner that aggressively targets the incorrect conceptual
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || `Groq API responded with ${response.status}`);
+      throw new Error("Our AI service is currently experiencing high latency. Please try again in a few moments.");
     }
 
     const data = await response.json();
@@ -166,13 +164,12 @@ export async function solveDoubt(messages: any[], context?: string) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || `Groq API responded with ${response.status}`);
+      throw new Error("Our AI service is currently experiencing high latency. Please try again in a few moments.");
     }
 
     const data = await response.json();
     if (!data.choices?.[0]?.message?.content) {
-      throw new Error("Invalid command interface response.");
+      throw new Error("Invalid response received from the AI service.");
     }
     
     return data.choices[0].message.content;

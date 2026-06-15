@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink, Library } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink, Library, Bot, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Home from './pages/Home';
 import Subjects from './pages/Subjects';
@@ -18,7 +18,9 @@ import ErrorBook from './pages/ErrorBook';
 import MockTests from './pages/MockTests';
 import Study from './pages/Study';
 import MaterialViewer from './pages/MaterialViewer';
+import PeriodicTable from './pages/PeriodicTable';
 import DeviceNotice from './components/DeviceNotice';
+import { AxiomMascot } from './components/AxiomMascot';
 import { cn } from './lib/utils';
 
 function ScrollToTop() {
@@ -44,11 +46,10 @@ function Navbar() {
   const initial = operatorName.substring(0, 2).toUpperCase();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: BookOpen, label: 'Subjects', path: '/subjects' },
-    { icon: Library, label: 'Study', path: '/study' },
-    { icon: BrainCircuit, label: 'Solver', path: '/doubt-solver' },
-    { icon: Trophy, label: 'Challenges', path: '/challenges' },
+    { icon: LayoutDashboard, label: 'Home', path: '/' },
+    { icon: BookOpen, label: 'Subject', path: '/subjects' },
+    { icon: Library, label: 'Learn', path: '/study' },
+    { icon: Trophy, label: 'Mission', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];
 
@@ -132,9 +133,9 @@ function BottomNav() {
   const location = useLocation();
   const menuItems = [
     { icon: LayoutDashboard, label: 'Home', path: '/' },
-    { icon: BookOpen, label: 'Subjects', path: '/subjects' },
-    { icon: BrainCircuit, label: 'Solver', path: '/doubt-solver' },
-    { icon: Trophy, label: 'Missions', path: '/challenges' },
+    { icon: BookOpen, label: 'Subject', path: '/subjects' },
+    { icon: Library, label: 'Learn', path: '/study' },
+    { icon: Trophy, label: 'Mission', path: '/challenges' },
     { icon: BarChart3, label: 'Radar', path: '/analytics' },
   ];
 
@@ -231,7 +232,8 @@ function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isQuizMode = location.pathname.startsWith('/quiz');
   const isSolverMode = location.pathname === '/doubt-solver';
-  const isCleanLayout = isQuizMode || isSolverMode;
+  const isPeriodicTable = location.pathname === '/study/periodic-table';
+  const isCleanLayout = isQuizMode || isSolverMode || isPeriodicTable;
   const [showNameModal, setShowNameModal] = useState(false);
   const [key, setKey] = useState(0); // For forcing re-render of navbar
 
@@ -306,39 +308,110 @@ function Layout({ children }: { children: React.ReactNode }) {
       </main>
       
       {!isCleanLayout && (
-        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-32 sm:pb-16 border-t border-emerald-50 w-full">
-          <div className="flex flex-col items-center gap-12">
-            <div className="flex flex-col md:flex-row justify-between items-center w-full gap-8">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Zap className="text-primary fill-primary" size={16} />
-                </div>
-                <span className="text-lg font-black heading-display tracking-tight text-emerald-950 uppercase italic">
-                  JEE <span className="text-primary not-italic">TAPASYA</span>
-                </span>
+        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32 sm:pb-8 border-t border-emerald-50 w-full mt-auto">
+          <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-6">
+            <div className="flex items-center gap-3 relative cursor-default shrink-0">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 hover:scale-110 transition-transform">
+                <Zap className="text-primary fill-primary animate-pulse" size={16} />
               </div>
-              <div className="flex gap-10">
-                <Link to="/documentation" className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/30 hover:text-primary transition-colors">Documentation</Link>
-                <Link to="/privacy" className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/30 hover:text-primary transition-colors">Privacy Policy</Link>
-                <a href="mailto:yaashh.tech@gmaiil.com" className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/30 hover:text-primary transition-colors">Contact Terminal</a>
-              </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/20">© 2026 JEE TAPASYA Command</p>
+              <span className="text-lg font-black heading-display tracking-tight text-emerald-950 uppercase italic hover:text-primary transition-colors relative overflow-hidden group">
+                JEE <span className="text-primary not-italic">TAPASYA</span>
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full animate-[shimmer_2s_infinite] z-10 pointer-events-none" />
+              </span>
             </div>
             
-            <div className="relative inline-block mt-8 md:mt-0">
+            <div className="flex justify-center items-center gap-x-6 gap-y-4 text-center flex-wrap">
+              <Link to="/documentation" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Documentation</Link>
+              <Link to="/privacy" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Privacy</Link>
+              <a href="mailto:yashrajart1999@gmail.com" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Contact Terminal</a>
+            </div>
+            
+            <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-900/30 text-center lg:hidden">© 2026 JEE TAPASYA Command</p>
+
+            <div className="relative inline-block shrink-0">
               <div className="flex items-center gap-2 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 shadow-sm transition-all hover:scale-105 hover:bg-emerald-100 active:scale-95 group cursor-pointer relative overflow-hidden z-10 box-border">
                 <a href="https://yashrajjadhav.netlify.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-900/60 whitespace-nowrap group-hover:text-emerald-900 transition-colors z-10 w-full h-full absolute inset-0 px-6 py-2">
-                  <span className="relative z-10 flex flex-row items-center gap-1">Made with <span className="text-red-500 animate-pulse">❤️</span> by Yashraj Jadhav <ExternalLink size={10} className="text-emerald-900/40 group-hover:text-emerald-900 transition-colors opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>
+                  <span className="relative z-10 flex flex-row items-center gap-1 w-full justify-center">Made with <span className="text-red-500 animate-pulse">❤️</span> by Yashraj Jadhav <ExternalLink size={10} className="text-emerald-900/40 group-hover:text-emerald-900 transition-all opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>
                 </a>
-                <span className="opacity-0 text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 py-0 px-0">
+                <span className="opacity-0 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 py-0 px-0">
                   Made with <span className="text-red-500">❤️</span> by Yashraj Jadhav <ExternalLink size={10} />
                 </span>
-                {/* Shine effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer z-0 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] z-0 pointer-events-none" />
               </div>
             </div>
           </div>
         </footer>
+      )}
+
+      {/* Floating AI Toggle */}
+      {!isCleanLayout && (
+        <div className="fixed bottom-24 lg:bottom-10 right-4 lg:right-10 z-[100] flex flex-col flex-col-reverse items-end gap-3 pointer-events-none">
+          <Link 
+            to="/doubt-solver" 
+            className="group pointer-events-auto relative mt-2 sm:mt-3"
+          >
+            <motion.div 
+              animate={{ 
+                boxShadow: [
+                  "0px 0px 0px 0px rgba(249, 115, 22, 0.5)",
+                  "0px 0px 0px 25px rgba(249, 115, 22, 0)",
+                ]
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+              }}
+              className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-white via-orange-50 to-blue-50 rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(249,115,22,0.3)] relative overflow-visible group-hover:scale-110 transition-transform duration-300 border-[3px] border-white ring-2 ring-orange-100"
+            >
+              <div className="absolute inset-0 bg-white/40 rounded-full group-hover:bg-white/0 transition-colors duration-300" />
+              
+              <motion.div
+                 animate={{ y: [0, -4, 0] }}
+                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                 className="relative z-10 flex items-center justify-center pt-2 drop-shadow-xl"
+              >
+                 <div className="scale-[1.3] sm:scale-[1.6] transition-transform duration-300 group-hover:drop-shadow-[0_8px_16px_rgba(59,130,246,0.4)] group-hover:scale-[1.4] sm:group-hover:scale-[1.7]">
+                   <AxiomMascot size="sm" isThinking={false} />
+                 </div>
+              </motion.div>
+              
+              {/* Sparkle effects */}
+              <div className="absolute -top-1 -right-1">
+                 <Sparkles className="w-5 h-5 text-amber-400 fill-amber-400 animate-pulse drop-shadow-md" />
+              </div>
+            </motion.div>
+          </Link>
+
+          <motion.div
+            animate={{ 
+              opacity: [0, 1, 1, 1, 1, 0, 0], 
+              scale: [0.5, 1.1, 1, 1, 1.05, 0.5, 0.5],
+              y: [20, -5, 0, 0, -5, 20, 20]
+            }}
+            transition={{ 
+              duration: 25, 
+              repeat: Infinity, 
+              times: [0, 0.02, 0.04, 0.15, 0.17, 0.2, 1], 
+              ease: ["easeOut", "easeOut", "linear", "easeInOut", "easeIn", "linear"],
+              delay: 3
+            }}
+            className="bg-white/95 backdrop-blur-sm px-4 py-2.5 rounded-2xl rounded-br-sm shadow-xl shadow-orange-500/10 border border-orange-200 pointer-events-auto origin-bottom-right relative"
+          >
+            <div className="flex items-center gap-2">
+              <Bot className="w-4 h-4 text-orange-500" />
+              <p className="text-[13px] sm:text-sm font-bold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent whitespace-nowrap">
+                Ask Axiom AI
+              </p>
+            </div>
+            
+            {/* Thinking dots */}
+            <div className="absolute -top-2 -left-2 flex space-x-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
+          </motion.div>
+        </div>
       )}
     </div>
   );
@@ -366,6 +439,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/study" element={<Study />} />
+          <Route path="/study/periodic-table" element={<PeriodicTable />} />
           <Route path="/study/:materialId" element={<MaterialViewer />} />
           <Route path="/mock-tests" element={<MockTests />} />
           <Route path="/subjects/:subjectId" element={<ChapterSelection />} />

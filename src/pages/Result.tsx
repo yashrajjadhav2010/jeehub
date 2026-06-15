@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, ArrowRight, Home, RefreshCw, CheckCircle2, XCircle, Info, Timer, Target, BrainCircuit, TrendingUp, RefreshCcw, X, MessageSquare } from 'lucide-react';
+import { HelpCircle, Trophy, ArrowRight, Home, RefreshCw, CheckCircle2, XCircle, Info, Timer, Target, BrainCircuit, TrendingUp, RefreshCcw, X, MessageSquare } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -154,47 +155,196 @@ export default function Result() {
 
   const { quizSet } = result;
 
+  const attemptCount = result.correct + result.wrong;
+  const timePerAttemptMin = attemptCount > 0 ? (result.timeTaken / 60) / attemptCount : 0;
+  const timeCorrectMin = Number((result.correct * timePerAttemptMin).toFixed(2));
+  const timeIncorrectMin = Number((result.wrong * timePerAttemptMin).toFixed(2));
+  const timeSkippedMin = 0;
+  const totalTimeMin = (result.timeTaken / 60).toFixed(2);
+  const totalAllocatedTimeMin = quizSet.questions.length * 1.5;
+
+  const pieData = [
+    { name: 'Correct', value: result.correct, color: '#22c55e' },
+    { name: 'Incorrect', value: result.wrong, color: '#ef4444' },
+    { name: 'Not Answered', value: result.skipped, color: '#e5e7eb' },
+  ];
+
+  const qualityTimeData = [
+    { name: 'Correct', value: timeCorrectMin, fill: '#22c55e' },
+    { name: 'Incorrect', value: timeIncorrectMin, fill: '#ef4444' },
+    { name: 'Not Attempted', value: timeSkippedMin, fill: '#e5e7eb' },
+  ];
+
+  const subjectTimeData = [
+    { name: quizSet.subject, value: Number(totalTimeMin), fill: '#f97316' }
+  ];
+
   return (
     <div className="max-w-6xl mx-auto pb-32 px-4 pt-10">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-[2rem] p-6 sm:p-10 md:p-16 border border-emerald-100 shadow-sm relative overflow-hidden mb-12"
+        className="mb-12"
       >
-        <div className="relative z-10 flex flex-col items-center text-center">
-           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-orange-50 rounded-3xl flex items-center justify-center text-[#e64a19] mb-6 sm:mb-10">
-              <Trophy size={32} className="sm:size-[40px]" />
-           </div>
-           
-           <h1 className="text-xs sm:text-sm font-bold tracking-[0.2em] text-emerald-700/50 uppercase mb-4">Post-Exam Analysis</h1>
-           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold heading-display mb-8 text-emerald-950 px-4">Mission <span className="text-primary italic">{result.accuracy > 70 ? 'Accomplished' : 'Debriefed'}</span></h2>
-           
-           <div className="flex flex-wrap justify-center gap-6 sm:gap-12 mt-4 sm:mt-8 px-4 w-full">
-              <div className="text-center flex-1 min-w-[120px]">
-                 <p className="text-[10px] font-bold tracking-widest text-emerald-700/50 uppercase mb-2">Total Score</p>
-                 <p className="text-3xl sm:text-4xl md:text-5xl font-bold heading-display text-emerald-900">{result.totalScore}</p>
-                 <p className="text-xs font-medium text-emerald-700/50 mt-1">/{result.totalPossible}</p>
+        <div className="bg-white rounded-[2rem] shadow-sm border border-emerald-100 p-8 lg:p-12 mb-8">
+          
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-12 mb-12">
+            {/* Ribbon */}
+            <div className="flex justify-center items-center">
+              <div className="flex flex-col items-center">
+                <div className="bg-blue-50 text-blue-900 font-bold text-[10px] tracking-widest py-2 px-6 rounded-t-xl z-20 border border-blue-100 border-b-0 uppercase">
+                  MARKS OBTAINED
+                </div>
+                <div className="relative z-10 flex items-center justify-center">
+                  {/* Ribbon tails */}
+                  <div className="absolute top-4 -left-4 w-12 h-12 bg-[#1e40af]" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%, 25% 50%)' }} />
+                  <div className="absolute top-4 -right-4 w-12 h-12 bg-[#1e40af]" style={{ clipPath: 'polygon(0 0, 100% 0, 75% 50%, 100% 100%, 0 100%)' }} />
+                  {/* Main card */}
+                  <div className="bg-[#2563eb] rounded-sm text-white px-12 py-4 relative z-30 shadow-xl border-b-[6px] border-blue-800 min-w-[200px] text-center">
+                     <span className="text-4xl font-bold">{result.totalScore}</span>
+                     <span className="text-xl text-blue-200"> /{result.totalPossible}</span>
+                  </div>
+                </div>
               </div>
-              <div className="w-px h-16 bg-emerald-100 hidden md:block" />
-              <div className="text-center flex-1 min-w-[120px]">
-                 <p className="text-[10px] font-bold tracking-widest text-emerald-700/50 uppercase mb-2">Accuracy</p>
-                 <p className="text-3xl sm:text-4xl md:text-5xl font-bold heading-display text-emerald-600">{result.accuracy}%</p>
-              </div>
-              <div className="w-px h-16 bg-emerald-100 hidden md:block" />
-              <div className="text-center flex-1 min-w-[120px]">
-                 <p className="text-[10px] font-bold tracking-widest text-emerald-700/50 uppercase mb-2">Time spent</p>
-                 <p className="text-3xl sm:text-4xl md:text-5xl font-bold heading-display text-emerald-900">{formatTime(result.timeTaken)}</p>
-              </div>
-           </div>
+            </div>
+
+            {/* Quick Stats Pills */}
+            <div className="flex flex-wrap justify-center lg:justify-end items-center gap-6 lg:gap-8 flex-1">
+               {/* Attempted */}
+               <div className="flex flex-col items-center">
+                 <div className="flex items-center gap-3 px-6 py-2 rounded-full border border-purple-200 shadow-sm bg-white min-w-[140px] justify-center">
+                    <HelpCircle className="w-5 h-5 text-purple-600" />
+                    <span className="text-xl font-bold text-purple-700">{attemptCount}</span>
+                 </div>
+                 <p className="text-xs text-gray-500 font-medium mt-3">Qs attempted out of {quizSet.questions.length}</p>
+               </div>
+               
+               {/* Accuracy */}
+               <div className="flex flex-col items-center">
+                 <div className="flex items-center gap-3 px-6 py-2 rounded-full border border-emerald-200 shadow-sm bg-white min-w-[140px] justify-center">
+                    <Target className="w-5 h-5 text-emerald-600" />
+                    <span className="text-xl font-bold text-emerald-700">{result.accuracy}%</span>
+                 </div>
+                 <p className="text-xs text-gray-500 font-medium mt-3">Accuracy</p>
+               </div>
+               
+               {/* Time */}
+               <div className="flex flex-col items-center">
+                 <div className="flex items-center gap-3 px-6 py-2 rounded-full border border-amber-200 shadow-sm bg-white min-w-[140px] justify-center">
+                    <Timer className="w-5 h-5 text-amber-600" />
+                    <span className="text-xl font-bold text-amber-700">{totalTimeMin} min</span>
+                 </div>
+                 <p className="text-xs text-gray-500 font-medium mt-3">Time taken out of {totalAllocatedTimeMin} min</p>
+               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-10 border-t border-gray-100">
+             {/* Attempts Analysis */}
+             <div className="lg:col-span-5">
+                <h3 className="text-lg font-bold text-gray-800 mb-8">Attempts Analysis <span className="text-gray-400 font-normal">(Overall)</span></h3>
+                
+                <div className="flex items-center gap-8 md:gap-12 pl-4">
+                  <div className="relative w-36 h-36 shrink-0">
+                     <ResponsiveContainer width="100%" height="100%">
+                       <PieChart>
+                         <Pie 
+                           data={pieData} 
+                           innerRadius={45} 
+                           outerRadius={65} 
+                           paddingAngle={4} 
+                           dataKey="value" 
+                           stroke="none"
+                           cornerRadius={4}
+                         >
+                           {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                         </Pie>
+                       </PieChart>
+                     </ResponsiveContainer>
+                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center -mt-1">
+                       <span className="font-bold text-xl text-gray-800">{quizSet.questions.length}</span>
+                       <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Total Qs</span>
+                     </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-x-8 gap-y-6 text-sm">
+                     <div className="w-full">
+                       <div className="w-5 h-1.5 bg-[#22c55e] mb-2 rounded-full" />
+                       <p className="text-gray-500 text-xs mb-1">Correct</p>
+                       <p className="font-bold text-gray-800">{result.correct} Qs</p>
+                     </div>
+                     <div>
+                       <div className="w-5 h-1.5 bg-[#ef4444] mb-2 rounded-full" />
+                       <p className="text-gray-500 text-xs mb-1">Incorrect:</p>
+                       <p className="font-bold text-gray-800">{result.wrong} Qs</p>
+                     </div>
+                     <div>
+                       <div className="w-5 h-1.5 bg-[#e5e7eb] mb-2 rounded-full" />
+                       <p className="text-gray-500 text-xs mb-1">Not Answered:</p>
+                       <p className="font-bold text-gray-800">{result.skipped} Qs</p>
+                     </div>
+                  </div>
+                </div>
+             </div>
+
+             {/* Charts */}
+             <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 lg:border-l border-gray-100 lg:pl-8">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-1">Quality of Time Spent <span className="text-gray-400 font-normal">(Overall)</span></h3>
+                  <p className="text-xs text-gray-500 font-medium mb-6">Total time spent: {totalTimeMin} min</p>
+                  
+                  <div className="h-44 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart 
+                        data={qualityTimeData} 
+                        margin={{ top: 20, right: 0, left: -25, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                        <XAxis dataKey="name" axisLine={{stroke: '#e5e7eb'}} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={10} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} tickCount={5} dx={-10} domain={[0, 'dataMax + 2']} />
+                        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32}>
+                           {qualityTimeData.map((e, index) => <Cell key={index} fill={e.fill} />)}
+                           <LabelList dataKey="value" position="top" formatter={(val: number) => `${val} min`} fontSize={10} fill="#6b7280" offset={8} />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  
+                  <div className="mt-6 flex flex-col gap-2 text-xs">
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#22c55e] shrink-0" /> <span className="text-gray-500">Time spent on correct qs:</span> <span className="font-bold text-gray-800">{timeCorrectMin} min</span></div>
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#ef4444] shrink-0" /> <span className="text-gray-500">Time spent on incorrect qs:</span> <span className="font-bold text-gray-800">{timeIncorrectMin} min</span></div>
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#e5e7eb] shrink-0" /> <span className="text-gray-500">Time spent on not attempted qs:</span> <span className="font-bold text-gray-800">{timeSkippedMin} min</span></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-1">Subject wise Time spent</h3>
+                  <p className="text-xs text-gray-500 font-medium mb-6">Total time spent: {totalTimeMin} min</p>
+                  
+                  <div className="h-44 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart 
+                        data={subjectTimeData} 
+                        margin={{ top: 20, right: 0, left: -25, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                        <XAxis dataKey="name" axisLine={{stroke: '#e5e7eb'}} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280', textTransform: 'capitalize' }} dy={10} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} tickCount={5} dx={-10} domain={[0, 'dataMax + 2']} />
+                        <Bar dataKey="value" fill="#f97316" radius={[4, 4, 0, 0]} maxBarSize={32}>
+                           <LabelList dataKey="value" position="top" formatter={(val: number) => `${val} min`} fontSize={10} fill="#6b7280" offset={8} />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  
+                  <div className="mt-6 flex flex-col gap-2 text-xs">
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#f97316] shrink-0" /> <span className="text-gray-500 capitalize">{quizSet.subject}:</span> <span className="font-bold text-gray-800">{totalTimeMin} min</span></div>
+                  </div>
+                </div>
+             </div>
+          </div>
         </div>
       </motion.div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-16 underline-cols">
-         <StatsCard label="Correct" value={result.correct} color="text-emerald-600" icon={CheckCircle2} />
-         <StatsCard label="Incorrect" value={result.wrong} color="text-[#dc2626]" icon={XCircle} />
-         <StatsCard label="Skipped" value={result.skipped} color="text-emerald-700/40" icon={ArrowRight} />
-         <StatsCard label="Performance" value={`${Math.round(result.accuracy)}%`} color="text-[#c2410c]" icon={Target} />
-      </div>
 
       <div className="space-y-12">
         <h3 className="text-2xl font-bold heading-display tracking-tight ml-4 flex items-center gap-4 text-emerald-950 underline decoration-primary/30 decoration-4 underline-offset-8 uppercase">
@@ -394,17 +544,5 @@ export default function Result() {
       </AnimatePresence>
     </div>
    );
-}
-
-function StatsCard({ label, value, color, icon: Icon }: any) {
-  return (
-    <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-emerald-50 flex flex-col justify-between h-36 sm:h-48 shadow-sm group hover:border-emerald-100 transition-all">
-       <div className={cn("text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.1em] mb-2 sm:mb-4 opacity-70", color)}>{label}</div>
-       <div className="text-2xl sm:text-4xl font-bold heading-display text-emerald-950">{value}</div>
-       <div className="flex justify-end opacity-10 group-hover:opacity-30 transition-opacity">
-          <Icon size={32} className={cn("sm:size-[48px]", color)} />
-       </div>
-    </div>
-  );
 }
 

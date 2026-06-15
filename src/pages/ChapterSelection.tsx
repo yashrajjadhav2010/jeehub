@@ -1,10 +1,41 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ChevronRight, Layers, Layout, Play, Clock, BarChart, Binary, FolderOpen, ArrowRight } from 'lucide-react';
+import { 
+  ArrowLeft, ChevronRight, Layers, Layout, Play, Clock, BarChart, Binary, FolderOpen, ArrowRight,
+  Activity, Target, Box, Compass, FunctionSquare, Infinity, Triangle, Circle, Zap, RefreshCw,
+  Magnet, Atom, Hexagon, Waves, Beaker, Calculator, Pi
+} from 'lucide-react';
 import { SubjectId, Chapter } from '../types';
 import { getAllData } from '../lib/dataService';
 import { cn, calculatePredictedRank, formatRank } from '../lib/utils';
+
+const getChapterDesign = (chapterId: string, subjectId: string) => {
+  const id = chapterId.toLowerCase();
+  
+  if (id.includes('kinematics')) return { icon: Activity, color: 'text-amber-500', bg: 'bg-amber-50', groupBg: 'group-hover:bg-amber-500', border: 'border-amber-100', shadow: 'group-hover:shadow-amber-500/30' };
+  if (id.includes('newton') || id.includes('laws')) return { icon: Target, color: 'text-rose-500', bg: 'bg-rose-50', groupBg: 'group-hover:bg-rose-500', border: 'border-rose-100', shadow: 'group-hover:shadow-rose-500/30' };
+  if (id.includes('unit') || id.includes('dimension')) return { icon: Box, color: 'text-lime-500', bg: 'bg-lime-50', groupBg: 'group-hover:bg-lime-500', border: 'border-lime-100', shadow: 'group-hover:shadow-lime-500/30' };
+  if (id.includes('vector')) return { icon: Compass, color: 'text-sky-500', bg: 'bg-sky-50', groupBg: 'group-hover:bg-sky-500', border: 'border-sky-100', shadow: 'group-hover:shadow-sky-500/30' };
+  if (id.includes('differentiation') || id.includes('calculus')) return { icon: FunctionSquare, color: 'text-emerald-500', bg: 'bg-emerald-50', groupBg: 'group-hover:bg-emerald-500', border: 'border-emerald-100', shadow: 'group-hover:shadow-emerald-500/30' };
+  if (id.includes('integration') || id.includes('integral')) return { icon: Infinity, color: 'text-fuchsia-500', bg: 'bg-fuchsia-50', groupBg: 'group-hover:bg-fuchsia-500', border: 'border-fuchsia-100', shadow: 'group-hover:shadow-fuchsia-500/30' };
+  if (id.includes('trigo')) return { icon: Triangle, color: 'text-indigo-500', bg: 'bg-indigo-50', groupBg: 'group-hover:bg-indigo-500', border: 'border-indigo-100', shadow: 'group-hover:shadow-indigo-500/30' };
+  if (id.includes('circle')) return { icon: Circle, color: 'text-pink-500', bg: 'bg-pink-50', groupBg: 'group-hover:bg-pink-500', border: 'border-pink-100', shadow: 'group-hover:shadow-pink-500/30' };
+  if (id.includes('work') || id.includes('energy')) return { icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-50', groupBg: 'group-hover:bg-yellow-500', border: 'border-yellow-100', shadow: 'group-hover:shadow-yellow-500/30' };
+  if (id.includes('rotation') || id.includes('circular')) return { icon: RefreshCw, color: 'text-orange-500', bg: 'bg-orange-50', groupBg: 'group-hover:bg-orange-500', border: 'border-orange-100', shadow: 'group-hover:shadow-orange-500/30' };
+  if (id.includes('electro') || id.includes('current') || id.includes('magnet')) return { icon: Magnet, color: 'text-cyan-500', bg: 'bg-cyan-50', groupBg: 'group-hover:bg-cyan-500', border: 'border-cyan-100', shadow: 'group-hover:shadow-cyan-500/30' };
+  if (id.includes('atomic') || id.includes('structure')) return { icon: Atom, color: 'text-purple-500', bg: 'bg-purple-50', groupBg: 'group-hover:bg-purple-500', border: 'border-purple-100', shadow: 'group-hover:shadow-purple-500/30' };
+  if (id.includes('organic') || id.includes('carbon')) return { icon: Hexagon, color: 'text-emerald-500', bg: 'bg-emerald-50', groupBg: 'group-hover:bg-emerald-500', border: 'border-emerald-100', shadow: 'group-hover:shadow-emerald-500/30' };
+  if (id.includes('wave')) return { icon: Waves, color: 'text-blue-500', bg: 'bg-blue-50', groupBg: 'group-hover:bg-blue-500', border: 'border-blue-100', shadow: 'group-hover:shadow-blue-500/30' };
+
+  // Fallbacks by subject
+  if (subjectId === 'physics') return { icon: Atom, color: 'text-sky-500', bg: 'bg-sky-50', groupBg: 'group-hover:bg-sky-500', border: 'border-sky-100', shadow: 'group-hover:shadow-sky-500/30' };
+  if (subjectId === 'chemistry') return { icon: Beaker, color: 'text-orange-500', bg: 'bg-orange-50', groupBg: 'group-hover:bg-orange-500', border: 'border-orange-100', shadow: 'group-hover:shadow-orange-500/30' };
+  if (subjectId === 'maths') return { icon: Calculator, color: 'text-rose-500', bg: 'bg-rose-50', groupBg: 'group-hover:bg-rose-500', border: 'border-rose-100', shadow: 'group-hover:shadow-rose-500/30' };
+  if (subjectId === 'pyq') return { icon: Clock, color: 'text-purple-500', bg: 'bg-purple-50', groupBg: 'group-hover:bg-purple-500', border: 'border-purple-100', shadow: 'group-hover:shadow-purple-500/30' };
+  
+  return { icon: FolderOpen, color: 'text-emerald-600', bg: 'bg-emerald-50', groupBg: 'group-hover:bg-emerald-500', border: 'border-emerald-100', shadow: 'group-hover:shadow-emerald-500/30' };
+}
 
 export default function ChapterSelection() {
   const { subjectId } = useParams<{ subjectId: SubjectId }>();
@@ -194,7 +225,11 @@ export default function ChapterSelection() {
       {/* Chapters / Years Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
         <AnimatePresence>
-          {chapters.map((chapter, idx) => (
+          {chapters.map((chapter, idx) => {
+            const design = getChapterDesign(chapter.id, subjectId || '');
+            const Icon = design.icon;
+            
+            return (
             <motion.div 
               key={chapter.id}
               initial={{ opacity: 0, y: 20 }}
@@ -204,13 +239,13 @@ export default function ChapterSelection() {
             >
               <div className="group relative bg-white border border-emerald-900/10 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:border-emerald-500/30 transition-all duration-500 overflow-hidden cursor-pointer flex flex-col h-full hover:-translate-y-2">
                 {/* Technical Accent Background */}
-                <div className="absolute -top-4 -right-4 p-8 opacity-[0.02] group-hover:opacity-10 transition-opacity pointer-events-none">
-                   <FolderOpen size={120} />
+                <div className={cn("absolute -top-4 -right-4 p-8 opacity-[0.02] group-hover:opacity-10 transition-opacity pointer-events-none", design.color)}>
+                   <Icon size={120} />
                 </div>
 
-                <div className="flex items-center justify-between mb-8">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors border border-emerald-100 shadow-inner group-hover:shadow-emerald-500/30">
-                     <FolderOpen size={24} />
+                <div className="flex items-center justify-between mb-8 z-10 relative">
+                  <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center group-hover:text-white transition-colors shadow-inner", design.bg, design.color, design.groupBg, design.border, design.shadow)}>
+                     <Icon size={24} />
                   </div>
                   <div className="flex flex-col items-end">
                      <span className="font-mono text-[8px] font-bold text-emerald-800/30 uppercase tracking-widest">Integrity</span>
@@ -218,7 +253,7 @@ export default function ChapterSelection() {
                   </div>
                 </div>
 
-                <div className="mt-auto">
+                <div className="mt-auto z-10 relative">
                   <h3 className="text-2xl font-black heading-display tracking-tight text-emerald-950 uppercase mb-2 group-hover:text-emerald-700 transition-colors">{chapter.title}</h3>
                   <div className="flex items-center gap-3 mt-4 pt-4 border-t border-emerald-50">
                     <span className="font-mono text-[10px] font-bold text-emerald-800/60 uppercase tracking-widest flex items-center gap-2">
@@ -229,12 +264,12 @@ export default function ChapterSelection() {
                 </div>
 
                 {/* Floating action button */}
-                <div className="absolute bottom-8 right-8 w-12 h-12 bg-emerald-950 text-white rounded-full flex items-center justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl shadow-emerald-950/20">
+                <div className="absolute bottom-8 right-8 w-12 h-12 bg-emerald-950 text-white rounded-full flex items-center justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-xl shadow-emerald-950/20 z-10">
                   <ArrowRight size={20} />
                 </div>
               </div>
             </motion.div>
-          ))}
+          )})}
         </AnimatePresence>
       </div>
     </div>
