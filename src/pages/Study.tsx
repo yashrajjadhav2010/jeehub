@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Book, FileText, Network, Beaker, Calculator, Atom, Download, Search, ArrowRight, Zap, Target, ScrollText, Bookmark, Activity, Waves, RotateCcw, Crosshairs, Settings2, Compass, PenTool, BatteryCharging, RefreshCw, TriangleRight } from 'lucide-react';
+import { Book, FileText, Network, Beaker, Calculator, Atom, Download, Search, ArrowRight, Zap, Target, ScrollText, Bookmark, Activity, Waves, RotateCcw, Crosshair, Settings2, Compass, PenTool, BatteryCharging, RefreshCw, TriangleRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -27,12 +27,24 @@ export default function Study() {
        { id: 'kinematics-mindmap', title: 'Kinematics', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Activity, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
        { id: 'laws-of-motion-mindmap', title: 'Laws of Motion', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Target, iconColor: 'text-amber-500', iconBg: 'bg-amber-50', iconBorder: 'border-amber-100' },
        { id: 'unit-dimension-mindmap', title: 'Unit & Dimension', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: TriangleRight, iconColor: 'text-lime-500', iconBg: 'bg-lime-50', iconBorder: 'border-lime-100' },
-       { id: 'periodic-properties-mindmap', title: 'Periodic Properties', subject: 'Chemistry', type: 'Mind Map', time: 'Latest', icon: Beaker, iconColor: 'text-fuchsia-500', iconBg: 'bg-fuchsia-50', iconBorder: 'border-fuchsia-100' },
-       { id: 'vectors-mindmap', title: 'Vector & Calculus', subject: 'Mathematics/Physics', type: 'Mind Map', time: 'Latest', icon: Compass, iconColor: 'text-sky-500', iconBg: 'bg-sky-50', iconBorder: 'border-sky-100' },
        { id: 'work-power-energy-mindmap', title: 'Work, Power & Energy', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: BatteryCharging, iconColor: 'text-yellow-500', iconBg: 'bg-yellow-50', iconBorder: 'border-yellow-100' },
+       { id: 'centre-of-mass-mindmap', title: 'Centre of Mass & Collisions', subject: 'Physics', type: 'Mind Map', time: 'New', icon: Target, iconColor: 'text-orange-600', iconBg: 'bg-orange-50', iconBorder: 'border-orange-100' },
        { id: 'rotational-motion-mindmap', title: 'Rotational Motion', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: RefreshCw, iconColor: 'text-orange-500', iconBg: 'bg-orange-50', iconBorder: 'border-orange-100' },
-       { id: 'atomic-structure-mindmap', title: 'Atomic Structure', subject: 'Chemistry', type: 'Mind Map', time: 'Latest', icon: Atom, iconColor: 'text-purple-500', iconBg: 'bg-purple-50', iconBorder: 'border-purple-100' },
+       { id: 'thermodynamics-mindmap', title: 'Thermodynamics', subject: 'Physics', type: 'Mind Map', time: 'New', icon: Zap, iconColor: 'text-red-500', iconBg: 'bg-red-50', iconBorder: 'border-red-100' },
        { id: 'waves-mindmap', title: 'Waves', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Waves, iconColor: 'text-cyan-500', iconBg: 'bg-cyan-50', iconBorder: 'border-cyan-100' },
+       { id: 'periodic-properties-mindmap', title: 'Periodic Properties', subject: 'Chemistry', type: 'Mind Map', time: 'Latest', icon: Beaker, iconColor: 'text-fuchsia-500', iconBg: 'bg-fuchsia-50', iconBorder: 'border-fuchsia-100' },
+       { id: 'atomic-structure-mindmap', title: 'Atomic Structure', subject: 'Chemistry', type: 'Mind Map', time: 'Latest', icon: Atom, iconColor: 'text-purple-500', iconBg: 'bg-purple-50', iconBorder: 'border-purple-100' },
+       { id: 'chemical-bonding-mindmap', title: 'Chemical Bonding', subject: 'Chemistry', type: 'Mind Map', time: 'New', icon: Network, iconColor: 'text-pink-500', iconBg: 'bg-pink-50', iconBorder: 'border-pink-100' },
+       { id: 'goc-mindmap', title: 'General Organic Chemistry', subject: 'Chemistry', type: 'Mind Map', time: 'New', icon: Beaker, iconColor: 'text-emerald-500', iconBg: 'bg-emerald-50', iconBorder: 'border-emerald-100' },
+       { id: 'vectors-mindmap', title: 'Vector & Calculus', subject: 'Mathematics/Physics', type: 'Mind Map', time: 'Latest', icon: Compass, iconColor: 'text-sky-500', iconBg: 'bg-sky-50', iconBorder: 'border-sky-100' },
+       { id: 'algebra-mindmap', title: 'Algebra Fundamentals', subject: 'Mathematics', type: 'Mind Map', time: 'New', icon: Calculator, iconColor: 'text-indigo-500', iconBg: 'bg-indigo-50', iconBorder: 'border-indigo-100' },
+       { id: 'calculus-mindmap', title: 'Calculus Fundamentals', subject: 'Mathematics', type: 'Mind Map', time: 'New', icon: Network, iconColor: 'text-blue-500', iconBg: 'bg-blue-50', iconBorder: 'border-blue-100' },
+       { id: 'electrostatics-mindmap', title: 'Electrostatics', subject: 'Physics', type: 'Mind Map', time: 'New', icon: Zap, iconColor: 'text-amber-500', iconBg: 'bg-amber-50', iconBorder: 'border-amber-100' },
+       { id: 'optics-mindmap', title: 'Optics', subject: 'Physics', type: 'Mind Map', time: 'New', icon: Crosshair, iconColor: 'text-violet-500', iconBg: 'bg-violet-50', iconBorder: 'border-violet-100' },
+       { id: 'hydrocarbons-mindmap', title: 'Hydrocarbons', subject: 'Chemistry', type: 'Mind Map', time: 'New', icon: Beaker, iconColor: 'text-emerald-500', iconBg: 'bg-emerald-50', iconBorder: 'border-emerald-100' },
+       { id: 'equilibrium-mindmap', title: 'Chemical Equilibrium', subject: 'Chemistry', type: 'Mind Map', time: 'New', icon: RefreshCw, iconColor: 'text-blue-500', iconBg: 'bg-blue-50', iconBorder: 'border-blue-100' },
+       { id: 'coordinate-geometry-mindmap', title: 'Coordinate Geometry', subject: 'Mathematics', type: 'Mind Map', time: 'New', icon: Compass, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
+       { id: 'probability-mindmap', title: 'Probability & Statistics', subject: 'Mathematics', type: 'Mind Map', time: 'New', icon: Target, iconColor: 'text-indigo-500', iconBg: 'bg-indigo-50', iconBorder: 'border-indigo-100' },
     ],
     'cheat-sheets': []
   };
@@ -76,7 +88,7 @@ export default function Study() {
       bookmark: 'bg-[#bc90e9]',
       tabs: ['bg-[#f5c64b]', 'bg-[#f5c64b]', 'bg-[#f5c64b]', 'bg-[#f5c64b]'],
       latch: false,
-      count: '9 Maps'
+      count: '21 Maps'
     },
     {
       id: 'cheat-sheets',

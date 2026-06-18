@@ -26,7 +26,7 @@ const hexMap: Record<string, string> = {
 
 const phaseIcons: Record<string, string> = { 's': 'Cube 🧊', 'l': 'Drop 💧', 'g': 'Gas ☁️' };
 
-export default function PeriodicTable() {
+export default function PeriodicTable({ embedded = false }: { embedded?: boolean }) {
     const [searchText, setSearchText] = useState('');
     const [activeFilter, setActiveFilter] = useState<string | null>(null);
     const [isHeatmap, setIsHeatmap] = useState(false);
@@ -104,41 +104,65 @@ export default function PeriodicTable() {
         const svgColor = hexMap[colorClass as string] || '#3b82f6';
         const center = 150;
         
-        const particleCount = Math.min(el.s.reduce((a: number,b: number)=>a+b, 0), 15);
+        // Accurate representation: Protons = Atomic Number, Neutrons = Atomic Mass - Atomic Number
+        const protons = typeof el.num === 'number' ? el.num : 0;
+        const mass = parseFloat(el.mass) || 0;
+        const neutrons = Math.max(0, Math.round(mass) - protons);
+        
+        // Cap visual particles for performance
+        const visualProtons = Math.min(protons, 20);
+        const visualNeutrons = Math.min(neutrons, 25);
+        const particleCount = visualProtons + visualNeutrons;
+
         const maxShells = el.s.length;
-        const shellSpacing = 130 / maxShells; 
+        const shellSpacing = 130 / Math.max(1, maxShells); 
         
         return (
-            <svg viewBox="0 0 300 300" className="w-full h-auto max-h-56 drop-shadow-2xl">
+            <svg viewBox="0 0 300 300" className="w-full h-auto max-h-[280px] drop-shadow-2xl">
                 <defs>
                     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="2" result="blur" />
+                        <feGaussianBlur stdDeviation="3" result="blur" />
                         <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
+                    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor={svgColor} stopOpacity="0.4" />
+                        <stop offset="100%" stopColor={svgColor} stopOpacity="0" />
+                    </radialGradient>
                 </defs>
-                <g style={{ transformOrigin: '150px 150px' }} className="animate-[pulse-nucleus_2s_infinite_alternate_ease-in-out]">
+                <circle cx={center} cy={center} r={40} fill="url(#coreGlow)" className="animate-pulse" />
+                
+                <g style={{ transformOrigin: '150px 150px' }} className="animate-[pulse-nucleus_2.5s_infinite_alternate_ease-in-out]">
                     {Array.from({length: particleCount}).map((_, p) => {
+                        const isProton = p < visualProtons;
                         const angle = Math.random() * Math.PI * 2;
-                        const dist = Math.random() * 8;
+                        const dist = Math.random() * (isProton ? 8 : 12); // Neutrons slightly further out
                         return (
-                            <circle key={p} cx={center + Math.cos(angle)*dist} cy={center + Math.sin(angle)*dist} r={4} fill={svgColor} opacity={0.8} filter="url(#glow)" />
+                            <circle 
+                                key={p} 
+                                cx={center + Math.cos(angle)*dist} 
+                                cy={center + Math.sin(angle)*dist} 
+                                r={isProton ? 4.5 : 4} 
+                                fill={isProton ? svgColor : '#cbd5e1'} 
+                                opacity={0.9} 
+                                filter="url(#glow)" 
+                            />
                         );
                     })}
                 </g>
                 {el.s.map((electronCount: number, i: number) => {
-                    const radius = 25 + (i * shellSpacing);
-                    const speedMultiplier = 1 + (maxShells - i) * 0.5;
-                    const duration = (8 / speedMultiplier).toFixed(2);
+                    const radius = 35 + (i * shellSpacing);
+                    const speedMultiplier = 1 + (maxShells - i) * 0.4;
+                    const duration = (10 / speedMultiplier).toFixed(2);
                     const direction = i % 2 === 0 ? 'rotate-right' : 'rotate-left';
                     return (
                         <g key={`shell-${i}`}>
-                            <circle cx={center} cy={center} r={radius} fill="none" stroke={svgColor} strokeWidth="1" strokeDasharray="2 6" strokeOpacity="0.2" />
+                            <circle cx={center} cy={center} r={radius} fill="none" stroke={svgColor} strokeWidth="1" strokeDasharray="3 7" strokeOpacity="0.3" />
                             <g style={{ animation: `${direction} ${duration}s linear infinite`, transformOrigin: '150px 150px' }}>
                                 {Array.from({length: electronCount}).map((_, j) => {
                                     const initialAngle = (j / electronCount) * 360;
                                     return (
                                         <g key={`electron-${i}-${j}`} transform={`rotate(${initialAngle} 150 150)`}>
-                                            <circle cx={center + radius} cy={center} r={3} fill="#ffffff" stroke={svgColor} strokeWidth="1.5" filter="url(#glow)" />
+                                            <circle cx={center + radius} cy={center} r={3.5} fill="#ffffff" stroke={svgColor} strokeWidth="1.5" filter="url(#glow)" />
                                         </g>
                                     )
                                 })}
@@ -151,7 +175,7 @@ export default function PeriodicTable() {
     };
 
     return (
-        <div className="bg-[#0a0a0a] text-white min-h-screen relative selection:bg-blue-500/30 overflow-x-hidden font-sans">
+        <div className={cn("bg-[#0a0a0a] text-white relative selection:bg-blue-500/30 overflow-x-hidden font-sans rounded-xl", !embedded && "min-h-screen")}>
             <style>{`
                 .periodic-grid { display: grid; grid-template-columns: repeat(18, minmax(45px, 1fr)); grid-template-rows: repeat(10, minmax(45px, 1fr)); gap: 6px; max-width: 1280px; margin: 0 auto; overflow-x: auto; padding: 1rem; padding-bottom: 4rem; }
                 .element-cell { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: rgba(30, 30, 30, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; }
@@ -170,50 +194,78 @@ export default function PeriodicTable() {
                 @keyframes pulse-nucleus { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
             `}</style>
 
-            <header className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/5">
-                <div className="flex items-center gap-6">
-                    <Link to="/study" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                        <ArrowLeft size={20} />
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-                            Vision Elements
-                        </h1>
-                        <p className="text-gray-400 mt-1 font-medium tracking-widest text-[10px] md:text-xs uppercase">Powered by JEE Tapasya</p>
+            {!embedded && (
+                <header className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/5">
+                    <div className="flex items-center gap-6">
+                        <Link to="/study" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                            <ArrowLeft size={20} />
+                        </Link>
+                        <div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                                Vision Elements
+                            </h1>
+                            <p className="text-gray-400 mt-1 font-medium tracking-widest text-[10px] md:text-xs uppercase">Powered by JEE Tapasya</p>
+                        </div>
                     </div>
-                </div>
-                
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-64">
-                        <input 
-                            type="text" 
-                            placeholder="Search element..." 
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            className="w-full bg-[#1a1a1a] border border-gray-800 text-white rounded-full px-6 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm" 
-                        />
+                    
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="relative flex-1 md:w-64">
+                            <input 
+                                type="text" 
+                                placeholder="Search element..." 
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                                className="w-full bg-[#1a1a1a] border border-gray-800 text-white rounded-full px-6 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm" 
+                            />
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            )}
 
-            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-[#111] border-b border-white/5">
-                <div className="flex gap-2 bg-[#1a1a1a] p-1 rounded-full border border-gray-800">
-                    <button onClick={() => { setIsHeatmap(false); if(quizStarted) setQuizStarted(false); }} className={cn("px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all", !isHeatmap ? "bg-white/10 text-white" : "text-gray-400 hover:text-white")}>Category View</button>
-                    <button onClick={() => { setIsHeatmap(true); if(quizStarted) setQuizStarted(false); }} className={cn("px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all", isHeatmap ? "bg-white/10 text-white" : "text-gray-400 hover:text-white")}>Electronegativity Heatmap</button>
+            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-6 bg-[#111] border-b border-white/5">
+                <div className="relative flex items-center p-1.5 bg-[#1a1a1a] rounded-[2rem] border border-gray-800/80 shadow-inner overflow-hidden mx-auto md:mx-0 w-full md:w-auto">
+                    <div 
+                        className={cn(
+                            "absolute inset-y-1.5 left-1.5 w-[calc(50%-0.375rem)] bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[1.5rem] shadow-lg transition-transform duration-500 ease-spring",
+                            isHeatmap ? "translate-x-full from-emerald-600 to-green-500" : ""
+                        )}
+                    />
+                    <button 
+                        onClick={() => { setIsHeatmap(false); if(quizStarted) setQuizStarted(false); }} 
+                        className={cn("relative z-10 flex-1 md:w-48 py-3 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all rounded-[1.5rem]", !isHeatmap ? "text-white drop-shadow-md" : "text-gray-500 hover:text-white")}
+                    >
+                        Categories
+                    </button>
+                    <button 
+                        onClick={() => { setIsHeatmap(true); if(quizStarted) setQuizStarted(false); }} 
+                        className={cn("relative z-10 flex-1 md:w-48 py-3 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all rounded-[1.5rem]", isHeatmap ? "text-white drop-shadow-md" : "text-gray-500 hover:text-white")}
+                    >
+                        Heatmap
+                    </button>
                 </div>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                     {quizStarted && (
-                        <div className="flex items-center gap-4 bg-gray-800/50 px-4 py-2 rounded-xl border border-white/10">
-                            <span className="text-xs font-bold text-gray-400 uppercase">Target: <span className="text-blue-400 text-sm font-bold tracking-wide">{quizTarget?.name}</span></span>
-                            <span className="text-xs font-bold text-gray-400 uppercase border-l border-white/10 pl-4">Score: <span className="text-emerald-400 text-sm font-bold">{score}</span></span>
+                        <div className="flex flex-1 md:flex-none items-center justify-between gap-4 bg-gray-800/50 px-5 py-2.5 rounded-2xl border border-white/10 shadow-inner">
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                Target <span className="text-blue-400 text-sm tracking-wide">{quizTarget?.name}</span>
+                            </span>
+                            <div className="w-[1px] h-6 bg-white/10" />
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                Score <span className="text-emerald-400 text-sm">{score}</span>
+                            </span>
                         </div>
                     )}
                     <button 
                         onClick={() => { setQuizStarted(!quizStarted); setIsHeatmap(false); setActiveFilter(null); }}
-                        className={cn("px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-lg", quizStarted ? "bg-gradient-to-r from-red-600 to-red-500 shadow-red-500/20" : "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 shadow-blue-500/20")}
+                        className={cn(
+                            "px-6 sm:px-8 py-3 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl", 
+                            quizStarted 
+                                ? "bg-gradient-to-r from-red-600 to-red-500 shadow-red-500/20 text-white hover:shadow-red-500/40" 
+                                : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/20 text-white hover:scale-105 active:scale-95"
+                        )}
                     >
-                        {quizStarted ? 'End Quiz' : 'Start Quiz Mode'}
+                        {quizStarted ? 'End Quiz' : 'Start Quiz'}
                     </button>
                 </div>
             </div>

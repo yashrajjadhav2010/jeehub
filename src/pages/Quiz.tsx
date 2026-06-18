@@ -537,9 +537,9 @@ export default function Quiz() {
                       </ReactMarkdown>
                    </div>
 
-                   <div className="grid grid-cols-1 gap-4 md:gap-6">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                       {(currentQuestion.type === 'integer' || !currentQuestion.options || currentQuestion.options.length === 0) ? (
-                        <div className="flex flex-col items-start gap-4">
+                        <div className="flex flex-col items-start gap-4 col-span-1 sm:col-span-2">
                           <label className="text-sm font-black uppercase tracking-widest text-emerald-800">Numerical Value Answer</label>
                           <input 
                             type="number"

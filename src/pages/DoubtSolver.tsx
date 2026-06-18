@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css';
 import { solveDoubt } from '../services/aiService';
 import { AxiomMascot } from '../components/AxiomMascot';
 import { cn } from '../lib/utils';
+import PeriodicTable from './PeriodicTable';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -578,8 +579,13 @@ export default function DoubtSolver() {
                           )
                         }}
                       >
-                        {msg.content}
+                        {msg.content.replace(/\[EMBED:PERIODIC_TABLE\]/g, '')}
                       </ReactMarkdown>
+                      {msg.content.includes('[EMBED:PERIODIC_TABLE]') && (
+                        <div className="mt-6 w-full max-w-full rounded-2xl shadow-sm border border-gray-100 bg-white">
+                           <PeriodicTable embedded={true} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

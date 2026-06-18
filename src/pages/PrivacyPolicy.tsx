@@ -22,6 +22,11 @@ export default function PrivacyPolicy() {
       title: 'Consent',
       icon: Shield,
       content: 'By operating the JEE TAPASYA terminal, you consent to our localized data persistence protocols. You may purge your system history at any time via the Settings terminal.'
+    },
+    {
+      title: 'AI Intelligence & Features',
+      icon: Eye,
+      content: 'New updates feature the Axiom Live Engine to analyze and provide step-by-step solutions to problems. Query data sent to the AI processing layer is utilized solely to return intelligent insights and is not stored or shared for external model training. Our platform continually adds new features designed to provide a targeted JEE experience while upholding data integrity.'
     }
   ];
 

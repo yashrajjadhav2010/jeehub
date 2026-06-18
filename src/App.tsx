@@ -19,6 +19,8 @@ import MockTests from './pages/MockTests';
 import Study from './pages/Study';
 import MaterialViewer from './pages/MaterialViewer';
 import PeriodicTable from './pages/PeriodicTable';
+import QuestionPage from './pages/QuestionPage';
+import BrowseQuestions from './pages/BrowseQuestions';
 import DeviceNotice from './components/DeviceNotice';
 import { AxiomMascot } from './components/AxiomMascot';
 import { cn } from './lib/utils';
@@ -60,10 +62,8 @@ function Navbar() {
           <div className="flex justify-between h-16 sm:h-20">
             <div className="flex items-center gap-10">
               <Link to="/" className="flex items-center gap-3 shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary preserve-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                  <Zap className="text-white fill-white" size={18} />
-                </div>
-                <span className="text-lg sm:text-2xl font-black heading-display tracking-tighter text-emerald-950 uppercase italic">
+                <img src="/JT_LOGO.png" alt="JEE Tapasya Logo" className="w-9 h-9 sm:w-10 sm:h-10 object-contain hover:scale-110 transition-transform" />
+                <span className="text-lg sm:text-2xl font-black heading-display tracking-tighter text-emerald-950 uppercase italic leading-none mt-1">
                   JEE <span className="text-primary not-italic">TAPASYA</span>
                 </span>
               </Link>
@@ -311,34 +311,21 @@ function Layout({ children }: { children: React.ReactNode }) {
         <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32 sm:pb-8 border-t border-emerald-50 w-full mt-auto">
           <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-6">
             <div className="flex items-center gap-3 relative cursor-default shrink-0">
-              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 hover:scale-110 transition-transform">
-                <Zap className="text-primary fill-primary animate-pulse" size={16} />
-              </div>
-              <span className="text-lg font-black heading-display tracking-tight text-emerald-950 uppercase italic hover:text-primary transition-colors relative overflow-hidden group">
+              <img src="/JT_LOGO.png" alt="JEE Tapasya Logo" className="w-8 h-8 object-contain shrink-0 hover:scale-110 transition-transform" />
+              <span className="text-lg font-black heading-display tracking-tight text-emerald-950 uppercase italic hover:text-primary transition-colors relative overflow-hidden group leading-none mt-1">
                 JEE <span className="text-primary not-italic">TAPASYA</span>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full animate-[shimmer_2s_infinite] z-10 pointer-events-none" />
               </span>
             </div>
             
             <div className="flex justify-center items-center gap-x-6 gap-y-4 text-center flex-wrap">
+              <Link to="/browse" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Question Bank</Link>
               <Link to="/documentation" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Documentation</Link>
               <Link to="/privacy" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Privacy</Link>
               <a href="mailto:yashrajart1999@gmail.com" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Contact Terminal</a>
             </div>
             
             <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-900/30 text-center lg:hidden">© 2026 JEE TAPASYA Command</p>
-
-            <div className="relative inline-block shrink-0">
-              <div className="flex items-center gap-2 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 shadow-sm transition-all hover:scale-105 hover:bg-emerald-100 active:scale-95 group cursor-pointer relative overflow-hidden z-10 box-border">
-                <a href="https://yashrajjadhav.netlify.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-900/60 whitespace-nowrap group-hover:text-emerald-900 transition-colors z-10 w-full h-full absolute inset-0 px-6 py-2">
-                  <span className="relative z-10 flex flex-row items-center gap-1 w-full justify-center">Made with <span className="text-red-500 animate-pulse">❤️</span> by Yashraj Jadhav <ExternalLink size={10} className="text-emerald-900/40 group-hover:text-emerald-900 transition-all opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>
-                </a>
-                <span className="opacity-0 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 py-0 px-0">
-                  Made with <span className="text-red-500">❤️</span> by Yashraj Jadhav <ExternalLink size={10} />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] z-0 pointer-events-none" />
-              </div>
-            </div>
           </div>
         </footer>
       )}
@@ -444,6 +431,8 @@ export default function App() {
           <Route path="/mock-tests" element={<MockTests />} />
           <Route path="/subjects/:subjectId" element={<ChapterSelection />} />
           <Route path="/quiz/:subjectId/:chapterId/:setId" element={<Quiz />} />
+          <Route path="/browse" element={<BrowseQuestions />} />
+          <Route path="/question/:subjectId/:chapterId/:setId/:questionId" element={<QuestionPage />} />
           <Route path="/result" element={<Result />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/error-book" element={<ErrorBook />} />

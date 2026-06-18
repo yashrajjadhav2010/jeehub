@@ -22,6 +22,11 @@ export default function TermsOfService() {
       title: 'System Modifications',
       icon: Gavel,
       content: 'JEE TAPASYA Command reserves the right to modify system parameters, update module sets, and adjust operational thresholds without prior notice to ensure optimal training performance.'
+    },
+    {
+      title: 'AI Usage & New Features',
+      icon: CheckCircle,
+      content: 'The terminal now includes integrated AI logic flows (Axiom Live Engine) and advanced UI alignments simulating main test events. Engagement with AI analysis is subject to defined daily quotas (10 per operator terminal). Any circumvention of these limitations via automated scripts or network tunneling constitutes a breach of protocol.'
     }
   ];
 

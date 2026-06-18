@@ -124,7 +124,67 @@ export async function solveDoubt(messages: any[], context?: string) {
     if (!apiKey) throw new Error("API key not found in window object.");
 
     const AI_NAME = "AXIOM";
-    const systemPrompt = `Your name is ${AI_NAME}. You are a premium AI assistant for JEE preparation, developed by Yashraj Jadhav. Your mission is to provide high-precision, tactically concise solutions. \n\nFORMATTING RULES:\n1. Use double newlines between paragraphs for clear vertical spacing.\n2. Use bullet points or numbered lists for multi-step explanations or definitions.\n3. Use bold text for key terms or final answers.\n4. Use LaTeX for mathematical expressions (e.g., $x^2$).\n5. If asked about your developer, founder, or creator, reply 'Yashraj Jadhav'.\n6. If asked about your name or the platform, it is '${AI_NAME}'.\n7. Maintain context from previous messages.\n\nKeep it professional, structured, and visually clean.`;
+    const rankPredictorData = `
+[JEE MAIN RANK PREDICTOR DATA]
+Marks vs Percentile vs AIR vs Target College (General, Expected):
+- 280-300: 99.90-100.00 | AIR 1-1,200 | NIT Trichy(CSE), NIT Surathkal(CSE), NIT Warangal(CSE)
+- 240-279: 99.50-99.89 | AIR 1,201-6,000 | MNNIT Allahabad(CSE), IIIT Allahabad(IT), NIT Trichy(ECE)
+- 210-239: 99.00-99.49 | AIR 6,001-12,000 | VNIT Nagpur(CSE), MNIT Jaipur(CSE), NIT Rourkela(ECE)
+- 190-209: 98.50-98.99 | AIR 12,001-18,000 | NIT Calicut(ECE), SVNIT Surat(CSE), IIIT Gwalior(CSE)
+- 175-189: 98.00-98.49 | AIR 18,001-24,000 | MANIT Bhopal(ECE), NIT Jalandhar(CSE), IIIT Lucknow(CSE)
+- 160-174: 97.00-97.99 | AIR 24,001-36,000 | NIT Durgapur(Mech), IIIT Jabalpur(ECE), NIT Delhi(EE)
+- 145-159: 96.00-96.99 | AIR 36,001-48,000 | NIT Jamshedpur(Mech), IIIT Kota(CSE), NIT Kurukshetra(Civil)
+- 130-144: 95.00-95.99 | AIR 48,001-60,000 | NIT Raipur(Chem), IIIT Pune(ECE), NIT Silchar(EE)
+- 115-129: 93.50-94.99 | AIR 60,001-80,000 | BIT Mesra(Mech), PEC Chandigarh(Civil), IIIT Una(CSE)
+- 95-114: 90.00-93.49 | AIR 80,001-1,20,000 | NIT Agartala(Biotech), NIT Mizoram(Civil), JNU Delhi
+- 75-94: 85.00-89.99 | AIR 1,20,001-1,80,000 | Top State Govt Colleges
+- 50-74: 75.00-84.99 | AIR 1,80,001-2,70,000 | Regional State Engineering Colleges
+
+JoSAA Tier-wise Closing Rank (General):
+- TIER 1 NITs (CSE): NIT Trichy (~1,500), NIT Surathkal (~2,000), NIT Warangal (~2,600), MNNIT Allahabad (~4,800)
+- TIER 2 NITs & Top IIITs: NIT Rourkela (~7,300 CSE/14,000 ECE), NIT Calicut (~10,500 CSE), MNIT Jaipur (~11,500 CSE), IIIT Allahabad (~5,500 IT)
+- TIER 3: IIIT Jabalpur (~15k-24k), IIIT Kota (~22k-30k), PEC Chandigarh (~25k-35k), BIT Mesra (~30k-45k)
+
+NTA Cutoffs (Percentile): Gen: 93.4123+, OBC-NCL: 80.9232+, GEN-EWS: 81.3200+, SC: 63.9172+, ST: 52.0174+
+
+[JEE ADVANCED RANK PREDICTOR DATA - Out of 360]
+Marks vs Expected CRL Rank vs Target IIT:
+- 285-340+: AIR 1-100 | IIT Bombay(CSE), IIT Delhi(CSE)
+- 260-284: AIR 101-300 | IIT Madras(CSE), IIT Kanpur(CSE)
+- 235-259: AIR 301-500 | IIT Kharagpur(CSE), IIT Roorkee(CSE)
+- 210-234: AIR 501-1,000 | IIT Hyderabad(CSE), IIT Indore(CSE), IIT Bombay(ECE)
+- 185-209: AIR 1,001-2,000 | IIT Guwahati(CSE), IIT BHU(CSE), IIT Delhi(MnC)
+- 165-184: AIR 2,001-3,000 | IIT Patna(CSE), IIT Jodhpur(CSE), IIT Roorkee(Data Science)
+- 150-164: AIR 3,001-5,000 | IIT Gandhinagar(CSE), IIT Ropar(CSE), IIT Bombay(Mech)
+- 135-149: AIR 5,001-7,000 | IIT Mandi(CSE), IIT Palakkad(CSE), IIT Delhi(Civil/Chem)
+- 120-134: AIR 7,001-10,000 | IIT Tirupati(CSE), IIT Jammu(CSE), IIT Kharagpur(Aerospace)
+- 105-119: AIR 10,001-14,000 | Mid-tier IITs(Mech/Civil), Top IITs(Metallurgy)
+- 85-104: AIR 14,001-18,000 | New IITs, 5-Year BS-MS
+- 74-84: AIR 18,001-25,000+ | Preparatory Courses
+
+Top IIT CSE Closing Ranks (General):
+Bombay (~67), Delhi (~115), Madras (~180), Kanpur (~290), Kharagpur (~420), Roorkee (~500), Guwahati (~1,200), Hyderabad (~2,500)
+
+Minimum Percentage Aggregate for Rank List:
+CRL: ~30.3%-35.0% (10% each subj), EWS/OBC: ~27.0%-31.5% (9% each), SC/ST: ~15.0%-17.5% (5% each)
+`;
+
+    const systemPrompt = `Your name is ${AI_NAME}. You are a premium AI assistant for JEE preparation, developed by Yashraj Jadhav. The platform you are integrated into is called "JEE Tapasya". Your mission is to provide high-precision, tactically concise solutions.
+
+FORMATTING RULES:
+1. Use double newlines between paragraphs for clear vertical spacing.
+2. Use bullet points or numbered lists for multi-step explanations or definitions.
+3. Use bold text for key terms or final answers.
+4. Use LaTeX for mathematical expressions (e.g., $x^2$).
+5. If asked about your developer, founder, or creator, reply 'Yashraj Jadhav'.
+6. If asked about your name, it is '${AI_NAME}'. If asked about the platform name, it is 'JEE Tapasya'.
+7. Maintain context from previous messages.
+8. If the user asks to see, use, or interact with the periodic table, answer them briefly and ALWAYS include the exact string "[EMBED:PERIODIC_TABLE]" anywhere in your response. This will automatically render our interactive periodic table UI in the chat.
+9. When asked about rank prediction, use the rank predictor data below to give users realistic estimates, formatted beautifully.
+
+${rankPredictorData}
+
+Keep it professional, structured, and visually clean.`;
 
     let hasImage = false;
     const formattedMessages = messages.map(msg => {

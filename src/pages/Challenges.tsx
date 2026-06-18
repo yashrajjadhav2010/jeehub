@@ -7,6 +7,7 @@ import { cn, calculatePredictedRank, formatRank } from '../lib/utils';
 export default function Challenges() {
   const navigate = useNavigate();
   const [stats, setStats] = useState<any>(null);
+  const [showRankInfo, setShowRankInfo] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('userStats');
@@ -104,10 +105,15 @@ export default function Challenges() {
               <p className="text-[9px] sm:text-[10px] font-black text-emerald-400 uppercase tracking-widest">Global Rank</p>
               <div className="flex flex-col items-start">
                  <p className="text-lg sm:text-xl font-black text-white leading-none">{formatRank(calculateRank())}</p>
-                 <div className="group relative inline-flex items-center gap-1 mt-1 cursor-pointer">
-                   <Info size={10} className="text-emerald-400/50 group-hover:text-emerald-400 transition-colors" />
-                   <span className="text-[8px] font-bold uppercase tracking-widest text-emerald-100/30 group-hover:text-emerald-100 transition-colors">Info</span>
-                   <div className="absolute top-full left-0 mt-2 w-48 bg-emerald-900 text-emerald-50 text-[10px] leading-relaxed p-2 rounded-lg border border-emerald-700/50 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 tracking-normal normal-case">
+                 <div 
+                   className="group relative inline-flex items-center gap-1 mt-1 cursor-pointer focus:outline-none"
+                   onClick={() => setShowRankInfo(!showRankInfo)}
+                   onBlur={() => setShowRankInfo(false)}
+                   tabIndex={0}
+                 >
+                   <Info size={10} className={cn("transition-colors", showRankInfo ? "text-emerald-400" : "text-emerald-400/50 group-hover:text-emerald-400")} />
+                   <span className={cn("text-[8px] font-bold uppercase tracking-widest transition-colors", showRankInfo ? "text-emerald-100" : "text-emerald-100/30 group-hover:text-emerald-100")}>Info</span>
+                   <div className={cn("absolute top-full left-0 mt-2 w-48 bg-emerald-900 text-emerald-50 text-[10px] leading-relaxed p-2 rounded-lg border border-emerald-700/50 shadow-xl transition-all z-50 tracking-normal normal-case", showRankInfo ? "opacity-100 visible" : "opacity-0 invisible group-hover:opacity-100 group-hover:visible")}>
                      Rank is calculated on the basis of correct question solved and it can vary.
                    </div>
                  </div>
