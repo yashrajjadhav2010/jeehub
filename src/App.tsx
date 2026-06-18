@@ -325,7 +325,11 @@ function Layout({ children }: { children: React.ReactNode }) {
               <a href="mailto:yashrajart1999@gmail.com" className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors">Contact Terminal</a>
             </div>
             
-            <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-900/30 text-center lg:hidden">© 2026 JEE TAPASYA Command</p>
+            <div className="flex flex-col items-center lg:items-end gap-2">
+              <p className="text-[10px] font-bold tracking-widest text-emerald-900/60 text-center flex items-center gap-1.5 uppercase">
+                Made with <span className="text-red-500 text-xs">❤️</span> by <a href="https://yashrajjadhav.netlify.app" target="_blank" rel="noopener noreferrer" className="text-primary font-black hover:underline transition-all">YASHRAJ JADHAV</a>
+              </p>
+            </div>
           </div>
         </footer>
       )}
