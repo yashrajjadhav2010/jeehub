@@ -285,8 +285,14 @@ export default function Challenges() {
                   Consistency (Day Streak)
                 </h4>
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
-                  {[5, 10, 20, 25].map((req) => {
+                  {[5, 10, 25].map((req) => {
                     const achieved = currentStreak >= req;
+                    const badgeImg = {
+                      5: "https://i.ibb.co/k61CnZqB/day5.png",
+                      10: "https://i.ibb.co/NdYTCBPN/day10.png",
+                      25: "https://i.ibb.co/NnxD5y23/day25.png",
+                    }[req as 5 | 10 | 25];
+
                     return (
                       <div
                         key={req}
@@ -302,16 +308,16 @@ export default function Challenges() {
                         )}
                         <div
                           className={cn(
-                            "w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2",
-                            achieved
-                              ? "bg-orange-500 text-white border-orange-300"
-                              : "bg-emerald-100 text-emerald-300 border-transparent",
+                            "w-16 h-16 flex items-center justify-center",
                           )}
                         >
-                          <Flame
-                            size={28}
-                            className={achieved ? "fill-orange-400" : ""}
-                          />
+                          {badgeImg ? (
+                            <img src={badgeImg} alt={`${req} Day Streak`} className="w-full h-full object-contain drop-shadow-sm" />
+                          ) : (
+                            <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2", achieved ? "bg-orange-500 text-white border-orange-300" : "bg-emerald-100 text-emerald-300 border-transparent")}>
+                              <Flame size={28} className={achieved ? "fill-orange-400" : ""} />
+                            </div>
+                          )}
                         </div>
                         <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
                           {req} Day
@@ -330,42 +336,36 @@ export default function Challenges() {
                   Endurance (Missions Cleared)
                 </h4>
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
-                  {[50, 100, 300, 500, 1000].map((req) => {
+                  {[50, 100, 300, 1000].map((req) => {
                     const achieved = currentQuestions >= req;
                     const getBadgeInfo = (req: number) => {
                       switch (req) {
                         case 50:
                           return {
-                            icon: <Sword size={28} />,
+                            image: "https://i.ibb.co/Xr6zZtNY/50.png",
                             color: "blue",
                             name: "Tapasya Starter",
                           };
                         case 100:
                           return {
-                            icon: <Shield size={28} />,
+                            image: "https://i.ibb.co/p6kc7WKX/100.png",
                             color: "indigo",
                             name: "Tapasya Warrior",
                           };
                         case 300:
                           return {
-                            icon: <Medal size={28} />,
+                            image: "https://i.ibb.co/RGV0tD6k/300.png",
                             color: "purple",
                             name: "Problem Crusher",
                           };
-                        case 500:
-                          return {
-                            icon: <Trophy size={28} />,
-                            color: "amber",
-                            name: "Tapasya Master",
-                          };
                         case 1000:
                           return {
-                            icon: <Crown size={28} />,
+                            image: "https://i.ibb.co/5bqYMrh/file-00000000c88472078520c8a8552cfb9f.png",
                             color: "rose",
                             name: "Tapasya Grandmaster",
                           };
                         default:
-                          return { icon: null, color: "emerald", name: "" };
+                          return { image: null, color: "emerald", name: "" };
                       }
                     };
                     const badge = getBadgeInfo(req);
@@ -380,18 +380,6 @@ export default function Challenges() {
                         }[badge.color]
                       : "bg-white border-emerald-50 opacity-40 grayscale";
 
-                    const iconBgStyles = achieved
-                      ? {
-                          blue: "bg-blue-500 text-white border-blue-300",
-                          indigo: "bg-indigo-500 text-white border-indigo-300",
-                          purple: "bg-purple-500 text-white border-purple-300",
-                          amber: "bg-amber-500 text-white border-amber-300",
-                          rose: "bg-rose-500 text-white border-rose-300",
-                          emerald:
-                            "bg-emerald-500 text-white border-emerald-300",
-                        }[badge.color]
-                      : "bg-emerald-100 text-emerald-300 border-transparent";
-
                     return (
                       <div
                         key={req}
@@ -405,11 +393,12 @@ export default function Challenges() {
                         )}
                         <div
                           className={cn(
-                            "w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2",
-                            iconBgStyles,
+                            "w-16 h-16 flex items-center justify-center",
                           )}
                         >
-                          {badge.icon}
+                          {badge.image && (
+                            <img src={badge.image} alt={badge.name} className="w-full h-full object-contain drop-shadow-sm" />
+                          )}
                         </div>
                         <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
                           {badge.name}

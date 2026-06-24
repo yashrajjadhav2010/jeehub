@@ -328,7 +328,7 @@ export default function Result() {
                         margin={{ top: 20, right: 0, left: -25, bottom: 0 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                        <XAxis dataKey="name" axisLine={{stroke: '#e5e7eb'}} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280', textTransform: 'capitalize' }} dy={10} />
+                        <XAxis dataKey="name" axisLine={{stroke: '#e5e7eb'}} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={10} />
                         <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} tickCount={5} dx={-10} domain={[0, 'dataMax + 2']} />
                         <Bar dataKey="value" fill="#f97316" radius={[4, 4, 0, 0]} maxBarSize={32}>
                            <LabelList dataKey="value" position="top" formatter={(val: number) => `${val} min`} fontSize={10} fill="#6b7280" offset={8} />

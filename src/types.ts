@@ -7,7 +7,7 @@ export interface Question {
   question: string;
   type?: 'mcq' | 'integer';
   options?: string[];
-  answer: number;
+  answer: number | string;
   explanation?: string;
   difficulty?: Difficulty;
 }

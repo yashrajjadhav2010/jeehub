@@ -1820,60 +1820,82 @@ const FlashcardViewer = ({ content }: { content: string }) => {
       </div>
 
       {/* Card Container */}
-      <div
-        className="w-full aspect-[4/3] sm:aspect-[16/10] perspective-1000 cursor-pointer group"
-        onClick={() => setFlipped(!flipped)}
-      >
-        <motion.div
-          className="w-full h-full relative preserve-3d"
-          initial={false}
-          animate={{ rotateY: flipped ? 180 : 0 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        >
-          {/* Front */}
-          <div className="absolute inset-0 backface-hidden bg-white border-2 border-emerald-100 rounded-[2rem] sm:rounded-[3rem] shadow-xl shadow-emerald-900/5 overflow-hidden flex flex-col group-hover:shadow-2xl transition-shadow duration-300">
-            {/* Subtle dot pattern background */}
-            <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#059669_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
-
-            <div className="relative flex-1 p-6 sm:p-12 flex flex-col items-center justify-center text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-6 sm:mb-8 shadow-inner">
-                <BrainCircuit size={32} className="sm:w-10 sm:h-10" />
-              </div>
-              <h3 className="text-2xl sm:text-4xl lg:text-5xl font-black text-emerald-950 uppercase leading-tight tracking-tight px-4">
-                {cards[currentIndex].front}
-              </h3>
-            </div>
-
-            <div className="relative h-16 sm:h-20 bg-emerald-50/50 border-t border-emerald-50 flex items-center justify-center">
-              <p className="text-[10px] sm:text-xs font-black text-primary/60 uppercase tracking-widest flex items-center gap-2">
-                <Layers size={14} /> Tap anywhere to flip
-              </p>
-            </div>
-          </div>
-
-          {/* Back */}
-          <div
-            className="absolute inset-0 backface-hidden bg-gradient-to-br from-emerald-900 to-emerald-950 border-2 border-emerald-800 rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
-            style={{ transform: "rotateY(180deg)" }}
+      <div className="w-full aspect-[4/3] sm:aspect-[16/10] perspective-1000 group relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, scale: 0.95, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.95, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="w-full h-full absolute inset-0"
           >
-            <div className="flex-1 p-6 sm:p-12 overflow-y-auto custom-scrollbar flex flex-col justify-center">
-              <div className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none mx-auto w-full text-center sm:text-left">
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath, remarkGfm]}
-                  rehypePlugins={[rehypeKatex]}
-                >
-                  {cards[currentIndex].back}
-                </ReactMarkdown>
-              </div>
-            </div>
+            <motion.div
+              className="w-full h-full relative preserve-3d cursor-pointer touch-pan-y"
+              initial={false}
+              animate={{ rotateY: flipped ? 180 : 0 }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.8}
+              onDragEnd={(e, { offset }) => {
+                const swipe = offset.x;
+                if (swipe < -60 && currentIndex < cards.length - 1) {
+                  setFlipped(false);
+                  setTimeout(() => setCurrentIndex(currentIndex + 1), 150);
+                } else if (swipe > 60 && currentIndex > 0) {
+                  setFlipped(false);
+                  setTimeout(() => setCurrentIndex(currentIndex - 1), 150);
+                }
+              }}
+              onClick={() => setFlipped(!flipped)}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            >
+              {/* Front */}
+              <div className="absolute inset-0 backface-hidden bg-white border-2 border-emerald-100 rounded-[2rem] sm:rounded-[3rem] shadow-xl shadow-emerald-900/5 overflow-hidden flex flex-col group-hover:shadow-2xl transition-shadow duration-300">
+                {/* Subtle dot pattern background */}
+                <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#059669_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
 
-            <div className="h-16 sm:h-20 bg-black/20 border-t border-white/5 flex items-center justify-center shrink-0">
-              <p className="text-[10px] sm:text-xs font-black text-emerald-400/60 uppercase tracking-widest flex items-center gap-2">
-                <Layers size={14} /> Tap to flip back
-              </p>
-            </div>
-          </div>
-        </motion.div>
+                <div className="relative flex-1 p-6 sm:p-12 flex flex-col items-center justify-center text-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-6 sm:mb-8 shadow-inner">
+                    <BrainCircuit size={32} className="sm:w-10 sm:h-10" />
+                  </div>
+                  <h3 className="text-2xl sm:text-4xl lg:text-5xl font-black text-emerald-950 uppercase leading-tight tracking-tight px-4">
+                    {cards[currentIndex].front}
+                  </h3>
+                </div>
+
+                <div className="relative h-16 sm:h-20 bg-emerald-50/50 border-t border-emerald-50 flex items-center justify-center">
+                  <p className="text-[10px] sm:text-xs font-black text-primary/60 uppercase tracking-widest flex items-center gap-2">
+                    <Layers size={14} /> Tap to flip • Swipe to navigate
+                  </p>
+                </div>
+              </div>
+
+              {/* Back */}
+              <div
+                className="absolute inset-0 backface-hidden bg-gradient-to-br from-emerald-900 to-emerald-950 border-2 border-emerald-800 rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+                style={{ transform: "rotateY(180deg)" }}
+              >
+                <div className="flex-1 p-6 sm:p-12 overflow-y-auto custom-scrollbar flex flex-col justify-center">
+                  <div className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none mx-auto w-full text-center sm:text-left">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkMath, remarkGfm]}
+                      rehypePlugins={[rehypeKatex]}
+                    >
+                      {cards[currentIndex].back}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+
+                <div className="h-16 sm:h-20 bg-black/20 border-t border-white/5 flex items-center justify-center shrink-0">
+                  <p className="text-[10px] sm:text-xs font-black text-emerald-400/60 uppercase tracking-widest flex items-center gap-2">
+                    <Layers size={14} /> Tap to flip • Swipe to navigate
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {/* Navigation Controls */}

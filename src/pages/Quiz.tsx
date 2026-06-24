@@ -240,7 +240,8 @@ export default function Quiz() {
     setShowSolution(true);
     setSolutionViewed(prev => ({ ...prev, [currentQuestion.id]: true }));
     try {
-      const prompt = `Question: ${currentQuestion.question}\nOptions: ${currentQuestion.options.join(', ')}\nCorrect Answer: Option ${currentQuestion.answer + 1}\nExplanation: ${currentQuestion.explanation || 'None provided'}`;
+      const answerStr = typeof currentQuestion.answer === 'number' ? currentQuestion.answer + 1 : currentQuestion.answer;
+      const prompt = `Question: ${currentQuestion.question}\nOptions: ${currentQuestion.options?.join(', ') || 'N/A'}\nCorrect Answer: Option ${answerStr}\nExplanation: ${currentQuestion.explanation || 'None provided'}`;
       const analysis = await solveDoubt([{ role: 'user', content: prompt }], `Deep-dive analysis for Subject: ${subjectId}`);
       setAiAnalysis(prev => ({ ...prev, [currentQuestion.id]: analysis }));
       
