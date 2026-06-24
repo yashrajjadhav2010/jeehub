@@ -40,6 +40,8 @@ export interface UserStats {
   correctAnswers: number;
   totalTime: number; // in seconds
   streak: number;
+  xp?: number;
+  level?: number;
   missionsCompleted?: number;
   lastPracticeDate: string | null;
   subjectProgress: Record<SubjectId, number>; // total questions solved per subject
@@ -47,6 +49,7 @@ export interface UserStats {
   weakTopics: string[];
   strongTopics: string[];
   dailyActivity?: Record<string, number>;
+  weeklyGoalTarget?: number;
 }
 
 export interface QuizResult {

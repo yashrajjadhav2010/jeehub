@@ -16,6 +16,8 @@ import {
   Layers,
   Plus,
   Minus,
+  Sparkles,
+  Library,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -592,6 +594,81 @@ Example: Na₂O $\\to$ MgO $\\to$ Al₂O₃ $\\to$ SiO₂ $\\to$ P₂O₅ $\\to$
 3. Cl > F (Electron Affinity)
 4. Ga < Al (Atomic Radius Anomaly)
 5. Noble Gases $\\to$ Highest IE and nearly zero EA`,
+  },
+  "unit-and-dimension": {
+    id: "unit-and-dimension",
+    title: "Unit & Dimension",
+    subject: "Physics",
+    category: "Revision Notes",
+    content: `### UNIT & DIMENSION - SHORT NOTES
+
+**1. FUNDAMENTAL QUANTITIES & UNITS**
+* Length (L) -> meter (m)
+* Mass (M) -> kilogram (kg)
+* Time (T) -> second (s)
+* Electric Current (I or A) -> ampere (A)
+* Temperature (K or $\\theta$) -> kelvin (K)
+* Luminous Intensity (Cd) -> candela (cd)
+* Amount of Substance (mol) -> mole (mol)
+
+**2. DIMENSIONAL ANALYSIS**
+* Used to check the correctness of physical equations (Principle of Homogeneity).
+* Convert units from one system to another: $n_1u_1 = n_2u_2$.
+* Example: Force $[MLT^{-2}]$, Energy/Work $[ML^2T^{-2}]$, Power $[ML^2T^{-3}]$.
+
+**3. ERROR ANALYSIS**
+* Absolute Error: $|a_{mean} - a_i|$
+* Relative Error: $\\frac{\\Delta a_{mean}}{a_{mean}}$
+* Percentage Error: Relative Error $\\times 100\\%$
+* If $Z = A^p B^q / C^r$, then fractional error is $\\frac{\\Delta Z}{Z} = p\\frac{\\Delta A}{A} + q\\frac{\\Delta B}{B} + r\\frac{\\Delta C}{C}$.`,
+  },
+  "atomic-structure": {
+    id: "atomic-structure",
+    title: "Atomic Structure",
+    subject: "Chemistry",
+    category: "Revision Notes",
+    content: `### ATOMIC STRUCTURE - SHORT NOTES
+
+**1. BOHR'S MODEL (For H-like species)**
+* Angular Momentum: $mvr = \\frac{nh}{2\\pi}$
+* Radius: $r_n = 0.529 \\cdot \\frac{n^2}{Z} \\, \\text{\\AA}$
+* Energy: $E_n = -13.6 \\cdot \\frac{Z^2}{n^2} \\, \\text{eV/atom}$
+* Velocity: $v_n = 2.18 \\times 10^6 \\cdot \\frac{Z}{n} \\, \\text{m/s}$
+
+**2. QUANTUM NUMBERS**
+* Principal ($n$): Size and energy of the orbital.
+* Azimuthal ($l$): Shape of the orbital ($l = 0 \\dots n-1$).
+* Magnetic ($m_l$): Orientation in space ($-l \\dots +l$).
+* Spin ($m_s$): $+1/2$ or $-1/2$.
+
+**3. IMPORTANT PRINCIPLES**
+* **Pauli's Exclusion Principle:** No two electrons in an atom can have the same set of four quantum numbers.
+* **Aufbau Principle:** Electrons fill lower energy atomic orbitals before filling higher energy ones.
+* **Hund's Rule:** Orbitals of equal energy are each occupied by one electron before any pairing occurs.`,
+  },
+  waves: {
+    id: "waves",
+    title: "Waves",
+    subject: "Physics",
+    category: "Revision Notes",
+    content: `### WAVES - SHORT NOTES
+
+**1. EQUATION OF A PROGRESSIVE WAVE**
+* $y = A \\sin(\\omega t - kx + \\phi)$
+* Wave velocity: $v = \\frac{\\omega}{k} = f \\lambda$
+* Particle velocity: $v_p = \\frac{dy}{dt} = -v \\cdot \\text{Slope}$
+
+**2. VELOCITY OF WAVES**
+* Transverse in String: $v = \\sqrt{\\frac{T}{\\mu}}$ (where $\\mu$ is linear mass density)
+* Longitudinal in Gas (Laplace): $v = \\sqrt{\\frac{\\gamma P}{\\rho}} = \\sqrt{\\frac{\\gamma RT}{M}}$
+
+**3. INTERFERENCE & BEATS**
+* Intensity $I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\phi$
+* Constructive: $\\phi = 2n\\pi$, Destructive: $\\phi = (2n+1)\\pi$
+* Beat frequency: $f_B = |f_1 - f_2|$
+
+**4. DOPPLER EFFECT**
+* Apparent Frequency: $f' = f \\left( \\frac{v \\pm v_o}{v \\mp v_s} \\right)$`,
   },
   "kinematics-mindmap": {
     id: "kinematics-mindmap",
@@ -1686,9 +1763,157 @@ function MindMapViewer({ data }: { data: MaterialData }) {
   );
 }
 
+const FlashcardViewer = ({ content }: { content: string }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+
+  const cards = React.useMemo(() => {
+    const blocks = content.split(/---/);
+    return blocks
+      .map((b) => {
+        const match = b.match(/\*\*(.*?)\*\*/);
+        if (match) {
+          const title = match[1];
+          const rest = b.replace(match[0], "").trim();
+          return { front: title.replace(/^\d+\.\s*/, ""), back: rest };
+        }
+        return null;
+      })
+      .filter(Boolean) as { front: string; back: string }[];
+  }, [content]);
+
+  if (cards.length === 0)
+    return (
+      <div className="p-10 text-center text-emerald-900/40 font-bold uppercase tracking-widest">
+        No flashcards available for this material.
+      </div>
+    );
+
+  const progress = ((currentIndex + 1) / cards.length) * 100;
+
+  return (
+    <div className="flex flex-col items-center w-full max-w-3xl mx-auto space-y-8 my-10">
+      {/* Top Header & Progress */}
+      <div className="w-full flex flex-col gap-4">
+        <div className="flex items-center justify-between w-full">
+          <p className="text-xs font-black uppercase tracking-widest text-emerald-900/40 flex items-center gap-2">
+            <Library size={14} /> Flashcards
+          </p>
+          <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20 flex items-center gap-1.5">
+            <Sparkles size={12} /> Spaced Repetition
+          </span>
+        </div>
+
+        <div className="flex items-center gap-4 w-full">
+          <span className="text-sm font-black text-emerald-950 w-12 text-right">
+            {currentIndex + 1} / {cards.length}
+          </span>
+          <div className="h-2 flex-1 bg-emerald-100 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-primary"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Card Container */}
+      <div
+        className="w-full aspect-[4/3] sm:aspect-[16/10] perspective-1000 cursor-pointer group"
+        onClick={() => setFlipped(!flipped)}
+      >
+        <motion.div
+          className="w-full h-full relative preserve-3d"
+          initial={false}
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        >
+          {/* Front */}
+          <div className="absolute inset-0 backface-hidden bg-white border-2 border-emerald-100 rounded-[2rem] sm:rounded-[3rem] shadow-xl shadow-emerald-900/5 overflow-hidden flex flex-col group-hover:shadow-2xl transition-shadow duration-300">
+            {/* Subtle dot pattern background */}
+            <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#059669_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+
+            <div className="relative flex-1 p-6 sm:p-12 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-6 sm:mb-8 shadow-inner">
+                <BrainCircuit size={32} className="sm:w-10 sm:h-10" />
+              </div>
+              <h3 className="text-2xl sm:text-4xl lg:text-5xl font-black text-emerald-950 uppercase leading-tight tracking-tight px-4">
+                {cards[currentIndex].front}
+              </h3>
+            </div>
+
+            <div className="relative h-16 sm:h-20 bg-emerald-50/50 border-t border-emerald-50 flex items-center justify-center">
+              <p className="text-[10px] sm:text-xs font-black text-primary/60 uppercase tracking-widest flex items-center gap-2">
+                <Layers size={14} /> Tap anywhere to flip
+              </p>
+            </div>
+          </div>
+
+          {/* Back */}
+          <div
+            className="absolute inset-0 backface-hidden bg-gradient-to-br from-emerald-900 to-emerald-950 border-2 border-emerald-800 rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+            style={{ transform: "rotateY(180deg)" }}
+          >
+            <div className="flex-1 p-6 sm:p-12 overflow-y-auto custom-scrollbar flex flex-col justify-center">
+              <div className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none mx-auto w-full text-center sm:text-left">
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath, remarkGfm]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {cards[currentIndex].back}
+                </ReactMarkdown>
+              </div>
+            </div>
+
+            <div className="h-16 sm:h-20 bg-black/20 border-t border-white/5 flex items-center justify-center shrink-0">
+              <p className="text-[10px] sm:text-xs font-black text-emerald-400/60 uppercase tracking-widest flex items-center gap-2">
+                <Layers size={14} /> Tap to flip back
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Navigation Controls */}
+      <div className="flex items-center gap-4 w-full max-w-md pt-4">
+        <button
+          onClick={() => {
+            setFlipped(false);
+            setTimeout(
+              () => setCurrentIndex(Math.max(0, currentIndex - 1)),
+              150,
+            );
+          }}
+          disabled={currentIndex === 0}
+          className="flex-1 py-4 px-6 rounded-2xl bg-white border-2 border-emerald-100 text-emerald-900 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-50 transition-colors shadow-sm active:scale-95"
+        >
+          <ArrowLeft size={18} /> Prev
+        </button>
+        <button
+          onClick={() => {
+            setFlipped(false);
+            setTimeout(
+              () =>
+                setCurrentIndex(Math.min(cards.length - 1, currentIndex + 1)),
+              150,
+            );
+          }}
+          disabled={currentIndex === cards.length - 1}
+          className="flex-1 py-4 px-6 rounded-2xl bg-primary text-white font-black uppercase tracking-widest text-xs sm:text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-500 transition-colors shadow-xl shadow-primary/20 active:scale-95"
+        >
+          Next <ArrowLeft size={18} className="rotate-180" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default function MaterialViewer() {
   const { materialId } = useParams();
   const [data, setData] = useState<MaterialData | null>(null);
+  const [viewMode, setViewMode] = useState<"notes" | "flashcards">("notes");
 
   useEffect(() => {
     // Scroll to top
@@ -1737,7 +1962,7 @@ export default function MaterialViewer() {
           <MindMapViewer data={data} />
         </div>
       </div>,
-      document.body
+      document.body,
     );
   }
 
@@ -1783,18 +2008,44 @@ export default function MaterialViewer() {
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black heading-display tracking-tight text-emerald-950 uppercase mb-4">
               {data.title}
             </h1>
-            <div className="flex items-center gap-6 text-emerald-900/40">
-              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide">
-                <Clock size={14} /> 5 Min Read
-              </span>
-              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide">
-                <CheckCheck size={14} /> JEE Syllabus Aligned
-              </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-6 text-emerald-900/40">
+                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide">
+                  <Clock size={14} /> 5 Min Read
+                </span>
+                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide">
+                  <CheckCheck size={14} /> JEE Syllabus Aligned
+                </span>
+              </div>
+              <div className="flex bg-emerald-50 p-1 rounded-xl w-full sm:w-auto">
+                <button
+                  onClick={() => setViewMode("notes")}
+                  className={cn(
+                    "flex-1 sm:flex-none px-4 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all",
+                    viewMode === "notes"
+                      ? "bg-white text-emerald-950 shadow-sm"
+                      : "text-emerald-900/40 hover:text-emerald-900",
+                  )}
+                >
+                  Notes
+                </button>
+                <button
+                  onClick={() => setViewMode("flashcards")}
+                  className={cn(
+                    "flex-1 sm:flex-none px-4 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all",
+                    viewMode === "flashcards"
+                      ? "bg-white text-emerald-950 shadow-sm"
+                      : "text-emerald-900/40 hover:text-emerald-900",
+                  )}
+                >
+                  Flashcards
+                </button>
+              </div>
             </div>
           </header>
         )}
 
-        {data.category !== "Mind Map" && (
+        {data.category !== "Mind Map" && viewMode === "notes" && (
           <article className="prose prose-emerald prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-emerald-950 prose-p:text-emerald-900/80 prose-strong:text-emerald-900 prose-li:marker:text-primary prose-a:text-primary hover:prose-a:text-emerald-600">
             {/* We add a custom wrapper for react-markdown to style math properly */}
             <div className="markdown-body">
@@ -1822,6 +2073,10 @@ export default function MaterialViewer() {
               </ReactMarkdown>
             </div>
           </article>
+        )}
+
+        {data.category !== "Mind Map" && viewMode === "flashcards" && (
+          <FlashcardViewer content={data.content} />
         )}
       </div>
 

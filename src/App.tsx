@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink, Library, Bot, Sparkles } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, Trophy, Settings, Menu, X, Zap, Activity, User, BrainCircuit, ExternalLink, Library, Bot, Sparkles, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import Home from './pages/Home';
-import Subjects from './pages/Subjects';
-import ChapterSelection from './pages/ChapterSelection';
-import Quiz from './pages/Quiz';
-import Result from './pages/Result';
-import Analytics from './pages/Analytics';
-import Challenges from './pages/Challenges';
-import DoubtSolver from './pages/DoubtSolver';
-import SettingsPage from './pages/Settings';
-import Documentation from './pages/Documentation';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import ErrorBook from './pages/ErrorBook';
-import MockTests from './pages/MockTests';
-import Study from './pages/Study';
-import MaterialViewer from './pages/MaterialViewer';
-import PeriodicTable from './pages/PeriodicTable';
-import QuestionPage from './pages/QuestionPage';
-import BrowseQuestions from './pages/BrowseQuestions';
+
+// Lazy loaded pages to improve performance
+const Home = lazy(() => import('./pages/Home'));
+const Subjects = lazy(() => import('./pages/Subjects'));
+const ChapterSelection = lazy(() => import('./pages/ChapterSelection'));
+const Quiz = lazy(() => import('./pages/Quiz'));
+const Result = lazy(() => import('./pages/Result'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const Challenges = lazy(() => import('./pages/Challenges'));
+const DoubtSolver = lazy(() => import('./pages/DoubtSolver'));
+const SettingsPage = lazy(() => import('./pages/Settings'));
+const Documentation = lazy(() => import('./pages/Documentation'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const ErrorBook = lazy(() => import('./pages/ErrorBook'));
+const MockTests = lazy(() => import('./pages/MockTests'));
+const Study = lazy(() => import('./pages/Study'));
+const MaterialViewer = lazy(() => import('./pages/MaterialViewer'));
+const PeriodicTable = lazy(() => import('./pages/PeriodicTable'));
+const QuestionPage = lazy(() => import('./pages/QuestionPage'));
+const BrowseQuestions = lazy(() => import('./pages/BrowseQuestions'));
+
 import DeviceNotice from './components/DeviceNotice';
 import { AxiomMascot } from './components/AxiomMascot';
 import { cn } from './lib/utils';
@@ -426,27 +429,29 @@ export default function App() {
       <div className="mesh-bg" />
       <div className="noise-overlay" />
       <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/subjects" element={<Subjects />} />
-          <Route path="/study" element={<Study />} />
-          <Route path="/study/periodic-table" element={<PeriodicTable />} />
-          <Route path="/study/:materialId" element={<MaterialViewer />} />
-          <Route path="/mock-tests" element={<MockTests />} />
-          <Route path="/subjects/:subjectId" element={<ChapterSelection />} />
-          <Route path="/quiz/:subjectId/:chapterId/:setId" element={<Quiz />} />
-          <Route path="/browse" element={<BrowseQuestions />} />
-          <Route path="/question/:subjectId/:chapterId/:setId/:questionId" element={<QuestionPage />} />
-          <Route path="/result" element={<Result />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/error-book" element={<ErrorBook />} />
-          <Route path="/challenges" element={<Challenges />} />
-          <Route path="/doubt-solver" element={<DoubtSolver />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/documentation" element={<Documentation />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-        </Routes>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/subjects" element={<Subjects />} />
+            <Route path="/study" element={<Study />} />
+            <Route path="/study/periodic-table" element={<PeriodicTable />} />
+            <Route path="/study/:materialId" element={<MaterialViewer />} />
+            <Route path="/mock-tests" element={<MockTests />} />
+            <Route path="/subjects/:subjectId" element={<ChapterSelection />} />
+            <Route path="/quiz/:subjectId/:chapterId/:setId" element={<Quiz />} />
+            <Route path="/browse" element={<BrowseQuestions />} />
+            <Route path="/question/:subjectId/:chapterId/:setId/:questionId" element={<QuestionPage />} />
+            <Route path="/result" element={<Result />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/error-book" element={<ErrorBook />} />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/doubt-solver" element={<DoubtSolver />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/documentation" element={<Documentation />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+          </Routes>
+        </Suspense>
       </Layout>
     </Router>
   );
