@@ -229,184 +229,201 @@ export default function Settings() {
 
             <div className="space-y-6">
               {/* Day Streak Badges */}
-              <div>
-                <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">
-                  Consistency (Day Streak)
-                </h4>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
-                  {[5, 10, 25].map((req) => {
-                    const achieved = streak >= req;
-                    const badgeImg = {
-                      5: "https://i.ibb.co/k61CnZqB/day5.png",
-                      10: "https://i.ibb.co/NdYTCBPN/day10.png",
-                      25: "https://i.ibb.co/NnxD5y23/day25.png",
-                    }[req as 5 | 10 | 25];
+              {[5, 10, 25].some(req => streak >= req) && (
+                <div>
+                  <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">
+                    Consistency (Day Streak)
+                  </h4>
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                    {[5, 10, 25].map((req) => {
+                      const achieved = streak >= req;
+                      if (!achieved) return null;
+                      const badgeImg = {
+                        5: "https://i.ibb.co/k61CnZqB/day5.png",
+                        10: "https://i.ibb.co/NdYTCBPN/day10.png",
+                        25: "https://i.ibb.co/NnxD5y23/day25.png",
+                      }[req as 5 | 10 | 25];
 
-                    return (
-                      <div
-                        key={req}
-                        className={cn(
-                          "min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden",
-                          achieved
-                            ? "bg-orange-50 border-orange-200"
-                            : "bg-white border-emerald-50 opacity-40 grayscale",
-                        )}
-                      >
-                        {achieved && (
-                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />
-                        )}
+                      return (
                         <div
+                          key={req}
                           className={cn(
-                            "w-16 h-16 flex items-center justify-center",
+                            "min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden bg-orange-50 border-orange-200"
                           )}
                         >
-                          {badgeImg ? (
-                            <img src={badgeImg} alt={`${req} Day Streak`} className="w-full h-full object-contain drop-shadow-sm" />
-                          ) : (
-                            <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2", achieved ? "bg-orange-500 text-white border-orange-300" : "bg-emerald-100 text-emerald-300 border-transparent")}>
-                              <Flame size={28} className={achieved ? "fill-orange-400" : ""} />
-                            </div>
-                          )}
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />
+                          <div
+                            className={cn(
+                              "w-16 h-16 flex items-center justify-center",
+                            )}
+                          >
+                            {badgeImg ? (
+                              <img src={badgeImg} alt={`${req} Day Streak`} className="w-full h-full object-contain drop-shadow-sm" />
+                            ) : (
+                              <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2 bg-orange-500 text-white border-orange-300">
+                                <Flame size={28} className="fill-orange-400" />
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
+                            {req} Day
+                            <br />
+                            Streak
+                          </span>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
-                          {req} Day
-                          <br />
-                          Streak
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Questions Solved Badges */}
-              <div>
-                <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">
-                  Endurance (Missions Cleared)
-                </h4>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
-                  {[50, 100, 300, 1000].map((req) => {
-                    const achieved =
-                      (JSON.parse(localStorage.getItem("userStats") || "{}")
-                        .totalSolved || 0) >= req;
-                    const getBadgeInfo = (req: number) => {
-                      switch (req) {
-                        case 50:
-                          return {
-                            image: "https://i.ibb.co/Xr6zZtNY/50.png",
-                            color: "blue",
-                            name: "Tapasya Starter",
-                          };
-                        case 100:
-                          return {
-                            image: "https://i.ibb.co/p6kc7WKX/100.png",
-                            color: "indigo",
-                            name: "Tapasya Warrior",
-                          };
-                        case 300:
-                          return {
-                            image: "https://i.ibb.co/RGV0tD6k/300.png",
-                            color: "purple",
-                            name: "Problem Crusher",
-                          };
-                        case 1000:
-                          return {
-                            image: "https://i.ibb.co/5bqYMrh/file-00000000c88472078520c8a8552cfb9f.png",
-                            color: "rose",
-                            name: "Tapasya Grandmaster",
-                          };
-                        default:
-                          return { image: null, color: "emerald", name: "" };
-                      }
-                    };
-                    const badge = getBadgeInfo(req);
-                    const colorStyles = achieved
-                      ? {
-                          blue: "bg-blue-50 border-blue-200",
-                          indigo: "bg-indigo-50 border-indigo-200",
-                          purple: "bg-purple-50 border-purple-200",
-                          amber: "bg-amber-50 border-amber-200",
-                          rose: "bg-rose-50 border-rose-200",
-                          emerald: "bg-emerald-50 border-emerald-200",
-                        }[badge.color]
-                      : "bg-white border-emerald-50 opacity-40 grayscale";
+              {[50, 100, 300, 1000].some(req => (JSON.parse(localStorage.getItem("userStats") || "{}").totalSolved || 0) >= req) && (
+                <div>
+                  <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">
+                    Endurance (Missions Cleared)
+                  </h4>
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                    {[50, 100, 300, 1000].map((req) => {
+                      const stats = JSON.parse(localStorage.getItem("userStats") || "{}");
+                      const achieved = (stats.totalSolved || 0) >= req;
+                      if (!achieved) return null;
+                      
+                      const getBadgeInfo = (req: number) => {
+                        switch (req) {
+                          case 50:
+                            return {
+                              image: "https://i.ibb.co/Xr6zZtNY/50.png",
+                              color: "blue",
+                              name: "Tapasya Starter",
+                            };
+                          case 100:
+                            return {
+                              image: "https://i.ibb.co/p6kc7WKX/100.png",
+                              color: "indigo",
+                              name: "Tapasya Warrior",
+                            };
+                          case 300:
+                            return {
+                              image: "https://i.ibb.co/RGV0tD6k/300.png",
+                              color: "purple",
+                              name: "Problem Crusher",
+                            };
+                          case 1000:
+                            return {
+                              image: "https://i.ibb.co/5bqYMrh/file-00000000c88472078520c8a8552cfb9f.png",
+                              color: "rose",
+                              name: "Tapasya Grandmaster",
+                            };
+                          default:
+                            return { image: null, color: "emerald", name: "" };
+                        }
+                      };
+                      const badge = getBadgeInfo(req);
+                      const colorStyles = {
+                            blue: "bg-blue-50 border-blue-200",
+                            indigo: "bg-indigo-50 border-indigo-200",
+                            purple: "bg-purple-50 border-purple-200",
+                            amber: "bg-amber-50 border-amber-200",
+                            rose: "bg-rose-50 border-rose-200",
+                            emerald: "bg-emerald-50 border-emerald-200",
+                          }[badge.color as string] || "bg-emerald-50 border-emerald-200";
 
-                    return (
-                      <div
-                        key={req}
-                        className={cn(
-                          "min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden",
-                          colorStyles,
-                        )}
-                      >
-                        {achieved && (
-                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />
-                        )}
+                      return (
                         <div
+                          key={req}
                           className={cn(
-                            "w-16 h-16 flex items-center justify-center",
+                            "min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-4 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden",
+                            colorStyles,
                           )}
                         >
-                          {badge.image && (
-                            <img src={badge.image} alt={badge.name} className="w-full h-full object-contain drop-shadow-sm" />
-                          )}
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />
+                          <div
+                            className={cn(
+                              "w-16 h-16 flex items-center justify-center",
+                            )}
+                          >
+                            {badge.image && (
+                              <img src={badge.image} alt={badge.name} className="w-full h-full object-contain drop-shadow-sm" />
+                            )}
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
+                            {badge.name}
+                          </span>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
-                          {badge.name}
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Accuracy Badges */}
-              <div>
-                <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">
-                  Precision (Accuracy)
-                </h4>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
-                  {[80, 90, 95].map((req) => {
-                    const stats = JSON.parse(
-                      localStorage.getItem("userStats") || "{}",
-                    );
-                    const acc =
-                      stats.totalSolved > 0
-                        ? (stats.correctAnswers / stats.totalSolved) * 100
-                        : 0;
-                    const achieved = acc >= req && stats.totalSolved >= 10; // Need at least 10 solved to get accuracy badges
-                    return (
-                      <div
-                        key={req}
-                        className={cn(
-                          "min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-5 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden",
-                          achieved
-                            ? "bg-emerald-50 border-emerald-200"
-                            : "bg-white border-emerald-50 opacity-40 grayscale",
-                        )}
-                      >
-                        {achieved && (
-                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />
-                        )}
+              {[60, 80, 90, 100].some(req => {
+                const stats = JSON.parse(localStorage.getItem("userStats") || "{}");
+                const acc = stats.totalSolved > 0 ? (stats.correctAnswers / stats.totalSolved) * 100 : 0;
+                return acc >= req && stats.totalSolved >= 10;
+              }) && (
+                <div>
+                  <h4 className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mb-3 px-2">
+                    Precision (Accuracy)
+                  </h4>
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
+                    {[60, 80, 90, 100].map((req) => {
+                      const stats = JSON.parse(
+                        localStorage.getItem("userStats") || "{}",
+                      );
+                      const acc =
+                        stats.totalSolved > 0
+                          ? (stats.correctAnswers / stats.totalSolved) * 100
+                          : 0;
+                      const achieved = acc >= req && stats.totalSolved >= 10; // Need at least 10 solved to get accuracy badges
+                      
+                      if (!achieved) return null;
+
+                      const badgeImg = {
+                        60: "https://i.ibb.co/gM4n3Nmk/file-00000000e7387209a361e4c313ba5a82.png", 
+                        80: "https://i.ibb.co/Kjv3bRwV/file-000000002ab8720792e649569ee2cdcf.png", 
+                        90: "https://i.ibb.co/Q7gwBmPZ/file-00000000a5807206bfb202a4d85a02e6.png",
+                        100: "https://i.ibb.co/XxKHFLH4/file-00000000d1407207ab4a5ab18dcb8003.png",
+                      }[req as 60 | 80 | 90 | 100];
+                      
+                      const badgeName = {
+                        60: "Sharp Shooter",
+                        80: "Accuracy Master",
+                        90: "Accuracy Legend",
+                        100: "Perfect Strategist",
+                      }[req as 60 | 80 | 90 | 100];
+
+                      return (
                         <div
+                          key={req}
                           className={cn(
-                            "w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2",
-                            achieved
-                              ? "bg-emerald-500 text-white border-white"
-                              : "bg-emerald-100 text-emerald-300 border-transparent",
+                            "min-w-[120px] max-w-[120px] snap-center flex flex-col items-center gap-3 p-5 rounded-3xl border-2 transition-all shrink-0 relative overflow-hidden bg-emerald-50 border-emerald-200"
                           )}
                         >
-                          <CheckCircle2 size={24} />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent rotate-45 -translate-x-full animate-[shimmer_2s_infinite]" />
+                          <div
+                            className={cn(
+                              "w-16 h-16 flex items-center justify-center",
+                            )}
+                          >
+                            {badgeImg ? (
+                              <img src={badgeImg} alt={`${req}% Accuracy`} className="w-full h-full object-contain drop-shadow-sm" />
+                            ) : (
+                              <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2 bg-emerald-500 text-white border-white">
+                                <CheckCircle2 size={24} />
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-[9px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
+                            {badgeName}
+                          </span>
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
-                          &ge;{req}%<br />
-                          Accuracy
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

@@ -415,13 +415,28 @@ export default function Challenges() {
                   Precision (Accuracy)
                 </h4>
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x custom-scrollbar">
-                  {[80, 90, 95].map((req) => {
+                  {[60, 80, 90, 100].map((req) => {
                     const acc =
                       currentQuestions > 0
                         ? ((stats?.correctAnswers || 0) / currentQuestions) *
                           100
                         : 0;
                     const achieved = acc >= req && currentQuestions >= 10; // Need at least 10 solved to get accuracy badges
+                    
+                    const badgeImg = {
+                      60: "https://i.ibb.co/gM4n3Nmk/file-00000000e7387209a361e4c313ba5a82.png", 
+                      80: "https://i.ibb.co/Kjv3bRwV/file-000000002ab8720792e649569ee2cdcf.png", 
+                      90: "https://i.ibb.co/Q7gwBmPZ/file-00000000a5807206bfb202a4d85a02e6.png",
+                      100: "https://i.ibb.co/XxKHFLH4/file-00000000d1407207ab4a5ab18dcb8003.png",
+                    }[req as 60 | 80 | 90 | 100];
+                    
+                    const badgeName = {
+                      60: "Sharp Shooter",
+                      80: "Accuracy Master",
+                      90: "Accuracy Legend",
+                      100: "Perfect Strategist",
+                    }[req as 60 | 80 | 90 | 100];
+
                     return (
                       <div
                         key={req}
@@ -437,17 +452,19 @@ export default function Challenges() {
                         )}
                         <div
                           className={cn(
-                            "w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2",
-                            achieved
-                              ? "bg-emerald-500 text-white border-white"
-                              : "bg-emerald-100 text-emerald-300 border-transparent",
+                            "w-16 h-16 flex items-center justify-center",
                           )}
                         >
-                          <CheckCircle2 size={24} />
+                          {badgeImg ? (
+                            <img src={badgeImg} alt={`${req}% Accuracy`} className="w-full h-full object-contain drop-shadow-sm" />
+                          ) : (
+                            <div className={cn("w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-2", achieved ? "bg-emerald-500 text-white border-white" : "bg-emerald-100 text-emerald-300 border-transparent")}>
+                              <CheckCircle2 size={24} />
+                            </div>
+                          )}
                         </div>
                         <span className="text-[9px] font-black uppercase tracking-widest text-emerald-950 text-center leading-tight">
-                          &ge;{req}%<br />
-                          Accuracy
+                          {badgeName}
                         </span>
                       </div>
                     );
