@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquare, History, Activity, Zap, Binary, FlaskConical, Target, Loader2, User, ChevronLeft, ArrowRight, Trash2, Mic, MicOff, ImageIcon, X } from 'lucide-react';
+import { Send, Cpu, Sparkles, AlertCircle, RotateCcw, BrainCircuit, MessageSquare, History, Activity, Zap, Binary, FlaskConical, Target, Loader2, User, ChevronLeft, ArrowRight, Trash2, Mic, MicOff, ImageIcon, X, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -11,6 +11,7 @@ import { solveDoubt } from '../services/aiService';
 import { AxiomMascot } from '../components/AxiomMascot';
 import { cn } from '../lib/utils';
 import PeriodicTable from './PeriodicTable';
+import { useUser, SignInButton } from '@clerk/clerk-react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -51,6 +52,7 @@ const ThemeMicIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
 );
 
 export default function DoubtSolver() {
+  const { isSignedIn } = useUser();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [operatorName, setOperatorName] = useState('U');
@@ -299,6 +301,12 @@ export default function DoubtSolver() {
       setIsListening(false);
     }
     if ((!input.trim() && !selectedImage) || loading) return;
+
+    if (!isSignedIn) {
+      setError("Please sign in to ask Axiom AI.");
+      setMessages(prev => [...prev, { role: 'assistant', content: `🔒 **Authentication Required**\n\nPlease sign in to unlock Axiom AI and start solving your doubts.` }]);
+      return;
+    }
 
     const today = new Date().toISOString().split('T')[0];
     let usage = { date: today, count: 0, imageCount: 0 };

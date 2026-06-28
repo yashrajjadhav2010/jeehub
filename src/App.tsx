@@ -26,6 +26,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/clerk-react";
 
 // Lazy loaded pages to improve performance
 const Home = lazy(() => import("./pages/Home"));
@@ -47,6 +48,9 @@ const MaterialViewer = lazy(() => import("./pages/MaterialViewer"));
 const PeriodicTable = lazy(() => import("./pages/PeriodicTable"));
 const QuestionPage = lazy(() => import("./pages/QuestionPage"));
 const BrowseQuestions = lazy(() => import("./pages/BrowseQuestions"));
+
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
 
 import DeviceNotice from "./components/DeviceNotice";
 import { AxiomMascot } from "./components/AxiomMascot";
@@ -120,26 +124,22 @@ function Navbar() {
 
             <div className="hidden lg:flex items-center gap-4">
               <div className="h-10 w-[1px] bg-emerald-100 mx-2" />
-              <div className="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100">
-                <div className="text-right">
-                  <p className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">
-                    Operator
-                  </p>
-                  <p className="text-xs font-black text-emerald-900 uppercase">
-                    {operatorName}
-                  </p>
-                </div>
-                <div className="w-9 h-9 rounded-xl overflow-hidden bg-primary preserve-dark flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
-                  {operatorPfp ? (
-                    <img
-                      src={operatorPfp}
-                      alt={operatorName}
-                      className="w-full h-full object-cover preserve-dark-ignore"
-                    />
-                  ) : (
-                    initial
-                  )}
-                </div>
+              <div className="flex items-center gap-3">
+                <SignedOut>
+                  <Link to="/sign-in">
+                    <button className="px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-emerald-950 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors">
+                      Sign In
+                    </button>
+                  </Link>
+                  <Link to="/sign-up">
+                    <button className="px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white bg-primary hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                      Sign Up
+                    </button>
+                  </Link>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
               </div>
               <Link
                 to="/settings"
@@ -160,20 +160,16 @@ function Navbar() {
                     : location.pathname.split("/")[1].toUpperCase()}
                 </p>
               </div>
-              <Link
-                to="/settings"
-                className="w-9 h-9 rounded-xl overflow-hidden bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-950"
-              >
-                {operatorPfp ? (
-                  <img
-                    src={operatorPfp}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User size={18} />
-                )}
-              </Link>
+              <SignedOut>
+                <Link to="/sign-in">
+                  <button className="w-9 h-9 rounded-xl overflow-hidden bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-950">
+                    <User size={18} />
+                  </button>
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
             </div>
           </div>
         </div>
@@ -297,16 +293,35 @@ function Layout({ children }: { children: React.ReactNode }) {
   const isQuizMode = location.pathname.startsWith("/quiz");
   const isSolverMode = location.pathname === "/doubt-solver";
   const isPeriodicTable = location.pathname === "/study/periodic-table";
-  const isCleanLayout = isQuizMode || isSolverMode || isPeriodicTable;
+  const isAuthRoute = location.pathname.startsWith("/sign-in") || location.pathname.startsWith("/sign-up");
+  const isCleanLayout = isQuizMode || isSolverMode || isPeriodicTable || isAuthRoute;
   const [showNameModal, setShowNameModal] = useState(false);
   const [key, setKey] = useState(0); // For forcing re-render of navbar
+  
+  const { isSignedIn, user } = useUser();
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      if (user.fullName) {
+        localStorage.setItem("operatorName", user.fullName);
+      } else if (user.primaryEmailAddress?.emailAddress) {
+        localStorage.setItem("operatorName", user.primaryEmailAddress.emailAddress.split("@")[0]);
+      }
+      
+      if (user.imageUrl) {
+        localStorage.setItem("operatorPfp", user.imageUrl);
+      }
+      setShowNameModal(false);
+      setKey((prev) => prev + 1);
+    }
+  }, [isSignedIn, user]);
 
   useEffect(() => {
     try {
       const handleStorage = () => {
         setKey((prev) => prev + 1);
         const name = localStorage.getItem("operatorName");
-        if (!name) setShowNameModal(true);
+        if (!name && !isSignedIn) setShowNameModal(true);
         else setShowNameModal(false);
       };
 
@@ -545,6 +560,8 @@ export default function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/sign-in/*" element={<Login />} />
+            <Route path="/sign-up/*" element={<Register />} />
             <Route path="/subjects" element={<Subjects />} />
             <Route path="/study" element={<Study />} />
             <Route path="/study/periodic-table" element={<PeriodicTable />} />
