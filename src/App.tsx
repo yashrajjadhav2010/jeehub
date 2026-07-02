@@ -336,6 +336,19 @@ function Layout({ children }: { children: React.ReactNode }) {
         if (!hasData) {
           await syncToFirebase(user.id);
         }
+        
+        // Sync user email/name for Admin panel
+        try {
+          const { doc, setDoc } = await import('firebase/firestore');
+          const { db } = await import('./lib/firebase');
+          await setDoc(doc(db, 'user_data', user.id), {
+            email: user.primaryEmailAddress?.emailAddress || 'Unknown',
+            name: user.fullName || window.localStorage.getItem("operatorName") || 'Unknown',
+          }, { merge: true });
+        } catch (e) {
+          console.error("Failed to sync user metadata to Firebase", e);
+        }
+
         setupStorageInterceptor(user.id);
         
         setShowNameModal(false);
@@ -584,6 +597,23 @@ export default function App() {
         document.documentElement.classList.remove("dark-mode");
       }
     } catch (e) {}
+
+    // Track total site visits
+    const recordVisit = async () => {
+      if (!window.sessionStorage.getItem('visited_site')) {
+        window.sessionStorage.setItem('visited_site', 'true');
+        try {
+          const { doc, setDoc, increment } = await import('firebase/firestore');
+          const { db } = await import('./lib/firebase');
+          await setDoc(doc(db, 'analytics', 'global'), {
+            totalVisits: increment(1)
+          }, { merge: true });
+        } catch(e) {
+          console.error("Failed to record visit", e);
+        }
+      }
+    };
+    recordVisit();
   }, []);
 
   return (

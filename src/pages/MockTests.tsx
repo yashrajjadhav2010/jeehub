@@ -1,20 +1,55 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Target, Clock, AlertCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { getAllData } from '../lib/dataService';
 
 export default function MockTests() {
-  const tests = [
-    {
-      id: "mock-1",
-      title: "JEE Mock Test 1 (Class 11)",
-      difficulty: "Simulation",
-      duration: "180 Mins",
-      questions: 75,
-      status: "Available",
-      syllabus: "Physics: Basic Maths, Vector & Calculus | Chemistry: Basic Inorganic, IUPAC, Periodic Properties | Maths: Basic Maths, Inequality, Sets, Log"
+  const [tests, setTests] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadTests() {
+      const allData = await getAllData();
+      const mockTestChapters = allData['mock-tests'] || [];
+      const loadedTests: any[] = [];
+      
+      mockTestChapters.forEach(chapter => {
+        chapter.sets.forEach(set => {
+          loadedTests.push({
+            id: set.id,
+            chapterId: chapter.id,
+            title: set.title,
+            difficulty: set.difficulty,
+            duration: "180 Mins",
+            questions: set.itemCount,
+            status: "Available",
+            syllabus: "Full Syllabus Simulation"
+          });
+        });
+      });
+
+      // Add the hardcoded one if none found, or just append it
+      const defaultTest = {
+        id: "mock-1",
+        chapterId: "full-syllabus",
+        title: "JEE Mock Test 1 (Class 11)",
+        difficulty: "Simulation",
+        duration: "180 Mins",
+        questions: 75,
+        status: "Available",
+        syllabus: "Physics: Basic Maths, Vector & Calculus | Chemistry: Basic Inorganic, IUPAC, Periodic Properties | Maths: Basic Maths, Inequality, Sets, Log"
+      };
+      
+      if (!loadedTests.find(t => t.id === 'mock-1')) {
+        loadedTests.unshift(defaultTest);
+      }
+      
+      setTests(loadedTests);
     }
-  ];
+    
+    loadTests();
+  }, []);
 
   return (
     <div className="min-h-screen pb-20">
@@ -91,7 +126,7 @@ export default function MockTests() {
             <div className="pt-6 border-t border-purple-900/5 mt-auto">
               {test.status === 'Available' ? (
                 <Link
-                  to={`/quiz/mock-tests/full-syllabus/${test.id}`}
+                  to={`/quiz/mock-tests/${test.chapterId}/${test.id}`}
                   className="w-full inline-block text-center py-4 bg-purple-50 text-purple-600 font-black text-[10px] uppercase tracking-[0.2em] rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-colors"
                 >
                   Start Simulation

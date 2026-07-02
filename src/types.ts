@@ -15,6 +15,7 @@ export interface Question {
 export interface QuizSet {
   id: string;
   title: string;
+  description?: string;
   chapterId: string;
   subjectId: SubjectId;
   questions: Question[];

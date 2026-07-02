@@ -33,6 +33,10 @@ export default function Quiz() {
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiLimitError, setAiLimitError] = useState<string | null>(null);
   const [showSubmitAlert, setShowSubmitAlert] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportDescription, setReportDescription] = useState('');
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -258,6 +262,41 @@ export default function Quiz() {
   const handleMarkReviewNext = () => {
     setMarkedForReview(prev => ({ ...prev, [currentQuestion!.id]: true }));
     handleSaveNext();
+  };
+
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportDescription.trim()) return;
+    setIsSubmittingReport(true);
+    try {
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      const { db } = await import('../lib/firebase');
+      
+      const userEmail = localStorage.getItem('operatorName') || 'Candidate'; // Just as fallback, or we can get it from Clerk later if needed in Quiz
+      
+      await addDoc(collection(db, 'reports'), {
+        quizId: quizSet?.id || setId,
+        subjectId: subjectId || null,
+        chapterId: chapterId || null,
+        quizTitle: quizSet?.title,
+        questionId: currentQuestion?.id,
+        questionText: currentQuestion?.question,
+        description: reportDescription,
+        reporter: userEmail,
+        createdAt: serverTimestamp(),
+        status: 'pending'
+      });
+      setReportSuccess(true);
+      setTimeout(() => {
+        setIsReportModalOpen(false);
+        setReportSuccess(false);
+        setReportDescription('');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to submit report', err);
+    } finally {
+      setIsSubmittingReport(false);
+    }
   };
 
   if (loading) return (
@@ -524,6 +563,7 @@ export default function Quiz() {
                         )}
                       </div>
                       <div className="flex gap-2 md:gap-4">
+                         <button onClick={() => setIsReportModalOpen(true)} className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-red-300 hover:text-red-500 hover:bg-red-50 transition-all" title="Report Issue"><AlertCircle size={18} className="md:size-20" /></button>
                          <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Info size={18} className="md:size-20" /></button>
                          <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Calculator size={18} className="md:size-20" /></button>
                       </div>
@@ -957,6 +997,71 @@ export default function Quiz() {
                   Submit
                 </button>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Report Issue Modal */}
+      <AnimatePresence>
+        {isReportModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-emerald-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setIsReportModalOpen(false)}
+                className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-emerald-900/40 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6">
+                <AlertCircle size={32} />
+              </div>
+              <h3 className="text-2xl font-black text-emerald-950 heading-display uppercase tracking-tight mb-2">Report Issue</h3>
+              <p className="text-emerald-900/60 font-medium text-sm mb-6 leading-relaxed">
+                Found a mistake in the question, options, or solution? Let us know and we'll fix it.
+              </p>
+              
+              {reportSuccess ? (
+                <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 font-bold text-center">
+                  Report submitted successfully! Thank you.
+                </div>
+              ) : (
+                <form onSubmit={handleReportSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-2">Describe the issue</label>
+                    <textarea 
+                      value={reportDescription}
+                      onChange={(e) => setReportDescription(e.target.value)}
+                      placeholder="e.g. Option B and C are the same, or the solution uses wrong formula..."
+                      className="w-full bg-emerald-50/50 border border-emerald-100 rounded-xl px-4 py-3 text-emerald-950 text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-white transition-colors min-h-[120px] resize-none"
+                      required
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmittingReport || !reportDescription.trim()}
+                    className="w-full py-4 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-emerald-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 shadow-xl shadow-primary/20 flex justify-center items-center h-14"
+                  >
+                    {isSubmittingReport ? (
+                      <Loader2 className="animate-spin" size={20} />
+                    ) : (
+                      "Submit Report"
+                    )}
+                  </button>
+                </form>
+              )}
             </motion.div>
           </motion.div>
         )}

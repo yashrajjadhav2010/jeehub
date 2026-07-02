@@ -18,6 +18,8 @@ import {
   Minus,
   Sparkles,
   Library,
+  Loader2,
+  X,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -1936,6 +1938,41 @@ export default function MaterialViewer() {
   const { materialId } = useParams();
   const [data, setData] = useState<MaterialData | null>(null);
   const [viewMode, setViewMode] = useState<"notes" | "flashcards">("notes");
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportDescription, setReportDescription] = useState('');
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
+
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportDescription.trim()) return;
+    setIsSubmittingReport(true);
+    try {
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      const { db } = await import('../lib/firebase');
+      
+      const userEmail = localStorage.getItem('operatorName') || 'Candidate';
+      
+      await addDoc(collection(db, 'reports'), {
+        materialId: materialId,
+        materialTitle: data?.title,
+        description: reportDescription,
+        reporter: userEmail,
+        createdAt: serverTimestamp(),
+        status: 'pending'
+      });
+      setReportSuccess(true);
+      setTimeout(() => {
+        setIsReportModalOpen(false);
+        setReportSuccess(false);
+        setReportDescription('');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to submit report', err);
+    } finally {
+      setIsSubmittingReport(false);
+    }
+  };
 
   useEffect(() => {
     // Scroll to top
@@ -2038,6 +2075,12 @@ export default function MaterialViewer() {
                 <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide">
                   <CheckCheck size={14} /> JEE Syllabus Aligned
                 </span>
+                <button 
+                  onClick={() => setIsReportModalOpen(true)}
+                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-red-400 hover:text-red-600 transition-colors"
+                >
+                  <AlertTriangle size={14} /> Report Mistake
+                </button>
               </div>
               <div className="flex bg-emerald-50 p-1 rounded-xl w-full sm:w-auto">
                 <button
@@ -2120,6 +2163,71 @@ export default function MaterialViewer() {
           </div>
         </div>
       </div>
+      
+      {/* Report Issue Modal */}
+      <AnimatePresence>
+        {isReportModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-emerald-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setIsReportModalOpen(false)}
+                className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-emerald-900/40 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6">
+                <AlertTriangle size={32} />
+              </div>
+              <h3 className="text-2xl font-black text-emerald-950 heading-display uppercase tracking-tight mb-2">Report Issue</h3>
+              <p className="text-emerald-900/60 font-medium text-sm mb-6 leading-relaxed">
+                Found a mistake in the short notes or mind map? Let us know and we'll fix it.
+              </p>
+              
+              {reportSuccess ? (
+                <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 font-bold text-center">
+                  Report submitted successfully! Thank you.
+                </div>
+              ) : (
+                <form onSubmit={handleReportSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-2">Describe the issue</label>
+                    <textarea 
+                      value={reportDescription}
+                      onChange={(e) => setReportDescription(e.target.value)}
+                      placeholder="e.g. In section 3, the formula for moment of inertia is incorrect..."
+                      className="w-full bg-emerald-50/50 border border-emerald-100 rounded-xl px-4 py-3 text-emerald-950 text-sm font-medium focus:outline-none focus:border-primary/50 focus:bg-white transition-colors min-h-[120px] resize-none"
+                      required
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmittingReport || !reportDescription.trim()}
+                    className="w-full py-4 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-emerald-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 shadow-xl shadow-primary/20 flex justify-center items-center h-14"
+                  >
+                    {isSubmittingReport ? (
+                      <Loader2 className="animate-spin" size={20} />
+                    ) : (
+                      "Submit Report"
+                    )}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
