@@ -48,6 +48,7 @@ const MaterialViewer = lazy(() => import("./pages/MaterialViewer"));
 const PeriodicTable = lazy(() => import("./pages/PeriodicTable"));
 const QuestionPage = lazy(() => import("./pages/QuestionPage"));
 const BrowseQuestions = lazy(() => import("./pages/BrowseQuestions"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -68,6 +69,9 @@ function ScrollToTop() {
 
 function Navbar() {
   const location = useLocation();
+  const { user } = useUser();
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'yashrajjadhav2010@gmail.com';
+
   let operatorName = "Candidate";
   let operatorPfp: string | null = null;
   try {
@@ -85,6 +89,10 @@ function Navbar() {
     { icon: Trophy, label: "Mission", path: "/challenges" },
     { icon: BarChart3, label: "Radar", path: "/analytics" },
   ];
+
+  if (isAdmin) {
+    menuItems.push({ icon: Settings, label: "Admin", path: "/admin" });
+  }
 
   return (
     <>
@@ -182,6 +190,9 @@ function Navbar() {
 
 function BottomNav() {
   const location = useLocation();
+  const { user } = useUser();
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'yashrajjadhav2010@gmail.com';
+
   const menuItems = [
     { icon: LayoutDashboard, label: "Home", path: "/" },
     { icon: BookOpen, label: "Subject", path: "/subjects" },
@@ -189,6 +200,10 @@ function BottomNav() {
     { icon: Trophy, label: "Mission", path: "/challenges" },
     { icon: BarChart3, label: "Radar", path: "/analytics" },
   ];
+
+  if (isAdmin) {
+    menuItems.push({ icon: Settings, label: "Admin", path: "/admin" });
+  }
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-white border-t border-emerald-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
@@ -299,21 +314,36 @@ function Layout({ children }: { children: React.ReactNode }) {
   const [key, setKey] = useState(0); // For forcing re-render of navbar
   
   const { isSignedIn, user } = useUser();
+  const [isDataReady, setIsDataReady] = useState(false);
 
   useEffect(() => {
-    if (isSignedIn && user) {
-      if (user.fullName) {
-        localStorage.setItem("operatorName", user.fullName);
-      } else if (user.primaryEmailAddress?.emailAddress) {
-        localStorage.setItem("operatorName", user.primaryEmailAddress.emailAddress.split("@")[0]);
+    const initData = async () => {
+      if (isSignedIn && user) {
+        if (user.fullName) {
+          window.localStorage.setItem("operatorName", user.fullName);
+        } else if (user.primaryEmailAddress?.emailAddress) {
+          window.localStorage.setItem("operatorName", user.primaryEmailAddress.emailAddress.split("@")[0]);
+        }
+        
+        if (user.imageUrl) {
+          window.localStorage.setItem("operatorPfp", user.imageUrl);
+        }
+        
+        // Import sync utilities dynamically to avoid breaking imports at the top
+        const { fetchAndPopulateStorage, syncToFirebase, setupStorageInterceptor } = await import('./lib/sync');
+        
+        const hasData = await fetchAndPopulateStorage(user.id);
+        if (!hasData) {
+          await syncToFirebase(user.id);
+        }
+        setupStorageInterceptor(user.id);
+        
+        setShowNameModal(false);
+        setKey((prev) => prev + 1);
       }
-      
-      if (user.imageUrl) {
-        localStorage.setItem("operatorPfp", user.imageUrl);
-      }
-      setShowNameModal(false);
-      setKey((prev) => prev + 1);
-    }
+      setIsDataReady(true);
+    };
+    initData();
   }, [isSignedIn, user]);
 
   useEffect(() => {
@@ -357,6 +387,17 @@ function Layout({ children }: { children: React.ReactNode }) {
     setShowNameModal(false);
     setKey((prev) => prev + 1); // Refresh layout components that depend on localstorage
   };
+
+  if (isSignedIn !== undefined && !isDataReady && isSignedIn) {
+    return (
+      <div className="min-h-screen bg-[#fbfdfb] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <p className="text-emerald-900/40 text-[10px] uppercase font-black tracking-widest">Syncing Operator Data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fbfdfb] text-emerald-900 relative flex flex-col overflow-x-hidden">
@@ -586,6 +627,7 @@ export default function App() {
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </Suspense>
       </Layout>

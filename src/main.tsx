@@ -5,6 +5,21 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App.tsx';
 import './index.css';
 
+// Prevent right click and some keyboard shortcuts
+if (typeof document !== 'undefined') {
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('keydown', (e) => {
+    // Prevent Ctrl+S, Ctrl+P
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p')) {
+      e.preventDefault();
+    }
+    // Prevent PrintScreen if possible (limited effectiveness on modern OS)
+    if (e.key === 'PrintScreen') {
+      navigator.clipboard.writeText('');
+    }
+  });
+}
+
 // Import your publishable key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
