@@ -56,6 +56,7 @@ const Register = lazy(() => import("./pages/Register"));
 import DeviceNotice from "./components/DeviceNotice";
 import { AxiomMascot } from "./components/AxiomMascot";
 import { cn } from "./lib/utils";
+import { QuickNotes } from "./components/QuickNotes";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -622,6 +623,7 @@ export default function App() {
       <div className="mesh-bg" />
       <div className="noise-overlay" />
       <Layout>
+        <QuickNotes />
         <Suspense
           fallback={
             <div className="flex items-center justify-center min-h-[50vh]">
