@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
+import { jsPDF } from "jspdf";
 import {
   ArrowLeft,
   Bookmark,
@@ -33,6 +34,7 @@ interface MaterialData {
   subject: string;
   category: string;
   content: string;
+  flashcards?: Array<{ front: string; back: string }>;
 }
 
 const mockDb: Record<string, MaterialData> = {
@@ -1978,18 +1980,240 @@ export default function MaterialViewer() {
     // Scroll to top
     window.scrollTo(0, 0);
 
-    if (materialId && mockDb[materialId]) {
-      setData(mockDb[materialId]);
-    } else {
-      setData({
-        id: materialId || "unknown",
-        title: "Material Not Found",
-        subject: "System",
-        category: "Error",
-        content: `### HTTP 404: Not Found\n\nThe requested material ID \`${materialId}\` is not available in the database.\n\nKeys available: ${Object.keys(mockDb).join(", ")}`,
-      });
+    async function loadMaterial() {
+      if (!materialId) return;
+
+      // 1. Try to fetch from Firestore first!
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const { db } = await import('../lib/firebase');
+        const docSnap = await getDoc(doc(db, 'custom_materials', materialId));
+        if (docSnap.exists()) {
+          const fetchedData = docSnap.data();
+          setData({
+            id: materialId,
+            title: fetchedData.title || '',
+            subject: fetchedData.subject || '',
+            category: fetchedData.category || '',
+            content: fetchedData.content || '',
+            flashcards: fetchedData.flashcards || []
+          });
+          return;
+        }
+      } catch (e) {
+        console.error("Error fetching material from Firestore", e);
+      }
+
+      // 2. Fallback to mockDb
+      if (mockDb[materialId]) {
+        setData(mockDb[materialId]);
+      } else {
+        setData({
+          id: materialId || "unknown",
+          title: "Material Not Found",
+          subject: "System",
+          category: "Error",
+          content: `### HTTP 404: Not Found\n\nThe requested material ID \`${materialId}\` is not available in the database.\n\nKeys available: ${Object.keys(mockDb).join(", ")}`,
+        });
+      }
     }
+
+    loadMaterial();
   }, [materialId]);
+
+  const downloadMaterialPDF = () => {
+    if (!data) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    const drawWatermark = () => {
+      doc.saveGraphicsState();
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(24);
+      doc.setTextColor(230, 230, 230); // very subtle light gray watermark
+      
+      // Add multiple watermarks diagonally across the page
+      for (let x = -pageWidth; x < pageWidth * 2; x += 100) {
+        for (let y = -pageHeight; y < pageHeight * 2; y += 80) {
+          doc.text("JEE TAPASYA", x, y, {
+            align: "center",
+            angle: 30
+          });
+        }
+      }
+      doc.restoreGraphicsState();
+    };
+
+    // Helper to draw header on every page
+    const drawHeader = (pageNumber: number) => {
+      // Top background bar
+      doc.setFillColor(240, 253, 244); // emerald-50
+      doc.rect(0, 0, pageWidth, 16, "F");
+
+      // Top Header Text
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(6, 78, 59); // emerald-900
+      doc.text(`JEE TAPASYA — ${data.subject.toUpperCase()} NOTES`, 15, 10.5);
+
+      // Category on the right
+      doc.text(data.category.toUpperCase(), pageWidth - 15, 10.5, { align: "right" });
+
+      // Bottom Footer
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`Page ${pageNumber}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+      doc.text("Class Notes & Formulae • JEE Tapasya Learning Archive", 15, pageHeight - 10);
+    };
+
+    let pageNum = 1;
+    drawWatermark();
+    drawHeader(pageNum);
+
+    let yOffset = 32;
+
+    // Document Subject & Category
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(5, 150, 105); // emerald-500
+    doc.text(`${data.subject.toUpperCase()} • ${data.category.toUpperCase()}`, 15, yOffset);
+    yOffset += 8;
+
+    // Document Title
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(6, 78, 59); // emerald-900
+    const titleLines = doc.splitTextToSize(data.title.toUpperCase(), pageWidth - 30);
+    doc.text(titleLines, 15, yOffset);
+    yOffset += (titleLines.length * 8) + 5;
+
+    // Beautiful divider line
+    doc.setDrawColor(16, 185, 129); // emerald-500
+    doc.setLineWidth(0.8);
+    doc.line(15, yOffset, pageWidth - 15, yOffset);
+    yOffset += 12;
+
+    // Set font for body content
+    doc.setFont("Helvetica", "normal");
+    doc.setLineWidth(0.2); // reset line width
+
+    // Clean up content and split by lines
+    const contentLines = data.content.split("\n");
+
+    contentLines.forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        yOffset += 4; // empty space
+        return;
+      }
+
+      let fontSize = 10;
+      let fontType = "normal";
+      let textColor = [30, 41, 59]; // slate-800
+      let indent = 15;
+      let textToRender = trimmed;
+      let leadingSpace = 6;
+
+      if (trimmed.startsWith("###")) {
+        fontSize = 12;
+        fontType = "bold";
+        textColor = [6, 78, 59]; // emerald-900
+        textToRender = trimmed.replace(/^###\s*/, "").toUpperCase();
+        leadingSpace = 10;
+      } else if (trimmed.startsWith("##")) {
+        fontSize = 14;
+        fontType = "bold";
+        textColor = [6, 78, 59]; // emerald-900
+        textToRender = trimmed.replace(/^##\s*/, "").toUpperCase();
+        leadingSpace = 12;
+      } else if (trimmed.startsWith("#")) {
+        fontSize = 16;
+        fontType = "bold";
+        textColor = [6, 78, 59]; // emerald-900
+        textToRender = trimmed.replace(/^#\s*/, "").toUpperCase();
+        leadingSpace = 14;
+      } else if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+        indent = 20;
+        textToRender = "• " + trimmed.replace(/^[-*]\s*/, "");
+      } else if (/^\d+\./.test(trimmed)) {
+        indent = 20;
+        textToRender = trimmed;
+      } else {
+        textToRender = trimmed;
+      }
+
+      // Decode basic LaTeX / markdown symbols
+      textToRender = textToRender.replace(/\*\*/g, ""); // Remove bold markers
+      textToRender = textToRender.replace(/\$/g, ""); // Remove inline math markers
+      textToRender = textToRender.replace(/\\_/g, "_"); // Fix underscore escape
+      textToRender = textToRender.replace(/\\{/g, "{").replace(/\\}/g, "}");
+      textToRender = textToRender.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1/$2"); // \frac{a}{b} -> a/b
+      textToRender = textToRender.replace(/\^\{([^}]+)\}/g, "^$1"); // ^{2} -> ^2
+      textToRender = textToRender.replace(/_\{([^}]+)\}/g, "_$1"); // _{1} -> _1
+      textToRender = textToRender.replace(/\^2/g, "²");
+      textToRender = textToRender.replace(/\^3/g, "³");
+      textToRender = textToRender.replace(/\^-1/g, "⁻¹");
+      textToRender = textToRender.replace(/\^-2/g, "⁻²");
+      textToRender = textToRender.replace(/\^-3/g, "⁻³");
+      textToRender = textToRender.replace(/_1/g, "₁");
+      textToRender = textToRender.replace(/_2/g, "₂");
+      textToRender = textToRender.replace(/_3/g, "₃");
+      textToRender = textToRender.replace(/_0/g, "₀");
+      textToRender = textToRender.replace(/_\{mean\}/g, "ₘₑₐₙ");
+      textToRender = textToRender.replace(/_i/g, "ᵢ");
+      textToRender = textToRender.replace(/_f/g, "𝒻");
+      textToRender = textToRender.replace(/\\alpha/g, "α");
+      textToRender = textToRender.replace(/\\beta/g, "β");
+      textToRender = textToRender.replace(/\\gamma/g, "γ");
+      textToRender = textToRender.replace(/\\theta/g, "θ");
+      textToRender = textToRender.replace(/\\Delta/g, "Δ");
+      textToRender = textToRender.replace(/\\pi/g, "π");
+      textToRender = textToRender.replace(/\\mu/g, "μ");
+      textToRender = textToRender.replace(/\\Sigma/g, "Σ");
+      textToRender = textToRender.replace(/\\Omega/g, "Ω");
+      textToRender = textToRender.replace(/\\phi/g, "φ");
+      textToRender = textToRender.replace(/\\lambda/g, "λ");
+      textToRender = textToRender.replace(/\\to/g, "→");
+      textToRender = textToRender.replace(/\\rightarrow/g, "→");
+      textToRender = textToRender.replace(/\\infty/g, "∞");
+      textToRender = textToRender.replace(/\\approx/g, "≈");
+      textToRender = textToRender.replace(/\\neq/g, "≠");
+      textToRender = textToRender.replace(/\\le/g, "≤");
+      textToRender = textToRender.replace(/\\ge/g, "≥");
+      textToRender = textToRender.replace(/\\times/g, "×");
+      textToRender = textToRender.replace(/\\cdot/g, "·");
+      textToRender = textToRender.replace(/\\sqrt\{([^}]+)\}/g, "√$1");
+      textToRender = textToRender.replace(/\\pm/g, "±");
+      textToRender = textToRender.replace(/\\circ/g, "°");
+      textToRender = textToRender.replace(/\\rightarrow/g, "→");
+
+      // Format text wrapping
+      const wrapped = doc.splitTextToSize(textToRender, pageWidth - indent - 15);
+      const height = wrapped.length * (fontSize * 0.5) + leadingSpace;
+
+      // Check if page overflow
+      if (yOffset + height > pageHeight - 20) {
+        doc.addPage();
+        pageNum++;
+        drawWatermark();
+        drawHeader(pageNum);
+        yOffset = 25;
+      }
+
+      // Apply settings and draw
+      doc.setFont("Helvetica", fontType);
+      doc.setFontSize(fontSize);
+      doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+      doc.text(wrapped, indent, yOffset + (fontSize * 0.3));
+
+      yOffset += height;
+    });
+
+    doc.save(`JEE_Tapasya_${data.title.replace(/\s+/g, "_")}.pdf`);
+  };
 
   if (!data) return null;
 
@@ -2077,9 +2301,15 @@ export default function MaterialViewer() {
                 </span>
                 <button 
                   onClick={() => setIsReportModalOpen(true)}
-                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-red-400 hover:text-red-600 transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-red-400 hover:text-red-600 transition-colors animate-fade-in"
                 >
                   <AlertTriangle size={14} /> Report Mistake
+                </button>
+                <button 
+                  onClick={downloadMaterialPDF}
+                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-emerald-600 hover:text-emerald-800 transition-colors animate-fade-in"
+                >
+                  <Download size={14} /> Download PDF
                 </button>
               </div>
               <div className="flex bg-emerald-50 p-1 rounded-xl w-full sm:w-auto">

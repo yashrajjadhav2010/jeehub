@@ -20,6 +20,7 @@ export interface QuizSet {
   subjectId: SubjectId;
   questions: Question[];
   difficulty?: Difficulty;
+  duration?: number; // duration in minutes
 }
 
 export interface Chapter {
@@ -34,6 +35,7 @@ export interface QuizSetMetadata {
   title: string;
   itemCount: number;
   difficulty?: Difficulty;
+  duration?: number; // duration in minutes
 }
 
 export interface UserStats {

@@ -14,7 +14,8 @@ export const syncKeys = [
   'operatorPfp',
   'activeChallenge',
   'feedbackShown_v1',
-  'mobileNoticeDismissed'
+  'mobileNoticeDismissed',
+  'jee_tapasya_quick_notes'
 ];
 
 let originalSetItem: any = null;

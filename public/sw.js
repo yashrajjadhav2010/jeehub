@@ -1,9 +1,9 @@
-const CACHE_NAME = 'jee-tapasya-v2';
+const CACHE_NAME = 'jee-tapasya-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  'https://i.ibb.co/4RFc0Zfs/iconnn.png'
+  '/JT_LOGO.png'
 ];
 
 self.addEventListener('install', (event) => {

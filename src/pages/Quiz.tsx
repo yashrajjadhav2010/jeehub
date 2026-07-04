@@ -104,7 +104,8 @@ export default function Quiz() {
               setIsStarted(true); // Auto-resume if session exists
             } catch (e) {
               console.error("Error parsing saved session", e);
-              setTimeLeft(subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90);
+              const defaultDuration = subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90;
+              setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
               const initialAnswers = data.questions.reduce((acc, q) => {
                 acc[q.id] = null;
                 return acc;
@@ -112,7 +113,8 @@ export default function Quiz() {
               setAnswers(initialAnswers);
             }
           } else {
-            setTimeLeft(subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90);
+            const defaultDuration = subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90;
+            setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
             const initialAnswers = data.questions.reduce((acc, q) => {
               acc[q.id] = null;
               return acc;
@@ -169,7 +171,7 @@ export default function Quiz() {
       chapterId,
       setId,
       answers,
-      timeTaken: (quizSet?.questions.length || 0) * 90 - timeLeft,
+      timeTaken: (quizSet?.duration ? quizSet.duration * 60 : (quizSet?.questions.length || 0) * 90) - timeLeft,
       quizSet
     };
     localStorage.setItem('lastQuizResult', JSON.stringify(results));
@@ -344,7 +346,7 @@ export default function Quiz() {
            )}
            <div className="flex justify-between items-center">
              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Estimated Duration</span>
-             <span className="text-sm font-bold uppercase">{formatTime(quizSet.questions.length * 90)}</span>
+             <span className="text-sm font-bold uppercase">{formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)}</span>
            </div>
         </div>
 
@@ -381,11 +383,11 @@ export default function Quiz() {
   const initial = operatorName.substring(0, 2).toUpperCase();
   
   // Extract exam tag (e.g., JEE Main 2024)
-  let _qText = currentQuestion.question;
-  let _eText = currentQuestion.explanation;
+  let _qText = currentQuestion?.question || (currentQuestion as any)?.text || "";
+  let _eText = currentQuestion?.explanation || "";
   let _examTag = null;
 
-  const qMatch = _qText.match(/\s*\((JEE[^)]+)\)\s*$/i);
+  const qMatch = _qText ? _qText.match(/\s*\((JEE[^)]+)\)\s*$/i) : null;
   if (qMatch) {
     _examTag = qMatch[1];
     _qText = _qText.replace(qMatch[0], '');

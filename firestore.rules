@@ -13,5 +13,8 @@ service cloud.firestore {
     match /reports/{reportId} {
       allow read, write: if true;
     }
+    match /custom_materials/{materialId} {
+      allow read, write: if true;
+    }
   }
 }

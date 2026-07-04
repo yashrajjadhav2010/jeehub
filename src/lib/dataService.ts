@@ -19,7 +19,47 @@ export async function loadQuizSet(subject: string, chapter: string, set: string)
     return cachedCustomSets[customSetKey];
   }
 
-  // If it starts with custom_, it's definitely from Firebase
+  // 1. Try to check if there is an overridden set in Firestore with document ID = `${subject}_${chapter}_${set}`
+  try {
+    const cleanDocId = `${subject}_${chapter}_${set}`.toLowerCase().replace(/\s+/g, '-');
+    const docRef = doc(db, 'custom_sets', cleanDocId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      let subjectId = (data.subject || subject).toLowerCase().replace(' ', '-') as SubjectId;
+      if (subjectId === 'mathematics' as any) subjectId = 'maths';
+      if (subjectId === 'full-syllabus' as any) subjectId = 'mock-tests';
+
+      const chapterId = (data.chapter || chapter).toLowerCase().replace(/\s+/g, '-');
+      
+      const rawQuestions = data.questions || [];
+      const formattedQuestions = rawQuestions.map((q: any, index: number) => ({
+        id: q.id || `${set}_q_${index}`,
+        question: q.question || q.text || '',
+        options: q.options || [],
+        answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
+        explanation: q.explanation || '',
+        type: q.type || 'mcq'
+      }));
+
+      const customQuizSet: QuizSet = {
+        id: set,
+        title: data.title || 'Custom Test',
+        description: data.description || '',
+        subjectId: subjectId,
+        chapterId: chapterId,
+        difficulty: data.difficulty || 'medium',
+        duration: data.duration || undefined,
+        questions: formattedQuestions
+      };
+      cachedCustomSets[customSetKey] = customQuizSet;
+      return customQuizSet;
+    }
+  } catch (e) {
+    console.error("Failed to check overridden set in Firestore", e);
+  }
+
+  // 2. If it starts with custom_, it's definitely from Firebase
   if (set.startsWith('custom_')) {
     try {
       const docId = set.replace('custom_', '');
@@ -32,14 +72,26 @@ export async function loadQuizSet(subject: string, chapter: string, set: string)
         if (subjectId === 'full-syllabus' as any) subjectId = 'mock-tests';
   
         const chapterId = (data.chapter || 'custom').toLowerCase().replace(/\s+/g, '-');
+        
+        const rawQuestions = data.questions || [];
+        const formattedQuestions = rawQuestions.map((q: any, index: number) => ({
+          id: q.id || `${set}_q_${index}`,
+          question: q.question || q.text || '',
+          options: q.options || [],
+          answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
+          explanation: q.explanation || '',
+          type: q.type || 'mcq'
+        }));
+
         const customQuizSet: QuizSet = {
           id: set,
           title: data.title || 'Custom Test',
           description: data.description || '',
           subjectId: subjectId,
           chapterId: chapterId,
-          difficulty: 'medium',
-          questions: data.questions || []
+          difficulty: data.difficulty || 'medium',
+          duration: data.duration || undefined,
+          questions: formattedQuestions
         };
         cachedCustomSets[customSetKey] = customQuizSet;
         return customQuizSet;
@@ -100,13 +152,23 @@ export async function getAllData() {
       subjectChapters.push(chapter);
     }
     
-    // Check for duplicates
-    if (!chapter.sets.find(s => s.id === quizSet.id)) {
+    // Check for duplicates/existing local sets to override
+    const existingIndex = chapter.sets.findIndex(s => s.id === quizSet.id);
+    if (existingIndex !== -1) {
+      chapter.sets[existingIndex] = {
+        id: quizSet.id,
+        title: quizSet.title,
+        itemCount: quizSet.questions?.length || 0,
+        difficulty: quizSet.difficulty || 'medium',
+        duration: quizSet.duration || undefined
+      };
+    } else {
       chapter.sets.push({
         id: quizSet.id,
         title: quizSet.title,
         itemCount: quizSet.questions?.length || 0,
-        difficulty: quizSet.difficulty || 'medium'
+        difficulty: quizSet.difficulty || 'medium',
+        duration: quizSet.duration || undefined
       });
     }
   };
@@ -129,7 +191,30 @@ export async function getAllData() {
       if (subjectId === 'full-syllabus' as any) subjectId = 'mock-tests';
 
       const chapterId = (data.chapter || 'custom').toLowerCase().replace(/\s+/g, '-');
-      const setId = `custom_${doc.id}`;
+      
+      // Check if it's an overridden local set
+      let setId = `custom_${doc.id}`;
+      if (doc.id.includes('_')) {
+        const parts = doc.id.split('_');
+        if (parts.length >= 3) {
+          const docSub = parts[0];
+          const docChap = parts[1];
+          const docSet = parts.slice(2).join('_');
+          if (docSub === subjectId && docChap === chapterId) {
+            setId = docSet; // Restore original setId for overriding!
+          }
+        }
+      }
+
+      const rawQuestions = data.questions || [];
+      const formattedQuestions = rawQuestions.map((q: any, index: number) => ({
+        id: q.id || `${setId}_q_${index}`,
+        question: q.question || q.text || '',
+        options: q.options || [],
+        answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
+        explanation: q.explanation || '',
+        type: q.type || 'mcq'
+      }));
 
       const customQuizSet: QuizSet = {
         id: setId,
@@ -137,8 +222,9 @@ export async function getAllData() {
         description: data.description || '',
         subjectId: subjectId,
         chapterId: chapterId,
-        difficulty: 'medium', // Default for custom tests
-        questions: data.questions || []
+        difficulty: data.difficulty || 'medium',
+        duration: data.duration || undefined,
+        questions: formattedQuestions
       };
 
       const customSetKey = `${subjectId}-${chapterId}-${setId}`;

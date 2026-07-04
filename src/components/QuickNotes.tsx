@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocation } from "react-router-dom";
-import { StickyNote, X, Plus, Trash2, Edit2, Check } from "lucide-react";
+import { StickyNote, X, Plus, Trash2, Edit2, Check, Download } from "lucide-react";
 import { cn } from "../lib/utils";
+import { jsPDF } from "jspdf";
 
 interface Note {
   id: string;
@@ -24,20 +25,45 @@ export function QuickNotes() {
                          location.pathname.startsWith('/study') ||
                          location.pathname.startsWith('/question');
 
-  useEffect(() => {
+  const loadNotes = () => {
     try {
       const saved = localStorage.getItem("jee_tapasya_quick_notes");
       if (saved) {
         setNotes(JSON.parse(saved));
+      } else {
+        setNotes([]);
       }
     } catch (e) {
       console.error("Failed to load notes", e);
     }
+  };
+
+  useEffect(() => {
+    loadNotes();
+
+    const handleStorageChange = () => {
+      loadNotes();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {
+    if (isOpen) {
+      loadNotes();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     try {
-      localStorage.setItem("jee_tapasya_quick_notes", JSON.stringify(notes));
+      const current = localStorage.getItem("jee_tapasya_quick_notes");
+      const serialized = JSON.stringify(notes);
+      if (current !== serialized) {
+        localStorage.setItem("jee_tapasya_quick_notes", serialized);
+      }
     } catch (e) {
       console.error("Failed to save notes", e);
     }
@@ -79,6 +105,117 @@ export function QuickNotes() {
     setEditingId(null);
   };
 
+  const downloadNotesPDF = () => {
+    if (notes.length === 0) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // Helper to draw watermark
+    const drawWatermark = () => {
+      doc.saveGraphicsState();
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(55);
+      doc.setTextColor(240, 240, 240); // very subtle light gray
+      doc.text("JEE TAPASYA", pageWidth / 2, pageHeight / 2, {
+        align: "center",
+        angle: 45
+      });
+      doc.restoreGraphicsState();
+    };
+
+    // Helper to draw header on every page
+    const drawHeader = (pageNumber: number) => {
+      // Background Accent bar at the top
+      doc.setFillColor(254, 243, 199); // amber-100
+      doc.rect(0, 0, pageWidth, 15, "F");
+
+      // Top Header Text
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(120, 53, 4); // amber-900
+      doc.text("JEE TAPASYA — QUICK NOTES", 15, 10);
+
+      // Date on the right
+      const dateStr = new Date().toLocaleDateString();
+      doc.text(`Generated: ${dateStr}`, pageWidth - 15, 10, { align: "right" });
+
+      // Footer
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`Page ${pageNumber}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+      doc.text("Aspirant Study Companion by JEE Tapasya", 15, pageHeight - 10);
+    };
+
+    let yOffset = 30;
+    let pageNum = 1;
+
+    // Draw page 1 components
+    drawWatermark();
+    drawHeader(pageNum);
+
+    // Title of the PDF
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(6, 95, 70); // emerald-800
+    doc.text("MY STUDY QUICK NOTES", 15, yOffset);
+    yOffset += 10;
+
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Total Notes: ${notes.length}`, 15, yOffset);
+    yOffset += 15;
+
+    // Loop through notes (newest first as in the state)
+    notes.forEach((note, index) => {
+      const date = new Date(note.timestamp).toLocaleString();
+      const contentLines = doc.splitTextToSize(note.content, pageWidth - 30);
+      const noteHeight = (contentLines.length * 6) + 20;
+
+      // Check if we need to add a new page
+      if (yOffset + noteHeight > pageHeight - 20) {
+        doc.addPage();
+        pageNum++;
+        drawWatermark();
+        drawHeader(pageNum);
+        yOffset = 30;
+      }
+
+      // Draw container box for note
+      doc.setFillColor(255, 251, 235); // amber-50
+      doc.setDrawColor(253, 230, 138); // amber-200
+      doc.roundedRect(15, yOffset, pageWidth - 30, noteHeight, 3, 3, "FD");
+
+      // Draw note index & date
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(180, 83, 9); // amber-700
+      doc.text(`NOTE #${notes.length - index}`, 20, yOffset + 8);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(140, 140, 140);
+      doc.text(date, pageWidth - 20, yOffset + 8, { align: "right" });
+
+      // Draw a divider line
+      doc.setDrawColor(254, 243, 199);
+      doc.line(20, yOffset + 12, pageWidth - 20, yOffset + 12);
+
+      // Draw note content
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(6, 78, 59); // emerald-950
+      doc.text(contentLines, 20, yOffset + 18);
+
+      yOffset += noteHeight + 10;
+    });
+
+    doc.save("JEE_Tapasya_Quick_Notes.pdf");
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -118,12 +255,23 @@ export function QuickNotes() {
                   <StickyNote size={24} />
                   <h2 className="text-xl font-black heading-display uppercase tracking-tight">Quick Notes</h2>
                 </div>
-                <button 
-                  onClick={() => setIsOpen(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-amber-100 text-amber-700 transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="flex items-center gap-2">
+                  {notes.length > 0 && (
+                    <button
+                      onClick={downloadNotesPDF}
+                      title="Download Notes as PDF"
+                      className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-amber-200/80 text-amber-700 transition-colors border border-amber-200/50"
+                    >
+                      <Download size={16} />
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => setIsOpen(false)}
+                    className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-amber-100 text-amber-700 transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
 
               <div className="p-4 border-b border-emerald-50">

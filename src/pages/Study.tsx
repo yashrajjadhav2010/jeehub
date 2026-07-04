@@ -49,6 +49,61 @@ export default function Study() {
     'cheat-sheets': []
   };
 
+  const [dbMaterials, setDbMaterials] = React.useState<Record<string, any[]>>({
+    'formulas': [],
+    'short-notes': [],
+    'mind-maps': [],
+    'cheat-sheets': []
+  });
+
+  React.useEffect(() => {
+    async function fetchCustomMaterials() {
+      try {
+        const { collection, getDocs } = await import('firebase/firestore');
+        const { db } = await import('../lib/firebase');
+        const querySnapshot = await getDocs(collection(db, 'custom_materials'));
+        
+        const loaded: Record<string, any[]> = {
+          'formulas': [],
+          'short-notes': [],
+          'mind-maps': [],
+          'cheat-sheets': []
+        };
+        
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const cat = data.category || 'short-notes';
+          if (loaded[cat]) {
+            loaded[cat].push({
+              id: docSnap.id,
+              title: data.title || 'Untitled',
+              subject: data.subject || 'Physics',
+              type: cat === 'formulas' ? 'Formula Sheet' : cat === 'mind-maps' ? 'Mind Map' : 'Revision Notes',
+              time: 'New',
+              icon: cat === 'formulas' ? Calculator : cat === 'mind-maps' ? Network : ScrollText,
+              iconColor: cat === 'formulas' ? 'text-rose-500' : cat === 'mind-maps' ? 'text-purple-500' : 'text-lime-500',
+              iconBg: cat === 'formulas' ? 'bg-rose-50' : cat === 'mind-maps' ? 'bg-purple-50' : 'bg-lime-50',
+              iconBorder: cat === 'formulas' ? 'border-rose-100' : cat === 'mind-maps' ? 'border-purple-100' : 'border-lime-100',
+              isCustom: true
+            });
+          }
+        });
+        
+        setDbMaterials(loaded);
+      } catch (e) {
+        console.error("Error loading custom materials", e);
+      }
+    }
+    fetchCustomMaterials();
+  }, []);
+
+  const mergedMaterialsDb: Record<string, any[]> = {
+    'formulas': [...materialsDb['formulas'], ...dbMaterials['formulas']],
+    'short-notes': [...materialsDb['short-notes'], ...dbMaterials['short-notes']],
+    'mind-maps': [...materialsDb['mind-maps'], ...dbMaterials['mind-maps']],
+    'cheat-sheets': [...materialsDb['cheat-sheets'], ...dbMaterials['cheat-sheets']],
+  };
+
   const filterSubjects = ['All', 'Physics', 'Chemistry', 'Mathematics'];
 
   const categories: Array<{
@@ -64,7 +119,7 @@ export default function Study() {
       bookmark: 'bg-[#eeb136]',
       tabs: [],
       latch: true,
-      count: '2 Sheets'
+      count: `${mergedMaterialsDb['formulas'].length} Sheets`
     },
     {
       id: 'short-notes',
@@ -76,7 +131,7 @@ export default function Study() {
       bookmark: 'bg-[#e86665]',
       tabs: ['bg-[#f5c64b]', 'bg-[#e86665]', 'bg-[#9071df]'],
       latch: false,
-      count: '7 Chapters'
+      count: `${mergedMaterialsDb['short-notes'].length} Chapters`
     },
     {
       id: 'mind-maps',
@@ -88,7 +143,7 @@ export default function Study() {
       bookmark: 'bg-[#bc90e9]',
       tabs: ['bg-[#f5c64b]', 'bg-[#f5c64b]', 'bg-[#f5c64b]', 'bg-[#f5c64b]'],
       latch: false,
-      count: '21 Maps'
+      count: `${mergedMaterialsDb['mind-maps'].length} Maps`
     },
     {
       id: 'cheat-sheets',
@@ -100,7 +155,7 @@ export default function Study() {
       bookmark: 'bg-[#f5c64b]',
       tabs: ['bg-[#6cbeb5]', 'bg-[#eeb136]'],
       latch: false,
-      count: '0 Sheets'
+      count: `${mergedMaterialsDb['cheat-sheets'].length} Sheets`
     }
   ];
 
@@ -112,7 +167,7 @@ export default function Study() {
     { id: 'kinematics-equations', title: 'Kinematics Equations', subject: 'Physics', type: 'Formula Sheet', time: 'Latest', icon: Activity, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
   ];
 
-  const rawDisplayedMaterials = activeCategory ? materialsDb[activeCategory] : recentMaterials;
+  const rawDisplayedMaterials = activeCategory ? mergedMaterialsDb[activeCategory] : recentMaterials;
   const displayedMaterials = rawDisplayedMaterials.filter(item => activeSubject === 'All' || item.subject.includes(activeSubject));
 
   return (
