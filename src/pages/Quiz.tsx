@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ChevronLeft, ChevronRight, ArrowRight, Calculator, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X, Sparkles, Loader2, Zap, AlertCircle } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, ArrowRight, HelpCircle, Info, Activity, BrainCircuit, LayoutGrid, X, Sparkles, Loader2, Zap, AlertCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -37,6 +37,7 @@ export default function Quiz() {
   const [reportDescription, setReportDescription] = useState('');
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   const requestFullScreen = () => {
     const element = document.documentElement;
@@ -104,7 +105,7 @@ export default function Quiz() {
               setIsStarted(true); // Auto-resume if session exists
             } catch (e) {
               console.error("Error parsing saved session", e);
-              const defaultDuration = subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90;
+              const defaultDuration = subjectId === 'mock-tests' ? 10800 : (subjectId === 'pyq' ? 0 : data.questions.length * 90);
               setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
               const initialAnswers = data.questions.reduce((acc, q) => {
                 acc[q.id] = null;
@@ -113,7 +114,7 @@ export default function Quiz() {
               setAnswers(initialAnswers);
             }
           } else {
-            const defaultDuration = subjectId === 'mock-tests' || subjectId === 'pyq' ? 10800 : data.questions.length * 90;
+            const defaultDuration = subjectId === 'mock-tests' ? 10800 : (subjectId === 'pyq' ? 0 : data.questions.length * 90);
             setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
             const initialAnswers = data.questions.reduce((acc, q) => {
               acc[q.id] = null;
@@ -149,13 +150,16 @@ export default function Quiz() {
   }, [answers, timeLeft, currentIdx, visited, markedForReview, solutionViewed, isStarted, isFinished, subjectId, chapterId, setId]);
 
   useEffect(() => {
-    if (timeLeft <= 0 || isFinished || !isStarted) return;
+    if (isFinished || !isStarted) return;
+    const isPyq = subjectId === 'pyq';
+    if (!isPyq && timeLeft <= 0) return;
+    
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => isPyq ? prev + 1 : prev - 1);
       setQuestionTime((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isFinished, isStarted]);
+  }, [timeLeft, isFinished, isStarted, subjectId]);
 
   const exitFullScreen = () => {
     if (document.fullscreenElement && document.exitFullscreen) {
@@ -171,7 +175,7 @@ export default function Quiz() {
       chapterId,
       setId,
       answers,
-      timeTaken: (quizSet?.duration ? quizSet.duration * 60 : (quizSet?.questions.length || 0) * 90) - timeLeft,
+      timeTaken: subjectId === 'pyq' ? timeLeft : (quizSet?.duration ? quizSet.duration * 60 : (subjectId === 'mock-tests' ? 10800 : (quizSet?.questions.length || 0) * 90)) - timeLeft,
       quizSet
     };
     localStorage.setItem('lastQuizResult', JSON.stringify(results));
@@ -179,10 +183,10 @@ export default function Quiz() {
   }, [answers, timeLeft, quizSet, subjectId, chapterId, setId, navigate]);
 
   useEffect(() => {
-    if (isStarted && !isFinished && timeLeft === 0 && quizSet) {
+    if (isStarted && !isFinished && timeLeft === 0 && quizSet && subjectId !== 'pyq') {
       handleFinish();
     }
-  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet]);
+  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet, subjectId]);
 
   useEffect(() => {
     setQuestionTime(0);
@@ -346,7 +350,7 @@ export default function Quiz() {
            )}
            <div className="flex justify-between items-center">
              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Estimated Duration</span>
-             <span className="text-sm font-bold uppercase">{formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)}</span>
+             <span className="text-sm font-bold uppercase">{subjectId === 'pyq' ? 'No Time Limit' : formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)}</span>
            </div>
         </div>
 
@@ -451,7 +455,7 @@ export default function Quiz() {
 
         <div className="flex items-center gap-2 md:gap-8 pr-4 md:pr-10">
           <div className="flex flex-col items-center md:hidden">
-             <span className="text-[7px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1">Grand Timer</span>
+             <span className="text-[7px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1">{subjectId === 'pyq' ? 'Elapsed' : 'Grand Timer'}</span>
              <div className="flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100">
                <Clock size={10} className="text-primary animate-pulse" />
                <span className="text-[10px] font-black text-emerald-950 tabular-nums">{formatTime(timeLeft)}</span>
@@ -466,7 +470,7 @@ export default function Quiz() {
           </button>
 
           <div className="flex flex-col items-center sm:items-end hidden md:flex">
-             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 md:mb-2 hidden md:block">T-Minus Remaining</span>
+             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700/40 leading-none mb-1 md:mb-2 hidden md:block">{subjectId === 'pyq' ? 'Time Elapsed' : 'T-Minus Remaining'}</span>
              <div className="flex items-center gap-2 md:gap-2 bg-emerald-50 px-3 md:px-2 py-2 md:py-1 rounded-xl md:rounded-xl border border-emerald-100 shadow-inner">
                <Clock size={14} className="md:size-10 text-primary animate-pulse" />
                <span className="text-sm md:text-sm font-black text-emerald-950 heading-display tabular-nums tracking-tighter leading-none">{formatTime(timeLeft)}</span>
@@ -564,10 +568,9 @@ export default function Quiz() {
                           </div>
                         )}
                       </div>
-                      <div className="flex gap-2 md:gap-4">
+                      <div className="flex items-center gap-2 md:gap-4">
                          <button onClick={() => setIsReportModalOpen(true)} className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-red-300 hover:text-red-500 hover:bg-red-50 transition-all" title="Report Issue"><AlertCircle size={18} className="md:size-20" /></button>
-                         <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Info size={18} className="md:size-20" /></button>
-                         <button className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all"><Calculator size={18} className="md:size-20" /></button>
+                         <button onClick={() => setIsInfoModalOpen(true)} className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-emerald-300 hover:text-primary hover:bg-emerald-50 transition-all" title="Test Information"><Info size={18} className="md:size-20" /></button>
                       </div>
                    </div>
 
@@ -1064,6 +1067,98 @@ export default function Quiz() {
                   </button>
                 </form>
               )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Test Information Modal */}
+      <AnimatePresence>
+        {isInfoModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-emerald-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setIsInfoModalOpen(false)}
+                className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-emerald-900/40 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                <Info size={32} />
+              </div>
+              <h3 className="text-2xl font-black text-emerald-950 heading-display uppercase tracking-tight mb-2">Test Information</h3>
+              <p className="text-emerald-900/40 font-bold text-xs uppercase tracking-widest mb-6 border-b border-emerald-50 pb-2">
+                {quizSet?.title || "Practice Set"}
+              </p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center bg-emerald-50/50 px-4 py-3 rounded-xl border border-emerald-100">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900/60">Total Questions</span>
+                  <span className="text-sm font-black text-emerald-950">{quizSet?.questions.length || 0}</span>
+                </div>
+                <div className="flex justify-between items-center bg-emerald-50/50 px-4 py-3 rounded-xl border border-emerald-100">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900/60">Duration</span>
+                  <span className="text-sm font-black text-emerald-950">
+                    {quizSet ? (subjectId === 'pyq' ? 'No Time Limit' : formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)) : "N/A"}
+                  </span>
+                </div>
+
+                <div className="pt-2">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-3">Marking Scheme</h4>
+                  
+                  <div className="space-y-3">
+                    <div className="border border-emerald-100 rounded-xl p-4 bg-white">
+                      <p className="text-[11px] font-black uppercase tracking-wider text-emerald-950 mb-2">Single Choice (MCQ)</p>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="bg-emerald-50 p-2 rounded-lg">
+                          <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">Correct</p>
+                          <p className="text-xs font-black text-emerald-600">+4</p>
+                        </div>
+                        <div className="bg-red-50 p-2 rounded-lg">
+                          <p className="text-[9px] font-black text-red-800 uppercase tracking-widest">Incorrect</p>
+                          <p className="text-xs font-black text-red-600">-1</p>
+                        </div>
+                        <div className="bg-gray-50 p-2 rounded-lg">
+                          <p className="text-[9px] font-black text-gray-800 uppercase tracking-widest">Left</p>
+                          <p className="text-xs font-black text-gray-600">0</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border border-emerald-100 rounded-xl p-4 bg-white">
+                      <p className="text-[11px] font-black uppercase tracking-wider text-emerald-950 mb-2">Numerical Value</p>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="bg-emerald-50 p-2 rounded-lg">
+                          <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">Correct</p>
+                          <p className="text-xs font-black text-emerald-600">+4</p>
+                        </div>
+                        <div className="bg-gray-50 p-2 rounded-lg col-span-2">
+                          <p className="text-[9px] font-black text-gray-800 uppercase tracking-widest">Incorrect or Left</p>
+                          <p className="text-xs font-black text-gray-600">0 (No Negative Marking)</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsInfoModalOpen(false)}
+                className="w-full py-4 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-emerald-600 active:scale-[0.98] transition-all shadow-xl shadow-primary/20 flex justify-center items-center h-14 cursor-pointer"
+              >
+                Return to Test
+              </button>
             </motion.div>
           </motion.div>
         )}

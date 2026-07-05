@@ -34,7 +34,17 @@ if (!PUBLISHABLE_KEY) {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <HelmetProvider>
-        <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+        <ClerkProvider 
+          publishableKey={PUBLISHABLE_KEY} 
+          afterSignOutUrl="/"
+          appearance={{
+            elements: {
+              userButtonPopoverFooter: {
+                display: "none"
+              }
+            }
+          }}
+        >
           <App />
         </ClerkProvider>
       </HelmetProvider>

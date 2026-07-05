@@ -21,7 +21,7 @@ export default function MockTests() {
             chapterId: chapter.id,
             title: set.title,
             difficulty: set.difficulty,
-            duration: (set as any).duration ? `${(set as any).duration} Mins` : "180 Mins",
+            duration: "No Time Limit",
             questions: set.itemCount,
             status: "Available",
             syllabus: "Full Syllabus Simulation"
