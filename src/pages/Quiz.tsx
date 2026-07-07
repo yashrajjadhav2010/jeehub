@@ -11,8 +11,11 @@ import { QuizSet } from '../types';
 import { loadQuizSet } from '../lib/dataService';
 import { solveDoubt } from '../services/aiService';
 import { cn } from '../lib/utils';
+import { checkAILimit, incrementAIUsage } from '../lib/aiUsage';
+import { useUser } from '@clerk/clerk-react';
 
 export default function Quiz() {
+  const { user } = useUser();
   const { subjectId, chapterId, setId } = useParams<{ subjectId: string; chapterId: string; setId: string }>();
   const navigate = useNavigate();
   
@@ -226,22 +229,9 @@ export default function Quiz() {
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    let usage = { date: today, count: 0 };
-    try {
-      const limitData = localStorage.getItem('axiom_usage_limit');
-      if (limitData) {
-        const parsed = JSON.parse(limitData);
-        if (parsed.date === today) {
-          usage = parsed;
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    if (usage.count >= 10) {
-      setAiLimitError("Daily Axiom AI limit of 10 questions reached! Please try tomorrow.");
+    const limitStatus = await checkAILimit(user?.id);
+    if (!limitStatus.allowed) {
+      setAiLimitError(limitStatus.error || "Daily Axiom AI limit reached!");
       setTimeout(() => setAiLimitError(null), 5000);
       return;
     }
@@ -256,8 +246,7 @@ export default function Quiz() {
       setAiAnalysis(prev => ({ ...prev, [currentQuestion.id]: analysis }));
       
       // Update usage limit
-      usage.count += 1;
-      localStorage.setItem('axiom_usage_limit', JSON.stringify(usage));
+      await incrementAIUsage(user?.id);
     } catch (e) {
       console.error("AI Analysis failed:", e);
     } finally {

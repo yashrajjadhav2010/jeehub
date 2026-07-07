@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css';
 import { solveDoubt } from '../services/aiService';
 import { AxiomMascot } from '../components/AxiomMascot';
 import { cn } from '../lib/utils';
+import { checkAILimit, incrementAIUsage } from '../lib/aiUsage';
 import PeriodicTable from './PeriodicTable';
 import { useUser, SignInButton } from '@clerk/clerk-react';
 
@@ -52,7 +53,7 @@ const ThemeMicIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
 );
 
 export default function DoubtSolver() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [operatorName, setOperatorName] = useState('U');
@@ -113,29 +114,6 @@ export default function DoubtSolver() {
       const pfp = localStorage.getItem('operatorPfp');
       if (name) setOperatorName(name.charAt(0).toUpperCase());
       if (pfp) setOperatorPfp(pfp);
-    } catch (e) {
-      console.error(e);
-    }
-
-    // Initialize/Check Daily Limit
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const limitData = localStorage.getItem('axiom_usage_limit');
-      if (limitData) {
-        const parsed = JSON.parse(limitData);
-        if (parsed.date === today) {
-          setDailyCount(parsed.count || 0);
-          setDailyImageCount(parsed.imageCount || 0);
-        } else {
-          localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0, imageCount: 0 }));
-          setDailyCount(0);
-          setDailyImageCount(0);
-        }
-      } else {
-        localStorage.setItem('axiom_usage_limit', JSON.stringify({ date: today, count: 0, imageCount: 0 }));
-        setDailyCount(0);
-        setDailyImageCount(0);
-      }
     } catch (e) {
       console.error(e);
     }
@@ -308,25 +286,12 @@ export default function DoubtSolver() {
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    let usage = { date: today, count: 0, imageCount: 0 };
-    try {
-      const limitData = localStorage.getItem('axiom_usage_limit');
-      if (limitData) {
-        const parsed = JSON.parse(limitData);
-        if (parsed.date === today) {
-          usage = { count: parsed.count || 0, imageCount: parsed.imageCount || 0, date: today };
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    if (usage.count >= 10) {
-      setError("Daily limit reached! You have consumed your 10 free queries for today. Please come back tomorrow!");
+    const limitStatus = await checkAILimit(user?.id);
+    if (!limitStatus.allowed) {
+      setError(limitStatus.error || "Daily limit reached!");
       return;
     }
-    if (selectedImage && usage.imageCount >= 2) {
+    if (selectedImage && dailyImageCount >= 2) {
       setError("Daily image limit reached! You can only post 2 images per day.");
       return;
     }
@@ -347,11 +312,8 @@ export default function DoubtSolver() {
       setMessages(prev => [...prev, { role: 'assistant', content: response }]);
       
       // Update usage limit
-      usage.count += 1;
-      if (currentImage) usage.imageCount += 1;
-      localStorage.setItem('axiom_usage_limit', JSON.stringify(usage));
-      setDailyCount(usage.count);
-      setDailyImageCount(usage.imageCount);
+      await incrementAIUsage(user?.id);
+      if (currentImage) setDailyImageCount(prev => prev + 1);
     } catch (err: any) {
       setError(err.message || "Failed to contact AI.");
       setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ **Service Unavailable:**\n\nOur AI servers are currently experiencing high traffic or a connection issue. Please try again in a few moments.` }]);
