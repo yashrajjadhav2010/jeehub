@@ -1,4 +1,6 @@
-import { db } from './firebase';
+const fs = require('fs');
+
+const code = `import { db } from './firebase';
 import { doc, getDoc, setDoc, increment } from 'firebase/firestore';
 
 export async function checkAILimit(userId: string | undefined): Promise<{ allowed: boolean; error?: string }> {
@@ -31,7 +33,7 @@ export async function checkAILimit(userId: string | undefined): Promise<{ allowe
     // fallback
     let usage = { date: today, count: 0 };
     try {
-      const limitData = localStorage.getItem(`axiom_usage_${userId}`);
+      const limitData = localStorage.getItem(\`axiom_usage_\${userId}\`);
       if (limitData) {
         const parsed = JSON.parse(limitData);
         if (parsed.date === today) usage = parsed;
@@ -66,7 +68,7 @@ export async function incrementAIUsage(userId: string | undefined) {
   } catch (e) {
     let usage = { date: today, count: 0 };
     try {
-      const limitData = localStorage.getItem(`axiom_usage_${userId}`);
+      const limitData = localStorage.getItem(\`axiom_usage_\${userId}\`);
       if (limitData) {
         const parsed = JSON.parse(limitData);
         if (parsed.date === today) usage = parsed;
@@ -75,7 +77,7 @@ export async function incrementAIUsage(userId: string | undefined) {
     
     currentCount = usage.count;
     usage.count += 1;
-    localStorage.setItem(`axiom_usage_${userId}`, JSON.stringify(usage));
+    localStorage.setItem(\`axiom_usage_\${userId}\`, JSON.stringify(usage));
   }
   
   if (currentCount >= 10) {
@@ -89,3 +91,7 @@ export async function incrementAIUsage(userId: string | undefined) {
     }
   }
 }
+`;
+
+fs.writeFileSync('src/lib/aiUsage.ts', code);
+console.log('aiUsage patched');

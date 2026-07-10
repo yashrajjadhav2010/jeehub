@@ -15,7 +15,10 @@ export const syncKeys = [
   'activeChallenge',
   'feedbackShown_v1',
   'mobileNoticeDismissed',
-  'jee_tapasya_quick_notes'
+  'jee_tapasya_quick_notes',
+  'coins',
+  'referralCode',
+  'referredBy'
 ];
 
 let originalSetItem: any = null;
