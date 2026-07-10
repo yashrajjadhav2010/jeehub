@@ -644,6 +644,12 @@ export default function Admin() {
             >
               Reports {reportsList.length > 0 && <span className="bg-red-500 text-white rounded-full px-1.5 py-0.5 ml-1 text-[10px]">{reportsList.length}</span>}
             </button>
+            <button 
+              onClick={() => setActiveTab('surveys')}
+              className={`snap-center px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap shrink-0 ${activeTab === 'surveys' ? 'bg-white text-primary shadow-sm' : 'text-emerald-900/60 hover:text-emerald-900'}`}
+            >
+              Surveys {surveysList.length > 0 && <span className="bg-primary text-white rounded-full px-1.5 py-0.5 ml-1 text-[10px]">{surveysList.length}</span>}
+            </button>
           </div>
         </header>
 
