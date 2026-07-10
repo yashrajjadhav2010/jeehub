@@ -16,5 +16,14 @@ service cloud.firestore {
     match /custom_materials/{materialId} {
       allow read, write: if true;
     }
+    match /ai_usage/{userId} {
+      allow read, write: if true;
+    }
+    match /surveys/{surveyId} {
+      allow read, write: if true;
+    }
+    match /{document=**} {
+      allow read, write: if true;
+    }
   }
 }

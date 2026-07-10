@@ -3,7 +3,7 @@ import { useUser, RedirectToSignIn } from '@clerk/clerk-react';
 import { 
   Shield, Users, Activity, Settings, Database, Plus, Save, Trash2, Image, 
   AlertTriangle, ExternalLink, FileText, BookOpen, Clock, RefreshCw, 
-  PenSquare, Eye, CheckCircle2, ChevronDown, Book, Sparkles
+  PenSquare, Eye, CheckCircle2, ChevronDown, Book, Sparkles, MessageSquare
 } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
@@ -20,6 +20,7 @@ export default function Admin() {
   });
   const [usersList, setUsersList] = useState<any[]>([]);
   const [reportsList, setReportsList] = useState<any[]>([]);
+  const [surveysList, setSurveysList] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
   
   // Test Builder States
@@ -63,7 +64,7 @@ export default function Admin() {
   const [savingMaterial, setSavingMaterial] = useState(false);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'manage_sets' | 'create_set' | 'manage_notes' | 'users' | 'reports'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'manage_sets' | 'create_set' | 'manage_notes' | 'users' | 'reports' | 'surveys'>('dashboard');
 
   const fetchStats = async () => {
     try {
@@ -81,6 +82,9 @@ export default function Admin() {
         
         let userErrors = 0;
         let userScore = 0;
+        let userXp = 0;
+        let totalSolved = 0;
+        let streak = 0;
 
         if (data?.data?.errorBook) {
           try {
@@ -95,6 +99,9 @@ export default function Admin() {
         if (data?.data?.stats) {
           try {
             userScore = data.data.stats.totalScore || 0;
+            userXp = data.data.stats.xp || 0;
+            totalSolved = data.data.stats.totalSolved || 0;
+            streak = data.data.stats.streak || 0;
           } catch (e) {}
         }
 
@@ -104,6 +111,9 @@ export default function Admin() {
           name: data.name || 'Unknown User',
           errors: userErrors,
           score: userScore,
+          xp: userXp,
+          totalSolved: totalSolved,
+          streak: streak,
           lastActive: data.updated_at ? new Date(data.updated_at.seconds * 1000).toLocaleString() : 'Unknown'
         });
       });
@@ -149,6 +159,30 @@ export default function Admin() {
       } catch (e) {
         console.error("Error fetching reports", e);
       }
+
+      // Fetch surveys
+      try {
+        const surveysSnapshot = await getDocs(collection(db, 'surveys'));
+        let fetchedSurveys: any[] = [];
+        surveysSnapshot.forEach(doc => {
+          const data = doc.data();
+          fetchedSurveys.push({
+            id: doc.id,
+            ...data,
+            createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : 'Unknown'
+          });
+        });
+        fetchedSurveys.sort((a, b) => {
+          if (a.createdAt === 'Unknown') return 1;
+          if (b.createdAt === 'Unknown') return -1;
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+        setSurveysList(fetchedSurveys);
+      } catch (e) {
+        console.error("Error fetching surveys", e);
+      }
+
+
 
     } catch (err) {
       console.error("Error fetching stats:", err);
@@ -1175,6 +1209,8 @@ export default function Admin() {
                         </td>
                         <td className="py-4 px-4 font-mono text-sm text-emerald-950">{u.id}</td>
                         <td className="py-4 px-4 font-bold text-primary">{u.score}</td>
+                        <td className="py-4 px-4 font-bold text-amber-500">{u.xp}</td>
+                        <td className="py-4 px-4 font-bold text-indigo-500">{u.totalSolved}</td>
                         <td className="py-4 px-4 font-bold text-red-500">{u.errors}</td>
                         <td className="py-4 px-4 text-sm text-emerald-900/60">{u.lastActive}</td>
                       </tr>
@@ -1197,8 +1233,10 @@ export default function Admin() {
                         <p className="text-xs text-emerald-900/60 truncate max-w-[200px]">{u.email}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40">XP</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40">Score</span>
                         <p className="font-black text-primary text-md leading-none mt-0.5">{u.score}</p>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mt-1 block">XP</span>
+                        <p className="font-black text-amber-500 text-md leading-none mt-0.5">{u.xp}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 pt-2 border-t border-emerald-100/40 text-[11px]">
@@ -1222,6 +1260,47 @@ export default function Admin() {
         )}
 
         {/* Tab 6: User Reports */}
+        
+        {/* Tab 7: User Surveys */}
+        {activeTab === 'surveys' && (
+          <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-emerald-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-6 flex items-center gap-3">
+              <MessageSquare className="text-primary" size={24} /> 
+              User Feedback Surveys
+            </h2>
+            
+            <div className="space-y-4">
+              {surveysList.length === 0 ? (
+                <div className="text-center text-emerald-900/40 py-8">No surveys found.</div>
+              ) : (
+                surveysList.map((s, i) => (
+                  <div key={i} className="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100/50 space-y-3">
+                    <div className="flex justify-between items-start gap-2 border-b border-emerald-100 pb-2">
+                      <div>
+                        <div className="font-bold text-emerald-950 text-sm leading-tight break-all">{s.name}</div>
+                        <div className="text-xs text-emerald-900/60">{s.email}</div>
+                      </div>
+                      <span className="text-[9px] text-emerald-900/40 font-mono shrink-0">{s.createdAt}</span>
+                    </div>
+                    {s.issues && (
+                      <div className="text-xs bg-red-50/50 p-3 rounded-xl border border-red-100/30">
+                        <div className="text-[9px] font-black text-red-900/60 uppercase tracking-widest mb-1">Reported Issues</div>
+                        <p className="text-red-950 font-medium leading-normal whitespace-pre-wrap">{s.issues}</p>
+                      </div>
+                    )}
+                    {s.suggestions && (
+                      <div className="text-xs bg-primary/10 p-3 rounded-xl border border-primary/20">
+                        <div className="text-[9px] font-black text-emerald-900/60 uppercase tracking-widest mb-1">Suggestions</div>
+                        <p className="text-emerald-950 font-medium leading-normal whitespace-pre-wrap">{s.suggestions}</p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'reports' && (
           <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-emerald-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-6 flex items-center gap-3">

@@ -70,6 +70,9 @@ export default function Subjects() {
     return vals.reduce((a, b) => a + b, 0) / vals.length;
   }, [userStats]);
 
+  
+
+  
   const unifiedCards = [
     {
       id: 'physics' as SubjectId,
@@ -78,16 +81,16 @@ export default function Subjects() {
       shortTitle: 'PHY-01',
       desc: 'Master the laws of nature from Mechanics to Modern Physics. Detailed simulations and conceptual deep-dives.',
       img: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&q=80&w=800',
-      icon: Atom,
+      icon: Zap,
       color: 'bg-emerald-950',
       accentColor: 'text-emerald-400',
       btnColor: 'bg-emerald-500',
       stats: `${allChapters.physics.reduce((acc, c) => acc + c.sets.length, 0)} Units`,
-      score: `${userStats.subjectProgress.physics}%`,
-      status: userStats.subjectProgress.physics > 0 ? 'In Progress' : 'Initiate',
+      score: `${userStats.subjectProgress?.physics || 0}%`,
+      status: userStats.subjectProgress.physics > 80 ? 'Advanced' : userStats.subjectProgress.physics > 0 ? 'Active' : 'Initiate',
       span: 'md:col-span-12 lg:col-span-8',
-      height: 'h-[380px] lg:h-[460px]',
-      titleClass: 'text-5xl lg:text-7xl',
+      height: 'h-[320px] lg:h-[380px]',
+      titleClass: 'text-4xl lg:text-5xl',
       delay: 0.1
     },
     {
@@ -98,15 +101,15 @@ export default function Subjects() {
       desc: 'Understand atoms, molecules and complex reactions. Focus on Organic synthesis and Inorganic trends.',
       img: 'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?auto=format&fit=crop&q=80&w=800',
       icon: FlaskConical,
-      color: 'bg-orange-950',
-      accentColor: 'text-orange-400',
-      btnColor: 'bg-orange-500',
+      color: 'bg-[#1a0f0a]',
+      accentColor: 'text-amber-500',
+      btnColor: 'bg-amber-600',
       stats: `${allChapters.chemistry.reduce((acc, c) => acc + c.sets.length, 0)} Units`,
-      score: `${userStats.subjectProgress.chemistry}%`,
-      status: userStats.subjectProgress.chemistry > 0 ? 'Active' : 'Standby',
+      score: `${userStats.subjectProgress?.chemistry || 0}%`,
+      status: userStats.subjectProgress.chemistry > 80 ? 'Advanced' : userStats.subjectProgress.chemistry > 0 ? 'Active' : 'Standby',
       span: 'md:col-span-6 lg:col-span-4',
-      height: 'h-[350px] lg:h-[460px]',
-      titleClass: 'text-4xl sm:text-5xl',
+      height: 'h-[320px] lg:h-[380px]',
+      titleClass: 'text-4xl',
       delay: 0.2
     },
     {
@@ -121,7 +124,7 @@ export default function Subjects() {
       accentColor: 'text-red-400',
       btnColor: 'bg-red-500',
       stats: `${allChapters.maths.reduce((acc, c) => acc + c.sets.length, 0)} Units`,
-      score: `${userStats.subjectProgress.maths}%`,
+      score: `${userStats.subjectProgress?.maths || 0}%`,
       status: userStats.subjectProgress.maths > 80 ? 'Advanced' : userStats.subjectProgress.maths > 0 ? 'Active' : 'Baseline',
       span: 'md:col-span-6 lg:col-span-4',
       height: 'h-[320px] lg:h-[380px]',
@@ -139,8 +142,8 @@ export default function Subjects() {
       color: 'bg-blue-950',
       accentColor: 'text-blue-400',
       btnColor: 'bg-blue-600',
-      stats: `${allChapters.pyq.reduce((acc, c) => acc + c.sets.length, 0)} Exams`,
-      score: `${userStats.subjectProgress.pyq || 0}%`,
+      stats: `${allChapters.pyq?.reduce((acc, c) => acc + c.sets.length, 0)} Exams`,
+      score: `0%`,
       status: 'Historical',
       span: 'md:col-span-6 lg:col-span-4',
       height: 'h-[320px] lg:h-[380px]',
@@ -158,16 +161,15 @@ export default function Subjects() {
       color: 'bg-purple-950',
       accentColor: 'text-purple-400',
       btnColor: 'bg-purple-600',
-      stats: `${allChapters['mock-tests'].reduce((acc, c) => acc + c.sets.length, 0)} Tests`,
-      score: `${userStats.subjectProgress['mock-tests'] || 0}%`,
+      stats: `${allChapters['mock-tests']?.reduce((acc, c) => acc + c.sets.length, 0) || 0} Simulations`,
+      score: `0%`,
       status: 'Simulation',
-      span: 'md:col-span-6 lg:col-span-4',
+      span: 'md:col-span-12 lg:col-span-4',
       height: 'h-[320px] lg:h-[380px]',
       titleClass: 'text-4xl',
       delay: 0.5
     }
   ];
-
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
 
@@ -181,7 +183,7 @@ export default function Subjects() {
           type: 'subject',
           id: sub.id,
           title: sub.title,
-          subjectId: sub.id,
+          subjectId: sub.id as SubjectId,
           desc: sub.desc
         });
       }
@@ -244,14 +246,23 @@ export default function Subjects() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-4 items-end">
-          <Link 
-            to="/" 
-            className="group flex items-center gap-4 px-8 py-4 bg-emerald-950 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-full shadow-2xl hover:bg-emerald-900 transition-all active:scale-95"
-          >
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            Abort to Base
-          </Link>
+        <div className="flex flex-wrap gap-4 items-end justify-end">
+          <div className="flex gap-4 flex-wrap justify-end">
+            <Link 
+              to="/dpp-builder" 
+              className="group flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-full shadow-md hover:bg-emerald-500 transition-all active:scale-95"
+            >
+              <Target size={14} className="group-hover:scale-110 transition-transform" />
+              DPP Builder
+            </Link>
+            <Link 
+              to="/" 
+              className="group flex items-center justify-center gap-2 px-6 py-3 bg-emerald-950 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-full shadow-md hover:bg-emerald-900 transition-all active:scale-95"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+              Abort to Base
+            </Link>
+          </div>
         </div>
       </div>
 

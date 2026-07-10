@@ -349,6 +349,26 @@ export default function Study() {
             </div>
 
             <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-white shadow-xl shadow-black/10 relative overflow-hidden border border-white/5">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+                <div className="relative z-10 space-y-6">
+                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10">
+                        <Target size={24} className="text-emerald-400" />
+                    </div>
+                    <div className="space-y-2">
+                        <h4 className="text-xl font-black uppercase italic tracking-tight">DPP Generator</h4>
+                        <p className="text-xs font-medium text-gray-400 leading-relaxed">
+                            Create custom Daily Practice Problems tailored to your specific needs, difficulty level, and subject.
+                        </p>
+                    </div>
+                    <Link to="/dpp-builder" className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                        Generate DPP <ArrowRight size={14} />
+                    </Link>
+                </div>
+            </div>
+
+
+
+            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-white shadow-xl shadow-black/10 relative overflow-hidden border border-white/5">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
                 <div className="relative z-10 space-y-6">
                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10">
@@ -366,7 +386,29 @@ export default function Study() {
                 </div>
             </div>
          </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 mb-4">
+        <Link to="/formula-vault" className="flex items-center gap-4 p-6 bg-white border border-emerald-100 rounded-3xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
+          <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Book className="w-7 h-7 text-emerald-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-emerald-950 uppercase tracking-tight">Formula Vault</h3>
+            <p className="text-xs font-medium text-emerald-900/60 mt-1">Searchable database of JEE formulas</p>
+          </div>
+        </Link>
+        <Link to="/flashcards" className="flex items-center gap-4 p-6 bg-white border border-emerald-100 rounded-3xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
+          <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <RefreshCw className="w-7 h-7 text-indigo-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-emerald-950 uppercase tracking-tight">Active Flashcards</h3>
+            <p className="text-xs font-medium text-emerald-900/60 mt-1">Spaced repetition for quick memorization</p>
+          </div>
+        </Link>
       </div>
+
+</div>
     </div>
   );
 }

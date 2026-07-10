@@ -721,6 +721,8 @@ export default function DoubtSolver() {
           </form>
         </div>
       </div>
+      
+
     </div>
   );
 }

@@ -3,6 +3,9 @@ export type SubjectId = 'physics' | 'chemistry' | 'maths' | 'mock-tests' | 'pyq'
 export type Difficulty = 'easy' | 'medium' | 'hard' | 'pyq' | 'mock';
 
 export interface Question {
+  isCustom?: boolean;
+  subjectId?: string;
+  chapterId?: string;
   id: string;
   question: string;
   type?: 'mcq' | 'integer';

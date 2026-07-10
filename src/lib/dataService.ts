@@ -39,7 +39,8 @@ export async function loadQuizSet(subject: string, chapter: string, set: string)
         options: q.options || [],
         answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
         explanation: q.explanation || '',
-        type: q.type || 'mcq'
+        type: q.type || 'mcq',
+          isCustom: true
       }));
 
       const customQuizSet: QuizSet = {
@@ -57,6 +58,18 @@ export async function loadQuizSet(subject: string, chapter: string, set: string)
     }
   } catch (e) {
     console.error("Failed to check overridden set in Firestore", e);
+  }
+
+  // Check if it's a generated DPP from localStorage
+  if (chapter === 'dpp' && set.startsWith('dpp-')) {
+    try {
+      const dppData = localStorage.getItem(`quiz_dpp_dpp_${set}`);
+      if (dppData) {
+        return JSON.parse(dppData);
+      }
+    } catch (e) {
+      console.error("Failed to parse DPP from localStorage", e);
+    }
   }
 
   // 2. If it starts with custom_, it's definitely from Firebase
@@ -80,7 +93,8 @@ export async function loadQuizSet(subject: string, chapter: string, set: string)
           options: q.options || [],
           answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
           explanation: q.explanation || '',
-          type: q.type || 'mcq'
+          type: q.type || 'mcq',
+          isCustom: true
         }));
 
         const customQuizSet: QuizSet = {
@@ -213,7 +227,8 @@ export async function getAllData() {
         options: q.options || [],
         answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
         explanation: q.explanation || '',
-        type: q.type || 'mcq'
+        type: q.type || 'mcq',
+          isCustom: true
       }));
 
       const customQuizSet: QuizSet = {
@@ -248,4 +263,26 @@ export async function getAllData() {
   }
 
   return subjects;
+}
+
+
+export async function getQuestions() {
+  const data = await getAllData();
+  let questions = [];
+  for (const subjectId of Object.keys(data)) {
+    const chapters = data[subjectId];
+    for (const chapter of chapters) {
+      for (const set of chapter.sets) {
+        const quizSet = await loadQuizSet(subjectId, chapter.id, set.id);
+        if (quizSet && quizSet.questions) {
+          questions = questions.concat(quizSet.questions.map(q => ({
+            ...q,
+            subjectId,
+            chapterId: chapter.id
+          })));
+        }
+      }
+    }
+  }
+  return questions;
 }

@@ -11,6 +11,7 @@ export async function checkAILimit(userId: string | undefined): Promise<{ allowe
   try {
     const userRef = doc(db, 'ai_usage', userId);
     const userSnap = await getDoc(userRef);
+
     if (userSnap.exists()) {
       const data = userSnap.data();
       if (data.date === today && data.count >= 10) {
@@ -43,6 +44,7 @@ export async function incrementAIUsage(userId: string | undefined) {
   try {
     const userRef = doc(db, 'ai_usage', userId);
     const userSnap = await getDoc(userRef);
+
     if (userSnap.exists() && userSnap.data().date === today) {
        await setDoc(userRef, { count: increment(1) }, { merge: true });
     } else {

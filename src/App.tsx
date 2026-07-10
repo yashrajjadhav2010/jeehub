@@ -22,6 +22,7 @@ import {
   ExternalLink,
   Library,
   Bot,
+  Target,
   Sparkles,
   Loader2,
 } from "lucide-react";
@@ -49,6 +50,9 @@ const PeriodicTable = lazy(() => import("./pages/PeriodicTable"));
 const QuestionPage = lazy(() => import("./pages/QuestionPage"));
 const BrowseQuestions = lazy(() => import("./pages/BrowseQuestions"));
 const Admin = lazy(() => import("./pages/Admin"));
+const Flashcards = lazy(() => import("./pages/Flashcards"));
+const FormulaVault = lazy(() => import("./pages/FormulaVault"));
+const DPPBuilder = lazy(() => import("./pages/DPPBuilder"));
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -462,12 +466,7 @@ function Layout({ children }: { children: React.ReactNode }) {
               </div>
 
               <div className="flex justify-center items-center gap-x-6 gap-y-4 text-center flex-wrap">
-                <Link
-                  to="/browse"
-                  className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors"
-                >
-                  Question Bank
-                </Link>
+
                 <Link
                   to="/documentation"
                   className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors"
@@ -660,6 +659,9 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/flashcards" element={<Flashcards />} />
+            <Route path="/formula-vault" element={<FormulaVault />} />
+            <Route path="/dpp-builder" element={<DPPBuilder />} />
           </Routes>
         </Suspense>
       </Layout>
