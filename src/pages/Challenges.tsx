@@ -99,15 +99,14 @@ function ReferralWidget() {
             <span>{copied ? 'Copied!' : 'Copy'}</span>
           </button>
           
-          {navigator.share && (
-            <button
+                      <button
               onClick={handleShare}
               className="flex-1 sm:flex-none h-12 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-sm flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
             >
               <Share2 size={16} />
               <span>Share</span>
             </button>
-          )}
+
         </div>
       </div>
     </div>
