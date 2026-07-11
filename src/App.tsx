@@ -486,7 +486,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           "relative z-10 flex-1",
           !isCleanLayout
             ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 pb-32 sm:pb-10 w-full"
-            : "",
+            : "w-full flex flex-col"
         )}
       >
         <AnimatePresence mode="wait">

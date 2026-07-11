@@ -3,7 +3,7 @@ import { useUser, RedirectToSignIn } from '@clerk/clerk-react';
 import { 
   Shield, Users, Activity, Settings, Database, Plus, Save, Trash2, Image, 
   AlertTriangle, ExternalLink, FileText, BookOpen, Clock, RefreshCw, 
-  PenSquare, Eye, CheckCircle2, ChevronDown, Book, Sparkles, MessageSquare
+  PenSquare, Eye, CheckCircle2, ChevronDown, Book, Sparkles, MessageSquare, ArrowLeft
 } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
@@ -65,6 +65,7 @@ export default function Admin() {
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<'dashboard' | 'manage_sets' | 'create_set' | 'manage_notes' | 'users' | 'reports' | 'surveys'>('dashboard');
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
   const fetchStats = async () => {
     try {
@@ -84,24 +85,30 @@ export default function Admin() {
         let userScore = 0;
         let userXp = 0;
         let totalSolved = 0;
+        let correctAnswers = 0;
         let streak = 0;
+        let errorBookData = [];
 
         if (data?.data?.errorBook) {
           try {
-            const eb = data.data.errorBook;
+            const eb = typeof data.data.errorBook === 'string' ? JSON.parse(data.data.errorBook) : data.data.errorBook;
             userErrors = Object.keys(eb).length;
             totalErrors += userErrors;
+            errorBookData = Array.isArray(eb) ? eb : Object.values(eb);
           } catch (e) {
             // ignore
           }
         }
 
-        if (data?.data?.stats) {
+        const statsObj = data?.data?.userStats || data?.data?.stats;
+        if (statsObj) {
           try {
-            userScore = data.data.stats.totalScore || 0;
-            userXp = data.data.stats.xp || 0;
-            totalSolved = data.data.stats.totalSolved || 0;
-            streak = data.data.stats.streak || 0;
+            const parsedStats = typeof statsObj === 'string' ? JSON.parse(statsObj) : statsObj;
+            userScore = parsedStats.totalScore || 0;
+            userXp = parsedStats.xp || 0;
+            totalSolved = parsedStats.totalSolved || 0;
+            streak = parsedStats.streak || 0;
+            correctAnswers = parsedStats.correctAnswers || 0;
           } catch (e) {}
         }
 
@@ -110,9 +117,11 @@ export default function Admin() {
           email: data.email || 'Unknown Email',
           name: data.name || 'Unknown User',
           errors: userErrors,
+          errorBookData,
           score: userScore,
           xp: userXp,
           totalSolved: totalSolved,
+          correctAnswers: correctAnswers,
           streak: streak,
           lastActive: data.updated_at ? new Date(data.updated_at.seconds * 1000).toLocaleString() : 'Unknown'
         });
@@ -1184,47 +1193,112 @@ export default function Admin() {
         {/* Tab 5: Users list */}
         {activeTab === 'users' && (
           <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-emerald-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-6 flex items-center gap-3">
-              <Users className="text-primary" size={24} /> 
-              User Profiles
-            </h2>
-            
-            {/* Desktop Table */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b-2 border-emerald-100">
-                    <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">User Profile</th>
-                    <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">User ID</th>
-                    <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">XP Score</th>
-                    <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Errors Logged</th>
-                    <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Last Active</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersList.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="py-8 text-center text-emerald-900/40 font-medium">No users found or still loading...</td>
-                    </tr>
-                  ) : (
-                    usersList.map((u, i) => (
-                      <tr key={i} className="border-b border-emerald-50 hover:bg-emerald-50/30 transition-colors">
-                        <td className="py-4 px-4">
-                          <div className="font-bold text-emerald-950">{u.name}</div>
-                          <div className="text-xs text-emerald-900/60">{u.email}</div>
-                        </td>
-                        <td className="py-4 px-4 font-mono text-sm text-emerald-950">{u.id}</td>
-                        <td className="py-4 px-4 font-bold text-primary">{u.score}</td>
-                        <td className="py-4 px-4 font-bold text-amber-500">{u.xp}</td>
-                        <td className="py-4 px-4 font-bold text-indigo-500">{u.totalSolved}</td>
-                        <td className="py-4 px-4 font-bold text-red-500">{u.errors}</td>
-                        <td className="py-4 px-4 text-sm text-emerald-900/60">{u.lastActive}</td>
+            {selectedUser ? (
+              <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                <button 
+                  onClick={() => setSelectedUser(null)}
+                  className="mb-6 flex items-center text-sm font-bold text-emerald-600 hover:text-emerald-800 transition-colors"
+                >
+                  <ArrowLeft className="mr-2" size={16} /> Back to Users List
+                </button>
+                
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 text-2xl font-black">
+                    {selectedUser.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-emerald-950">{selectedUser.name}</h2>
+                    <p className="text-emerald-900/60 font-medium">{selectedUser.email} • ID: <span className="font-mono text-xs">{selectedUser.id}</span></p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-1">Score</div>
+                    <div className="text-xl font-black text-primary">{selectedUser.score}</div>
+                  </div>
+                  <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-1">XP</div>
+                    <div className="text-xl font-black text-amber-500">{selectedUser.xp}</div>
+                  </div>
+                  <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-1">Total Attempted</div>
+                    <div className="text-xl font-black text-indigo-500">{selectedUser.totalSolved}</div>
+                  </div>
+                  <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-1">Correct Answers</div>
+                    <div className="text-xl font-black text-emerald-600">{selectedUser.correctAnswers}</div>
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-black text-emerald-950 uppercase tracking-tight mb-4">Error Breakdown (Topics with most mistakes)</h3>
+                
+                {(!selectedUser.errorBookData || selectedUser.errorBookData.length === 0) ? (
+                  <div className="p-8 text-center text-emerald-900/40 font-medium bg-emerald-50/30 rounded-2xl border border-emerald-100/50">
+                    No errors logged for this user yet.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {Object.entries(
+                      selectedUser.errorBookData.reduce((acc: any, curr: any) => {
+                        const key = curr.chapterId || curr.subjectId || 'Unknown Topic';
+                        acc[key] = (acc[key] || 0) + 1;
+                        return acc;
+                      }, {})
+                    ).sort((a: any, b: any) => b[1] - a[1]).map(([topic, count]: any, idx) => (
+                      <div key={idx} className="flex justify-between items-center p-4 bg-red-50/30 rounded-2xl border border-red-100/50">
+                        <div className="font-bold text-emerald-950 capitalize">{topic.replace(/-/g, ' ')}</div>
+                        <div className="font-black text-red-500 bg-red-100 px-3 py-1 rounded-full text-sm">{count} mistakes</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <h2 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-6 flex items-center gap-3">
+                  <Users className="text-primary" size={24} /> 
+                  User Profiles
+                </h2>
+                
+                {/* Desktop Table */}
+                <div className="hidden sm:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b-2 border-emerald-100">
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">User Profile</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">User ID</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Score</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Attempted</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Correct</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Errors</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Last Active</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody>
+                      {usersList.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="py-8 text-center text-emerald-900/40 font-medium">No users found or still loading...</td>
+                        </tr>
+                      ) : (
+                        usersList.map((u, i) => (
+                          <tr key={i} onClick={() => setSelectedUser(u)} className="border-b border-emerald-50 hover:bg-emerald-50 cursor-pointer transition-colors">
+                            <td className="py-4 px-4">
+                              <div className="font-bold text-emerald-950">{u.name}</div>
+                              <div className="text-xs text-emerald-900/60">{u.email}</div>
+                            </td>
+                            <td className="py-4 px-4 font-mono text-sm text-emerald-950">{u.id}</td>
+                            <td className="py-4 px-4 font-bold text-primary">{u.score}</td>
+                            <td className="py-4 px-4 font-bold text-indigo-500">{u.totalSolved}</td>
+                            <td className="py-4 px-4 font-bold text-emerald-600">{u.correctAnswers}</td>
+                            <td className="py-4 px-4 font-bold text-red-500">{u.errors}</td>
+                            <td className="py-4 px-4 text-sm text-emerald-900/60">{u.lastActive}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
 
             {/* Mobile Cards for comfortable user experience */}
             <div className="sm:hidden space-y-4">
@@ -1232,7 +1306,7 @@ export default function Admin() {
                 <div className="text-center text-emerald-900/40 py-8">No users found or still loading...</div>
               ) : (
                 usersList.map((u, i) => (
-                  <div key={i} className="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100/50 space-y-2">
+                  <div key={i} onClick={() => setSelectedUser(u)} className="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100/50 space-y-2 cursor-pointer hover:bg-emerald-50">
                     <div className="flex justify-between items-start">
                       <div>
                         <h4 className="font-bold text-emerald-950 leading-tight">{u.name}</h4>
@@ -1241,8 +1315,8 @@ export default function Admin() {
                       <div className="text-right shrink-0">
                         <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40">Score</span>
                         <p className="font-black text-primary text-md leading-none mt-0.5">{u.score}</p>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mt-1 block">XP</span>
-                        <p className="font-black text-amber-500 text-md leading-none mt-0.5">{u.xp}</p>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-emerald-900/40 mt-1 block">Attempted</span>
+                        <p className="font-black text-indigo-500 text-md leading-none mt-0.5">{u.totalSolved}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 pt-2 border-t border-emerald-100/40 text-[11px]">
@@ -1251,17 +1325,20 @@ export default function Admin() {
                         <span className="font-mono text-emerald-950">{u.id.substring(0, 8)}...</span>
                       </div>
                       <div>
-                        <span className="text-emerald-900/40 font-bold uppercase tracking-wider block">Errors</span>
-                        <span className="font-bold text-red-500">{u.errors}</span>
+                        <span className="text-emerald-900/40 font-bold uppercase tracking-wider block">Correct</span>
+                        <span className="font-bold text-emerald-600">{u.correctAnswers}</span>
                       </div>
                     </div>
-                    <div className="text-[10px] text-emerald-900/40 pt-1 text-right border-t border-emerald-50/50">
-                      Active: {u.lastActive}
+                    <div className="text-[10px] text-emerald-900/40 pt-1 text-right border-t border-emerald-50/50 flex justify-between">
+                       <span><span className="text-emerald-900/40 font-bold uppercase tracking-wider">Errors:</span> <span className="font-bold text-red-500">{u.errors}</span></span>
+                       <span>Active: {u.lastActive}</span>
                     </div>
                   </div>
                 ))
               )}
             </div>
+          </>
+          )}
           </div>
         )}
 

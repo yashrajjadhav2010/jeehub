@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 
 export default function Login() {
   return (
-    <div className="min-h-[100dvh] w-full bg-[#f8fafc] flex flex-col items-center justify-start sm:justify-center relative p-0 sm:p-6 md:p-8 overflow-hidden select-none">
+    <div className="flex-1 w-full bg-[#f8fafc] flex flex-col items-center justify-center relative p-4 sm:p-6 md:p-8 overflow-x-hidden select-none">
       
       {/* Inject custom CSS for Clerk inputs */}
       <style>{`
@@ -40,11 +40,8 @@ export default function Login() {
       `}</style>
 
       {/* Main Card Container */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full h-full sm:h-auto sm:max-w-[420px] sm:rounded-[40px] bg-white sm:shadow-2xl sm:shadow-blue-900/10 overflow-hidden flex flex-col relative z-10 border-0 sm:border border-slate-100/50"
+      <div 
+        className="w-full max-w-[420px] mx-auto my-auto min-h-[680px] rounded-[40px] bg-white shadow-2xl shadow-blue-900/10 overflow-hidden flex flex-col relative z-10 border border-slate-100/50"
       >
         
         {/* Curvy Blue Header */}
@@ -114,7 +111,7 @@ export default function Login() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex-1 bg-white px-8 pt-[120px] pb-8 flex flex-col z-20 custom-scrollbar overflow-y-auto"
+          className="flex-1 bg-white px-8 pt-[120px] pb-8 flex flex-col z-20"
         >
           <SignIn 
             routing="path" 
@@ -152,7 +149,7 @@ export default function Login() {
             }}
           />
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 }

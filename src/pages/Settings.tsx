@@ -29,6 +29,7 @@ export default function Settings() {
     soundEffects: false,
     autoFullscreen: true,
     darkMode: false,
+    pushNotifications: false,
   });
   const [streak, setStreak] = useState(0);
 
@@ -41,6 +42,11 @@ export default function Settings() {
     setProfilePic(savedPfp);
     setStreak(stats.streak || 0);
     const mergedPrefs = { ...prefs, ...savedPrefs };
+    
+    if (mergedPrefs.pushNotifications && Notification.permission !== 'granted') {
+      mergedPrefs.pushNotifications = false;
+    }
+    
     setPrefs(mergedPrefs);
     if (mergedPrefs.darkMode) {
       document.documentElement.classList.add("dark-mode");
@@ -72,7 +78,29 @@ export default function Settings() {
     }
   };
 
-  const togglePref = (key: keyof typeof prefs) => {
+  const togglePref = async (key: keyof typeof prefs) => {
+    if (key === "pushNotifications" && !prefs[key]) {
+      // User is turning ON push notifications
+      try {
+        const { requestNotificationPermission } = await import("../lib/firebase");
+        const token = await requestNotificationPermission();
+        if (!token) {
+          alert("Push notification permission denied or failed to get token. Ensure you have allowed notifications in browser settings.");
+          return; // Don't enable it if we couldn't get a token
+        }
+        
+        // Save token to Firebase User doc so admin can send notifications
+        const { auth, db } = await import("../lib/firebase");
+        const { doc, setDoc } = await import("firebase/firestore");
+        if (auth.currentUser) {
+           await setDoc(doc(db, "user_data", auth.currentUser.uid), { fcmToken: token }, { merge: true });
+        }
+      } catch (err) {
+        console.error("Error setting up push notifications", err);
+        return;
+      }
+    }
+
     const newPrefs = { ...prefs, [key]: !prefs[key] };
     setPrefs(newPrefs);
     localStorage.setItem("systemPrefs", JSON.stringify(newPrefs));
@@ -440,6 +468,7 @@ export default function Settings() {
 
             <div className="space-y-3">
               {[
+                { id: "pushNotifications", label: "Push Notifications (Updates/Alerts)" },
                 { id: "darkMode", label: "Dark Mode (Experimental)" },
                 { id: "timeWarnings", label: "Time-limit Warnings" },
                 { id: "soundEffects", label: "Sound Effects (Beta)" },
