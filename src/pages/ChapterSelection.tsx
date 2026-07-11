@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowLeft, ChevronRight, Layers, Layout, Play, Clock, BarChart, Binary, FolderOpen, ArrowRight,
   Activity, Target, Box, Compass, FunctionSquare, Infinity, Triangle, Circle, Zap, RefreshCw,
-  Magnet, Atom, Hexagon, Waves, Beaker, Calculator, Pi
+  Magnet, Atom, Hexagon, Waves, Beaker, Calculator, Pi, Lock
 } from 'lucide-react';
 import { SubjectId, Chapter } from '../types';
 import { getAllData } from '../lib/dataService';
@@ -39,6 +40,8 @@ const getChapterDesign = (chapterId: string, subjectId: string) => {
 
 export default function ChapterSelection() {
   const { subjectId } = useParams<{ subjectId: SubjectId }>();
+  const { isSignedIn } = useUser();
+  const navigate = useNavigate();
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
@@ -121,31 +124,51 @@ export default function ChapterSelection() {
         {/* Papers / Sets List */}
         <div className="max-w-4xl mx-auto space-y-4">
           <AnimatePresence>
-            {selectedChapter.sets.map((set, idx) => (
+            {selectedChapter.sets.map((set, idx) => {
+              const isLocked = idx > 0 && !isSignedIn;
+              return (
               <motion.div
                 key={set.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
               >
-                <Link 
-                  to={`/quiz/${subjectId}/${selectedChapter.id}/${set.id}`}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white rounded-[2rem] border border-emerald-100/50 hover:bg-emerald-50 hover:border-emerald-500/30 shadow-sm hover:shadow-xl transition-all duration-300 relative group/set gap-4"
+                <div 
+                  onClick={() => {
+                    if (isLocked) {
+                      navigate('/sign-in');
+                    } else {
+                      navigate(`/quiz/${subjectId}/${selectedChapter.id}/${set.id}`);
+                    }
+                  }}
+                  className={cn(
+                    "flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white rounded-[2rem] border shadow-sm transition-all duration-300 relative group/set gap-4 cursor-pointer",
+                    isLocked 
+                      ? "border-slate-200 hover:bg-slate-50 opacity-80" 
+                      : "border-emerald-100/50 hover:bg-emerald-50 hover:border-emerald-500/30 hover:shadow-xl"
+                  )}
                 >
                   <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500 shadow-inner group-hover/set:scale-110 group-hover/set:bg-white group-hover/set:text-emerald-600 transition-all">
-                       <Play size={24} className="fill-current" />
+                    <div className={cn(
+                      "w-16 h-16 rounded-2xl border flex items-center justify-center shadow-inner transition-all",
+                      isLocked 
+                        ? "bg-slate-50 border-slate-200 text-slate-400" 
+                        : "bg-emerald-50 border-emerald-100 text-emerald-500 group-hover/set:scale-110 group-hover/set:bg-white group-hover/set:text-emerald-600"
+                    )}>
+                       {isLocked ? <Lock size={24} /> : <Play size={24} className="fill-current" />}
                     </div>
                     <div>
-                      <h4 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-2">{set.title}</h4>
+                      <h4 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-2">
+                        {set.title} {isLocked && <span className="ml-2 text-xs font-bold text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded-lg">Login Req</span>}
+                      </h4>
                       <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                          <div className="flex items-center gap-2">
-                            <Binary size={14} className="text-emerald-500/50" />
-                            <span className="font-mono text-[10px] font-bold text-emerald-900/60 uppercase tracking-widest">{set.itemCount} Questions</span>
+                            <Binary size={14} className={isLocked ? "text-slate-400" : "text-emerald-500/50"} />
+                            <span className={cn("font-mono text-[10px] font-bold uppercase tracking-widest", isLocked ? "text-slate-500" : "text-emerald-900/60")}>{set.itemCount} Questions</span>
                          </div>
                          <div className="flex items-center gap-2">
-                            <Clock size={14} className="text-emerald-500/50" />
-                            <span className="font-mono text-[10px] font-bold text-emerald-900/60 uppercase tracking-widest">{subjectId === 'pyq' ? '180m' : `${set.itemCount * 1.5}m`} Est.</span>
+                            <Clock size={14} className={isLocked ? "text-slate-400" : "text-emerald-500/50"} />
+                            <span className={cn("font-mono text-[10px] font-bold uppercase tracking-widest", isLocked ? "text-slate-500" : "text-emerald-900/60")}>{subjectId === 'pyq' ? '180m' : `${set.itemCount * 1.5}m`} Est.</span>
                          </div>
                       </div>
                     </div>
@@ -154,6 +177,7 @@ export default function ChapterSelection() {
                     {set.difficulty && (
                       <div className={cn(
                         "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border",
+                        isLocked ? "bg-slate-50 text-slate-500 border-slate-200" :
                         set.difficulty === 'pyq' ? "bg-purple-50 text-purple-700 border-purple-200" :
                         set.difficulty === 'hard' ? "bg-red-50 text-red-700 border-red-200" :
                         set.difficulty === 'medium' ? "bg-amber-50 text-amber-700 border-amber-200" :
@@ -162,13 +186,16 @@ export default function ChapterSelection() {
                         {set.difficulty === 'pyq' ? 'PYQ' : set.difficulty === 'hard' ? 'Advanced' : set.difficulty === 'medium' ? 'Active' : 'Standard'}
                       </div>
                     )}
-                    <div className="w-12 h-12 rounded-full bg-emerald-950 text-white flex items-center justify-center group-hover/set:-rotate-45 sm:scale-0 group-hover/set:scale-100 transition-all duration-300">
-                       <ArrowRight size={20} className="group-hover/set:rotate-45 transition-transform" />
+                    <div className={cn(
+                      "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300",
+                      isLocked ? "bg-slate-100 text-slate-400" : "bg-emerald-950 text-white group-hover/set:-rotate-45 sm:scale-0 group-hover/set:scale-100"
+                    )}>
+                       {isLocked ? <Lock size={20} /> : <ArrowRight size={20} className="group-hover/set:rotate-45 transition-transform" />}
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
-            ))}
+            )})}
           </AnimatePresence>
         </div>
       </div>

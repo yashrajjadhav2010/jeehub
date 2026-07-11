@@ -496,7 +496,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className={cn(isCleanLayout ? "h-screen" : "")}
+            className="w-full flex-1 flex flex-col"
           >
             {children}
           </motion.div>
