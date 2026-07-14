@@ -1,194 +1,161 @@
-import os
+import json
 
-file_path = 'src/questions/physics/kinematics/pyq.ts'
+with open("src/questions/physics/newtons-laws-of-motion/pyq.ts", "r") as f:
+    pyq = f.read()
 
-with open(file_path, 'r', encoding='utf-8') as f:
-    content = f.read()
-
-new_questions = r"""    },
-    {
-      id: "kinematics-pyq-q91",
-      type: "integer",
-      question: "A ball of mass 0.5 kg is dropped from the height of 10m. The height, at which the magnitude of velocity becomes equal to the magnitude of acceleration due to gravity, is ............. m. (Use g = 10 m/s²). [NCERT : P L-18, 19 | June 26, 2022 (I)]",
-      answer: 5,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Identify the condition required: Magnitude of velocity ($v$) equals the magnitude of acceleration due to gravity ($g = 10\\text{ m/s}^2$).\nTherefore, required velocity $v = 10\\text{ m/s}$.\n**Step 2:** Let the distance fallen from the top to reach this velocity be $y$. The ball is dropped from rest, so initial velocity $u = 0$.\nUsing the third equation of motion: $v^2 = u^2 + 2gy \\implies (10)^2 = 0 + 2(10)y \\implies 100 = 20y \\implies y = 5\\text{ m}$.\n**Step 3:** The ball has fallen 5 m from a total initial height of 10 m. Calculate the current height from the ground: Height = $10\\text{ m} - 5\\text{ m} = 5\\text{ m}$.\n\n*(Asked in JEE Main 2022, June 26, Shift 1)*"
-    },
-    {
-      id: "kinematics-pyq-q92",
-      type: "integer",
-      question: "A ball is projected vertically upward with an initial velocity of $50\\text{ ms}^{-1}$ at $t = 0\\text{s}$. At $t = 2\\text{s}$, another ball is projected vertically upward with same velocity. At t = ________ s, second ball will meet the first ball (g = $10\\text{ ms}^{-2}$). [NCERT : P L-18, 19 | June 26, 2022 (II)]",
-      answer: 6,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Let the time when they meet be $t$ (measured from $t = 0$, the launch of the first ball).\n**Step 2:** Write the position equation for the first ball at time $t$: $y_1 = ut - \\frac{1}{2}gt^2 = 50t - 5t^2$.\n**Step 3:** The second ball is launched at $t = 2\\text{s}$, so its total travel time at time $t$ is $(t - 2)$. Write its position equation: $y_2 = 50(t - 2) - 5(t - 2)^2 = 50t - 100 - 5(t^2 - 4t + 4) = 50t - 100 - 5t^2 + 20t - 20 = 70t - 5t^2 - 120$.\n**Step 4:** Set the positions equal to find the meeting time ($y_1 = y_2$): $50t - 5t^2 = 70t - 5t^2 - 120 \\implies 50t = 70t - 120 \\implies 20t = 120 \\implies t = 6\\text{ s}$.\n\n*(Asked in JEE Main 2022, June 26, Shift 2)*"
-    },
-    {
-      id: "kinematics-pyq-q93",
-      question: "Water droplets are coming from an open tap at a particular rate. The spacing between a droplet observed at 4th second after its fall to the next droplet is 34.3 m. At what rate the droplets are coming from the tap? (Take g = 9.8 m/s²) [NCERT : P L-18, 19 | June 25, 2022 (I)]",
+new_qs = r"""    {
+      id: "nlm-pyq-q26",
+      question: "A man of $60\text{ kg}$ is running on the road and suddenly jumps into a stationary trolly car of mass $120\text{ kg}$. Then the trolly car starts moving with velocity $2\text{ ms}^{-1}$. The velocity of the running man was ____________ $\text{ms}^{-1}$. When he jumps into the car. (JEE Main June 28, 2022 (I))",
       options: [
-        "3 drops / 2 seconds",
-        "2 drops / second",
-        "1 drop / second",
-        "1 drop / 7 seconds"
+        "2",
+        "4",
+        "6",
+        "8"
       ],
       answer: 2,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Let the time interval between consecutive drops be $\\Delta t$.\n**Step 2:** The leading drop has been falling for $t_1 = 4\\text{ seconds}$. Its position from the tap is: $y_1 = \\frac{1}{2}gt_1^2 = \\frac{1}{2}(9.8)(4)^2 = 4.9 \\times 16 = 78.4\\text{ m}$.\n**Step 3:** The next drop has been falling for $t_2 = (4 - \\Delta t)\\text{ seconds}$. Its position from the tap is: $y_2 = \\frac{1}{2}g(4 - \\Delta t)^2 = 4.9(4 - \\Delta t)^2$.\n**Step 4:** The given spacing between them is 34.3 m: $y_1 - y_2 = 34.3 \\implies 78.4 - 4.9(4 - \\Delta t)^2 = 34.3 \\implies 4.9(4 - \\Delta t)^2 = 78.4 - 34.3 = 44.1$.\n**Step 5:** Solve for $\\Delta t$: $(4 - \\Delta t)^2 = 44.1 / 4.9 = 9 \\implies 4 - \\Delta t = 3 \\implies \\Delta t = 1\\text{ second}$.\n**Step 6:** Since the interval between consecutive drops is 1 second, the rate is 1 drop per second.\n\n*(Asked in JEE Main 2022, June 25, Shift 1)*"
+      explanation: "**Detailed Solution:**\n\n**1. Apply the law of conservation of linear momentum in the horizontal direction:**\nInitial Momentum = Final Momentum\n$(m_{\text{man}} \times u_{\text{man}}) + (m_{\text{trolley}} \times u_{\text{trolley}}) = (m_{\text{man}} + m_{\text{trolley}}) \times v_{\text{final}}$\n\n**2. Substitute the given parameters:**\n$m_{\text{man}} = 60\text{ kg}$, $m_{\text{trolley}} = 120\text{ kg}$, $u_{\text{trolley}} = 0$, $v_{\text{final}} = 2\text{ ms}^{-1}$\n$(60 \times u_{\text{man}}) + 0 = (60 + 120) \times 2$\n$60 u_{\text{man}} = 180 \times 2 = 360$\n\n**3. Solve for initial velocity:**\n$u_{\text{man}} = 360 / 60 = 6\text{ ms}^{-1}$"
     },
     {
-      id: "kinematics-pyq-q94",
-      type: "integer",
-      question: "From the top of a tower, a ball is thrown vertically upward which reaches the ground in 6s. A second ball thrown vertically downward from the same position with the same speed reaches the ground in 1.5 s. A third ball released from the rest from the same location, will reach the ground in _______ s. [NCERT : P L-18, 19 | June 24, 2022 (I)]",
-      answer: 3,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Let the height of the tower be $h$, the projection speed be $u$, and the time for a freely dropped ball to reach the ground be $t$.\n**Step 2:** A standard kinematic result relates the time of upward projection ($t_1$), downward projection ($t_2$), and a free drop ($t$) from the same height with identical speeds: $t = \\sqrt{t_1 t_2}$.\n**Step 3:** Substitute the given values ($t_1 = 6\\text{ s}$, $t_2 = 1.5\\text{ s}$): $t = \\sqrt{6 \\times 1.5} = \\sqrt{9} = 3\\text{ s}$.\n\n*(Asked in JEE Main 2022, June 24, Shift 1)*"
-    },
-    {
-      id: "kinematics-pyq-q95",
-      question: "Water drops are falling from a nozzle of a shower onto the floor, from a height of 9.8 m. The drops fall at a regular interval of time. When the first drop strikes the floor, at that instant, the third drop begins to fall. Locate the position of second drop from the floor when the first drop strikes the floor. [NCERT : P L-18, 19 | Aug. 27, 2021 (II)]",
+      id: "nlm-pyq-q27",
+      question: "A block of mass $2\text{ kg}$ moving on a horizontal surface with speed of $4\text{ ms}^{-1}$ enters a rough surface ranging from $x = 0.5\text{ m}$ to $x = 1.5\text{ m}$. The retarding force in this range of rough surface is related to distance by $F = -kx$ where $k = 12\text{ Nm}^{-1}$. The speed of the block as it just crosses the rough surface will be: (JEE Main June 28, 2022 (II))",
       options: [
-        "4.18m",
-        "2.94m",
-        "2.45m",
-        "7.35m"
-      ],
-      answer: 3,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Let the regular time interval between consecutive drops be $\\Delta t$.\n**Step 2:** When the 1st drop strikes the floor, it has been falling for a total time of $2\\Delta t$. The 3rd drop is just leaving the nozzle (time = 0), and the 2nd drop has been falling for a time of $1\\Delta t$.\n**Step 3:** Find the total time taken by the 1st drop to hit the ground (height $H = 9.8\\text{ m}$, $g = 9.8\\text{ m/s}^2$): $H = \\frac{1}{2}gT^2 \\implies 9.8 = \\frac{1}{2}(9.8)T^2 \\implies T^2 = 2 \\implies T = \\sqrt{2}\\text{ s}$.\n**Step 4:** Since $T = 2\\Delta t$, we find the interval $\\Delta t$: $2\\Delta t = \\sqrt{2} \\implies \\Delta t = \\frac{\\sqrt{2}}{2} = \\frac{1}{\\sqrt{2}}\\text{ s}$.\n**Step 5:** Calculate the distance fallen by the 2nd drop from the nozzle in time $\\Delta t$: $y_2 = \\frac{1}{2}g(\\Delta t)^2 = \\frac{1}{2}(9.8)(\\frac{1}{\\sqrt{2}})^2 = 4.9 \\times \\frac{1}{2} = 2.45\\text{ m}$.\n**Step 6:** Find the position of the 2nd drop measured upwards from the floor: Height from floor = Total height - Distance fallen = $9.8\\text{ m} - 2.45\\text{ m} = 7.35\\text{ m}$.\n\n*(Asked in JEE Main 2021, Aug 27, Shift 2)*"
-    },
-    {
-      id: "kinematics-pyq-q86",
-      question: "A juggler throws balls vertically upwards with same initial velocity in air. When the first ball reaches its highest position, he throws the next ball. Assuming the juggler throws n balls per second, the maximum height the balls can reach is [NCERT : P L-18, 19 | July 29, 2022 (II)]",
-      options: [
-        "$g/2n$",
-        "$g/n$",
-        "$2gn$",
-        "$g/2n^2$"
-      ],
-      answer: 3,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Identify the time interval between consecutive throws: Since the juggler throws $n$ balls per second, the time interval between two consecutive throws is $\\Delta t = 1/n$.\n**Step 2:** Relate the interval to the highest position: The problem states that when a ball reaches its maximum height, the next ball is thrown. The time taken to reach the maximum height is equal to the time of ascent ($t$). Therefore, $t = \\Delta t = 1/n$.\n**Step 3:** Express initial velocity ($u$) using the time of ascent ($v = 0$ at highest point): $v = u - gt \\implies 0 = u - g(1/n) \\implies u = g/n$.\n**Step 4:** Calculate the maximum height ($H$) reached by the balls: $H = \\frac{u^2}{2g} = \\frac{(g/n)^2}{2g} = \\frac{g^2}{2gn^2} = \\frac{g}{2n^2}$.\n\n*(Asked in JEE Main 2022, July 29, Shift 2)*"
-    },
-    {
-      id: "kinematics-pyq-q87",
-      question: "A NCC parade is going at a uniform speed of 9 km/h under a mango tree on which a monkey is sitting at a height of 19.6 m. At any particular instant, the monkey drops a mango. A cadet will receive the mango whose distance from the tree at time of drop is : (Given g = 9.8 m/s²) [NCERT : P L-18, 19 | July 28, 2022 (I)]",
-      options: [
-        "5m",
-        "10m",
-        "19.8m",
-        "24.5m"
-      ],
-      answer: 0,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Convert the uniform speed of the parade/cadet from km/h to m/s: Speed ($v$) = $9 \\times (5/18) = 2.5\\text{ m/s}$.\n**Step 2:** Calculate the time ($t$) taken for the dropped mango to fall freely to the ground from a height of $H = 19.6\\text{ m}$: $H = \\frac{1}{2}gt^2 \\implies 19.6 = \\frac{1}{2}(9.8)t^2 \\implies 19.6 = 4.9t^2 \\implies t^2 = 19.6 / 4.9 = 4 \\implies t = 2\\text{ s}$.\n**Step 3:** Calculate the horizontal distance covered by the cadet in these 2 seconds so that they arrive exactly under the tree to receive it: Distance = Speed $\\times$ Time = $2.5\\text{ m/s} \\times 2\\text{ s} = 5\\text{ m}$.\n\n*(Asked in JEE Main 2022, July 28, Shift 1)*"
-    },
-    {
-      id: "kinematics-pyq-q88",
-      type: "integer",
-      question: "A ball is thrown vertically upwards with a velocity of 19.6 ms⁻¹ from the top of a tower. The ball strikes the ground after 6s. The height from the ground up to which the ball can rise will be (k/5) m. The value of k is _______. (use g = 9.8 m/s²) [NCERT : PL-18, 19 | July 28, 2022 (II)]",
-      answer: 392,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Set up the displacement equation from the top of the tower to find the height of the tower ($h$). Let the upward direction be positive: Initial velocity ($u$) = $+19.6\\text{ ms}^{-1}$, Time of travel ($t$) = 6 s, Acceleration ($a$) = $-g = -9.8\\text{ ms}^{-2}$.\n**Step 2:** Find displacement ($s$), which will be equal to $-h$ (downward from the launch point): $s = ut + \\frac{1}{2}at^2 \\implies -h = (19.6)(6) + \\frac{1}{2}(-9.8)(6)^2 \\implies -h = 117.6 - 4.9(36) = 117.6 - 176.4 = -58.8\\text{ m} \\implies h = 58.8\\text{ m}$ (Height of the tower).\n**Step 3:** Calculate the extra maximum height ($H_{\\text{max}}$) the ball rises above the top of the tower: $H_{\\text{max}} = \\frac{u^2}{2g} = \\frac{(19.6)^2}{2(9.8)} = \\frac{19.6 \\times 19.6}{19.6} = 19.6\\text{ m}$.\n**Step 4:** Find the total maximum height from the ground up to which the ball can rise ($H_{\\text{total}}$): $H_{\\text{total}}$ = Height of tower + $H_{\\text{max}} = 58.8 + 19.6 = 78.4\\text{ m}$.\n**Step 5:** Compare this value with the given expression ($k/5$) to solve for $k$: $k/5 = 78.4 \\implies k = 78.4 \\times 5 = 392$.\n\n*(Asked in JEE Main 2022, July 28, Shift 2)*"
-    },
-    {
-      id: "kinematics-pyq-q96",
-      question: "Water droplets are coming from an open tap at a particular rate. The spacing between a droplet observed at 4th second after its fall to the next droplet is 34.3 m. At what rate the droplets are coming from the tap? (Take g = 9.8 m/s²) [NCERT : P L-18, 19 | July 25, 2021 (I)]",
-      options: [
-        "3 drops / 2 seconds",
-        "2 drops / second",
-        "1 drop / second",
-        "1 drop / 7 seconds"
+        "Zero",
+        "$1.5\text{ ms}^{-1}$",
+        "$2.0\text{ ms}^{-1}$",
+        "$2.5\text{ ms}^{-1}$"
       ],
       answer: 2,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Let the time interval between consecutive drops be $\\Delta t$.\n**Step 2:** The leading drop has been falling for $t_1 = 4\\text{ seconds}$. Its position measured downwards from the tap is: $y_1 = \\frac{1}{2}gt_1^2 = \\frac{1}{2}(9.8)(4)^2 = 4.9 \\times 16 = 78.4\\text{ m}$.\n**Step 3:** The next drop has been falling for $t_2 = (4 - \\Delta t)\\text{ seconds}$. Its position is: $y_2 = \\frac{1}{2}g(4 - \\Delta t)^2 = 4.9(4 - \\Delta t)^2$.\n**Step 4:** The given spacing between them is 34.3 m: $y_1 - y_2 = 34.3 \\implies 78.4 - 4.9(4 - \\Delta t)^2 = 34.3 \\implies 4.9(4 - \\Delta t)^2 = 78.4 - 34.3 = 44.1$.\n**Step 5:** Solve for $\\Delta t$: $(4 - \\Delta t)^2 = 44.1 / 4.9 = 9 \\implies 4 - \\Delta t = 3 \\implies \\Delta t = 1\\text{ second}$.\n**Step 6:** Since the regular interval between consecutive drops is 1 second, the rate is 1 drop per second.\n\n*(Asked in JEE Main 2021, July 25, Shift 1)*"
+      explanation: "**Detailed Solution:**\n\n**1. Apply Work-Energy Theorem:**\n$W = \Delta K = K_{\text{final}} - K_{\text{initial}} = \frac{1}{2} m v_f^2 - \frac{1}{2} m v_i^2$\n\n**2. Calculate work done by variable force:**\n$W = \int_{0.5}^{1.5} (-kx) dx = -k \left[ \frac{x^2}{2} \right]_{0.5}^{1.5}$\n$W = -\frac{12}{2} [(1.5)^2 - (0.5)^2] = -6 [2.25 - 0.25] = -12\text{ J}$\n\n**3. Equate to change in kinetic energy:**\n$-12 = \frac{1}{2}(2)(v_f^2) - \frac{1}{2}(2)(4^2) = v_f^2 - 16$\n$v_f^2 = 16 - 12 = 4 \implies v_f = 2.0\text{ ms}^{-1}$"
     },
     {
-      id: "kinematics-pyq-q97",
-      question: "A balloon was moving upwards with a uniform velocity of 10 m/s. An object of finite mass is dropped from the balloon when it was at a height of 75 m from the ground level. The height of the balloon from the ground when object strikes the ground was around: (takes the value of g as 10 m/s²) [NCERT : P L-18, 19 | July 25, 2021 (II)]",
+      id: "nlm-pyq-q28",
+      question: "A batsman hits back a ball of mass $0.4\text{ kg}$ straight in the direction of the bowler without changing its initial speed of $15\text{ ms}^{-1}$. The impulse imparted to the ball is ____________ $\text{Ns}$. (JEE Main June 26, 2022 (II))",
       options: [
-        "300m",
-        "200m",
-        "125m",
-        "250m"
-      ],
-      answer: 2,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Analyze the motion of the dropped object. Because it is released from a moving balloon, it inherits the balloon's upward velocity. Initial velocity of object ($u$) = $+10\\text{ m/s}$ (upwards), Net displacement to reach the ground ($s$) = $-75\\text{ m}$ (downwards), Acceleration due to gravity ($a$) = $-g = -10\\text{ m/s}^2$.\n**Step 2:** Use the second equation of motion to find the flight time ($t$) of the object: $s = ut + \\frac{1}{2}at^2 \\implies -75 = 10t + \\frac{1}{2}(-10)t^2 \\implies -75 = 10t - 5t^2$.\n**Step 3:** Rearrange into a standard quadratic equation: $5t^2 - 10t - 75 = 0 \\implies t^2 - 2t - 15 = 0 \\implies (t - 5)(t + 3) = 0$. Since time cannot be negative, $t = 5\\text{ seconds}$.\n**Step 4:** Calculate how much higher the balloon travels during these 5 seconds at its constant uniform speed: Extra height traveled by balloon = Speed $\\times$ Time = $10\\text{ m/s} \\times 5\\text{ s} = 50\\text{ m}$.\n**Step 5:** Find the final total height of the balloon from the ground: Total Height = Initial height + Extra height = $75\\text{ m} + 50\\text{ m} = 125\\text{ m}$.\n\n*(Asked in JEE Main 2021, July 25, Shift 2)*"
-    },
-    {
-      id: "kinematics-pyq-q90",
-      question: "Two balls A and B are placed at the top of 180 m tall tower. Ball A is released from the top at t = 0 s. Ball B is thrown vertically down with an initial velocity 'u' at t = 2 s. After a certain time, both balls meet 100 m above the ground. Find the value of 'u' in $\\text{ms}^{-1}$. [use g = $10\\text{ ms}^{-2}$] : [NCERT : P L-18, 19 | June 29, 2022 (I)]",
-      options: [
-        "10",
-        "15",
-        "20",
-        "30"
-      ],
-      answer: 3,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Determine the downward distance ($s$) traveled by both balls from the top of the tower to the meeting point: Height of the tower = 180 m, Meeting point height from ground = 100 m, Downward displacement ($s$) = $180\\text{ m} - 100\\text{ m} = 80\\text{ m}$.\n**Step 2:** Analyze the motion of Ball A (released from rest, $u = 0$ at $t = 0\\text{ s}$): $s = ut_A + \\frac{1}{2}gt_A^2 \\implies 80 = 0 + \\frac{1}{2}(10)t_A^2 \\implies 80 = 5t_A^2 \\implies t_A^2 = 16 \\implies t_A = 4\\text{ seconds}$. This means the balls meet at the absolute time $t = 4\\text{ s}$.\n**Step 3:** Analyze the motion of Ball B (thrown downward at $t = 2\\text{ s}$): Since Ball B is thrown at $t = 2\\text{ s}$ and meets Ball A at $t = 4\\text{ s}$, its total time of travel ($t_B$) is: $t_B = 4\\text{ s} - 2\\text{ s} = 2\\text{ seconds}$.\n**Step 4:** Use the displacement equation for Ball B to find its initial velocity '$u$': $s = ut_B + \\frac{1}{2}gt_B^2 \\implies 80 = u(2) + \\frac{1}{2}(10)(2)^2 \\implies 80 = 2u + 5(4) \\implies 80 = 2u + 20 \\implies 2u = 60 \\implies u = 30\\text{ ms}^{-1}$.\n\n*(Asked in JEE Main 2022, June 29, Shift 1)*"
-    },
-    {
-      id: "kinematics-pyq-q99",
-      question: "A stone is dropped from the top of a building. When it crosses a point 5 m below the top, another stone starts to fall from a point 25 m below the top. Both stones reach the bottom of building simultaneously. The height of the building is [NCERT : P L-18, 19 | Feb. 25, 2021 (II)]",
-      options: [
-        "35m",
-        "45m",
-        "25m",
-        "50m"
+        "6",
+        "12",
+        "18",
+        "24"
       ],
       answer: 1,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Let the total height of the building be $H$. Take acceleration due to gravity $g = 10\\text{ m/s}^2$.\n**Step 2:** Find the time ($t_1$) and velocity ($v$) of the first stone when it has fallen 5 m from the top: $s = \\frac{1}{2}gt_1^2 \\implies 5 = \\frac{1}{2}(10)t_1^2 \\implies t_1 = 1\\text{ s}$ and $v = gt_1 = 10(1) = 10\\text{ m/s}$ (downwards).\n**Step 3:** Let the remaining time for both stones to reach the ground simultaneously from this instant be $t$.\n**Step 4:** Set up the distance equation for the first stone to cover the remaining height ($H - 5$): $H - 5 = vt + \\frac{1}{2}gt^2 \\implies H - 5 = 10t + 5t^2$ (Eq 1).\n**Step 5:** Set up the distance equation for the second stone, which starts from rest from a point 25 m below the top to cover the remaining height ($H - 25$): $H - 25 = 0t + \\frac{1}{2}gt^2 \\implies H - 25 = 5t^2$ (Eq 2).\n**Step 6:** Subtract Eq 2 from Eq 1 to find the time $t$: $(H - 5) - (H - 25) = (10t + 5t^2) - 5t^2 \\implies 20 = 10t \\implies t = 2\\text{ s}$.\n**Step 7:** Substitute $t = 2\\text{ s}$ back into Eq 2 to find $H$: $H - 25 = 5(2)^2 \\implies H - 25 = 20 \\implies H = 45\\text{ m}$.\n\n*(Asked in JEE Main 2021, Feb 25, Shift 2)*"
+      explanation: "**Detailed Solution:**\n\n**1. Establish direction:**\nLet initial velocity towards batsman be $+i$.\n$u = 15\text{ ms}^{-1}$\nBall is hit straight back, so final velocity is reversed:\n$v = -15\text{ ms}^{-1}$\n\n**2. Calculate impulse (change in momentum):**\n$\text{Impulse} = m(v - u) = 0.4(-15 - 15) = 0.4(-30) = -12\text{ Ns}$\nMagnitude of impulse = $12\text{ Ns}$"
     },
     {
-      id: "kinematics-pyq-q100",
-      question: "A helicopter rises from rest on the ground vertically upwards with a constant acceleration g. A food packet is dropped from the helicopter when it is at a height h. The time taken by the packet to reach the ground is close to [g is the acceleration due to gravity] : [NCERT : P L-18, 19 | Sep. 5, 2020 (I)]",
+      id: "nlm-pyq-q29",
+      question: "An object of mass $5\text{ kg}$ is thrown vertically upwards from the ground. The air resistance produces a constant retarding force of $10\text{ N}$ throughout the motion. The ratio of time of ascent to the time of descent will be equal to : [Use $g = 10\text{ ms}^{-2}$] (JEE Main June 24, 2022 (II))",
       options: [
-        "$t = \\frac{2}{3} \\sqrt{\\frac{h}{g}}$",
-        "$t = 1.8 \\sqrt{\\frac{h}{g}}$",
-        "$t = \\sqrt{\\frac{2h}{3g}}$",
-        "$t = 3.4 \\sqrt{\\frac{h}{g}}$"
+        "$1 : 1$",
+        "$\sqrt{2} : \sqrt{3}$",
+        "$\sqrt{3} : \sqrt{2}$",
+        "$2 : 3$"
       ],
-      answer: 3,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Find the upward velocity ($v$) of the helicopter when it reaches a height $h$ from rest ($u = 0$) with upward acceleration $g$: $v^2 = u^2 + 2gh = 0 + 2gh \\implies v = \\sqrt{2gh}$ (upwards).\n**Step 2:** When the food packet is released, it inherits the upward velocity of the helicopter. Taking the upward direction as positive: Initial velocity of packet ($u_p$) = $+\\sqrt{2gh}$, Net displacement to ground ($s$) = $-h$, Acceleration ($a$) = $-g$.\n**Step 3:** Use the second equation of motion for the packet: $s = u_p t + \\frac{1}{2}at^2 \\implies -h = \\sqrt{2gh} t - \\frac{1}{2}gt^2$.\n**Step 4:** Rearrange this into a standard quadratic equation in terms of $t$: $\\frac{1}{2}gt^2 - \\sqrt{2gh} t - h = 0$. Multiply the entire equation by $2/g$: $t^2 - 2\\sqrt{\\frac{2h}{g}} t - \\frac{2h}{g} = 0$.\n**Step 5:** Solve for $t$ using the quadratic formula ($t = \\frac{-B \\pm \\sqrt{B^2 - 4AC}}{2A}$): $t = \\frac{2\\sqrt{2h/g} + \\sqrt{(-2\\sqrt{2h/g})^2 - 4(1)(-2h/g)}}{2} = \\frac{2\\sqrt{2h/g} + \\sqrt{8h/g + 8h/g}}{2} = \\frac{2\\sqrt{2h/g} + \\sqrt{16h/g}}{2} = \\sqrt{\\frac{2h}{g}} + 2\\sqrt{\\frac{h}{g}} = (\\sqrt{2} + 2) \\sqrt{\\frac{h}{g}}$.\n**Step 6:** Substitute the numerical value $\\sqrt{2} \\approx 1.414$: $t = (1.414 + 2) \\sqrt{\\frac{h}{g}} = 3.414 \\sqrt{\\frac{h}{g}} \\approx 3.4 \\sqrt{\\frac{h}{g}}$.\n\n*(Asked in JEE Main 2020, Sep 5, Shift 1)*"
+      answer: 1,
+      explanation: "**Detailed Solution:**\n\n**1. Identify forces:**\nWeight $W = mg = 50\text{ N}$ (downwards)\nAir resistance $F_{\text{air}} = 10\text{ N}$ (opposes motion)\n\n**2. Ascent (moving up):**\nBoth gravity and air resistance act downwards.\nNet force $F_{\text{net}} = W + F_{\text{air}} = 60\text{ N}$\nAcceleration $a_1 = 60 / 5 = 12\text{ ms}^{-2}$\nTime $t_1 = \sqrt{2h/a_1}$\n\n**3. Descent (moving down):**\nGravity acts downwards, air resistance acts upwards.\nNet force $F_{\text{net}} = W - F_{\text{air}} = 40\text{ N}$\nAcceleration $a_2 = 40 / 5 = 8\text{ ms}^{-2}$\nTime $t_2 = \sqrt{2h/a_2}$\n\n**4. Ratio:**\n$t_1 / t_2 = \sqrt{a_2 / a_1} = \sqrt{8 / 12} = \sqrt{2/3} = \sqrt{2} : \sqrt{3}$"
     },
     {
-      id: "kinematics-pyq-q105",
-      question: "From a tower of height H, a particle is thrown vertically upwards with a speed u. The time taken by the particle, to hit the ground, is n times that taken by it to reach the highest point of its path. The relation between H, u and n is: [NCERT : PL-18, 19 | 2014]",
+      id: "nlm-pyq-q30",
+      question: "A force $\vec{F} = (40\hat{i} + 10\hat{j})\text{ N}$ acts on a body of mass $5\text{ kg}$. If the body starts from rest, its position vector $\vec{r}$ at time $t = 10\text{ s}$, will be: (JEE Main July 25, 2021 (II))",
       options: [
-        "$2gH = n^2u^2$",
-        "$gH = (n - 2)^2u^2$",
-        "$2gH = nu^2(n - 2)$",
-        "$gH = (n - 2)u^2$"
+        "$(100\hat{i} + 400\hat{j})\text{ m}$",
+        "$(100\hat{i} + 100\hat{j})\text{ m}$",
+        "$(400\hat{i} + 100\hat{j})\text{ m}$",
+        "$(400\hat{i} + 400\hat{j})\text{ m}$"
       ],
       answer: 2,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Find the time taken to reach the highest point ($t_{\\text{up}}$): At the highest point, velocity is 0. $v = u - gt_{\\text{up}} \\implies 0 = u - gt_{\\text{up}} \\implies t_{\\text{up}} = u/g$.\n**Step 2:** Express the total time taken to hit the ground ($T$): According to the problem statement, $T = n t_{\\text{up}} = n(u/g)$.\n**Step 3:** Use the displacement equation for the entire journey. Take the upward direction as positive: Initial velocity = $+u$, Displacement = $-H$ (downward from the top of the tower), Acceleration = $-g$. $s = uT + \\frac{1}{2}aT^2 \\implies -H = u(nu/g) - \\frac{1}{2}g(nu/g)^2$.\n**Step 4:** Simplify the expression: $-H = \\frac{nu^2}{g} - \\frac{n^2u^2}{2g}$. Multiply the entire equation by $-2g$: $2gH = -2nu^2 + n^2u^2 \\implies 2gH = nu^2(n - 2)$.\n\n*(Asked in JEE Main 2014)*"
+      explanation: "**Detailed Solution:**\n\n**1. Find acceleration vector:**\n$\vec{a} = \vec{F} / m = (40\hat{i} + 10\hat{j}) / 5 = 8\hat{i} + 2\hat{j}\text{ ms}^{-2}$\n\n**2. Use displacement equation (starts from rest $\vec{u}=0$):**\n$\vec{r} = \frac{1}{2} \vec{a} t^2$\n\n**3. Substitute $t = 10\text{ s}$:**\n$\vec{r} = \frac{1}{2} (8\hat{i} + 2\hat{j}) (10)^2 = 100 (4\hat{i} + \hat{j}) = 400\hat{i} + 100\hat{j}\text{ m}$"
     },
     {
-      id: "kinematics-pyq-q106",
-      question: "A parachutist after bailing out falls 50 m without friction. When parachute opens, it decelerates at $2\\text{ m/s}^2$. He reaches the ground with a speed of $3\\text{ m/s}$. At what height, did he bail out ? [NCERT : PL-18, 19 | 2005]",
+      id: "nlm-pyq-q31",
+      question: "A boy pushes a box of mass $2\text{ kg}$ with a force $\vec{F} = (20\hat{i} + 10\hat{j})\text{ N}$ on a frictionless surface. If the box was initially at rest, then _________ $\text{m}$ is displacement along the x-axis after $10\text{ s}$. (JEE Main Feb. 26, 2021 (I))",
       options: [
-        "182m",
-        "91m",
-        "111m",
-        "293m"
+        "100",
+        "200",
+        "250",
+        "500"
       ],
       answer: 3,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Analyze the first phase of the motion (free fall for 50 m, initial velocity $u = 0$, $g = 9.8\\text{ m/s}^2$): $v_1^2 = u^2 + 2gs_1 \\implies v_1^2 = 0 + 2(9.8)(50) = 980$.\n**Step 2:** Analyze the second phase of the motion (deceleration with $a = -2\\text{ m/s}^2$ until final velocity $v = 3\\text{ m/s}$): $v^2 = v_1^2 + 2as_2 \\implies (3)^2 = 980 + 2(-2)s_2 \\implies 9 = 980 - 4s_2 \\implies 4s_2 = 980 - 9 = 971 \\implies s_2 = 971 / 4 = 242.75\\text{ m}$.\n**Step 3:** Calculate the total height from which he bailed out ($H$): $H = s_1 + s_2 = 50\\text{ m} + 242.75\\text{ m} = 292.75\\text{ m} \\approx 293\\text{ m}$.\n*(Note: The options provided in historical papers might vary, sometimes $g=10$ is used giving 247.75m or $243\\text{m}$ is treated as the answer for $s_2$. Assuming standard context, $293\\text{m}$ is the closest total height.)*\n\n*(Asked in JEE Main 2005)*"
+      explanation: "**Detailed Solution:**\n\n**1. Extract horizontal component of force:**\n$F_x = 20\text{ N}$\n\n**2. Calculate acceleration along x-axis:**\n$a_x = F_x / m = 20 / 2 = 10\text{ ms}^{-2}$\n\n**3. Calculate displacement along x-axis:**\n$x = u_x t + \frac{1}{2} a_x t^2 = 0 + \frac{1}{2}(10)(10^2) = 5 \times 100 = 500\text{ m}$"
     },
     {
-      id: "kinematics-pyq-q107",
-      question: "A ball is released from the top of a tower of height h meters. It takes T seconds to reach the ground. What is the position of the ball at T/3 second [NCERT : PL-18, 19 | 2004]",
+      id: "nlm-pyq-q32",
+      question: "A particle moving in the xy plane experiences a velocity dependent force $\vec{F} = k(v_y\hat{i} + v_x\hat{j})$, where $v_x$ and $v_y$ are x and y components of its velocity $\vec{v}$. If $\vec{a}$ is the acceleration of the particle, then which of the following statements is true for the particle? (JEE Main Sep. 06, 2020 (II))",
       options: [
-        "$8h/9$ from the ground",
-        "$7h/9$ from the ground",
-        "$h/9$ from the ground",
-        "$17h/18$ from the ground"
+        "quantity $\vec{v} \times \vec{a}$ is constant in time",
+        "$\vec{F}$ arises due to a magnetic field",
+        "kinetic energy of particle is constant in time",
+        "quantity $\vec{v} \cdot \vec{a}$ is constant in time"
       ],
       answer: 0,
-      explanation: "**Detailed Explanation:**\n\n**Step 1:** Relate the total height $h$ to the total time $T$ using the second equation of motion (initial velocity $u = 0$): $h = \\frac{1}{2}gT^2$.\n**Step 2:** Calculate the distance fallen from the top in time $t = T/3$: $y = \\frac{1}{2}g(T/3)^2 = \\frac{1}{2}g(T^2/9) = \\frac{1}{9}[\\frac{1}{2}gT^2] = h/9$ (from the top).\n**Step 3:** Determine the position of the ball relative to the ground: Height from ground = Total height - Distance fallen from top = $h - h/9 = 8h/9$.\n\n*(Asked in JEE Main 2004)*"
+      explanation: "**Detailed Solution:**\n\n**1. Compute dot product $\vec{F} \cdot \vec{v}$:**\n$\vec{F} \cdot \vec{v} = k(v_y v_x + v_x v_y) = 2kv_x v_y \neq 0$, so KE is not constant.\n\n**2. Evaluate $\vec{v} \times \vec{a}$:**\n$m \vec{a} = k(v_y\hat{i} + v_x\hat{j}) \implies m \frac{dv_x}{dt} = k v_y$ and $m \frac{dv_y}{dt} = k v_x$\nNow, $\vec{v} \times \vec{a} = (v_x\hat{i} + v_y\hat{j}) \times \frac{k}{m}(v_y\hat{i} + v_x\hat{j}) = \frac{k}{m} (v_x^2 - v_y^2)\hat{k}$\n\n**3. Differentiate $(v_x^2 - v_y^2)$ with respect to time:**\n$\frac{d}{dt}(v_x^2 - v_y^2) = 2v_x \frac{dv_x}{dt} - 2v_y \frac{dv_y}{dt} = 2v_x (\frac{k v_y}{m}) - 2v_y (\frac{k v_x}{m}) = 0$\nThus $(v_x^2 - v_y^2)$ is constant, making $\vec{v} \times \vec{a}$ constant in time."
+    },
+    {
+      id: "nlm-pyq-q33",
+      question: "A spaceship in space sweeps stationary interplanetary dust. As a result, its mass increases at a rate $dM(t)/dt = b v^2(t)$, where $v(t)$ is its instantaneous velocity. The instantaneous acceleration of the satellite is : (JEE Main Sep. 05, 2020 (II))",
+      options: [
+        "$-b v^3(t)$",
+        "$-b v^3(t) / M(t)$",
+        "$-2b v^3(t) / M(t)$",
+        "$-b v^3(t) / 2M(t)$"
+      ],
+      answer: 1,
+      explanation: "**Detailed Solution:**\n\n**1. Thrust force for a variable mass system:**\n$F_{\text{thrust}} = -u_{\text{rel}} \frac{dM}{dt}$\nSince dust is stationary, relative velocity $u_{\text{rel}} = v$.\n$F_{\text{thrust}} = -v (bv^2) = -bv^3$\n\n**2. Acceleration:**\n$F = M a \implies a = \frac{F_{\text{thrust}}}{M(t)} = -\frac{b v^3(t)}{M(t)}$"
+    },
+    {
+      id: "nlm-pyq-q34",
+      question: "A small ball of mass $m$ is thrown upward with velocity $u$ from the ground. The ball experiences a resistive force $mkv^2$, where $v$ is its speed. The maximum height attained by the ball is : (JEE Main Sep. 04, 2020 (II))",
+      options: [
+        "$(1 / 2k) \tan^{-1}(k u^2 / g)$",
+        "$(1 / k) \ln(1 + k u^2 / 2g)$",
+        "$(1 / k) \tan^{-1}(k u^2 / 2g)$",
+        "$(1 / 2k) \ln(1 + k u^2 / g)$"
+      ],
+      answer: 3,
+      explanation: "**Detailed Solution:**\n\n**1. Net force during ascent:**\n$F_{\text{net}} = -(mg + mkv^2)$\n$m a = -m(g + kv^2) \implies a = -(g + kv^2)$\n\n**2. Express acceleration as $v \frac{dv}{dy}$:**\n$v \frac{dv}{dy} = -(g + kv^2) \implies \frac{v dv}{g + kv^2} = -dy$\n\n**3. Integrate from $y = 0$ ($v = u$) to $y = H$ ($v = 0$):**\n$\int_{u}^{0} \frac{v dv}{g + kv^2} = \int_{0}^{H} -dy$\nLet $z = g + kv^2 \implies dz = 2kv dv$\n$\frac{1}{2k} [\ln(g + kv^2)]_u^0 = -H$\n$\frac{1}{2k} (\ln g - \ln(g + ku^2)) = -H \implies H = \frac{1}{2k} \ln\left(\frac{g + ku^2}{g}\right) = \frac{1}{2k} \ln\left(1 + \frac{ku^2}{g}\right)$"
+    },
+    {
+      id: "nlm-pyq-q35",
+      question: "A particle of mass $m$ is moving in a straight line with momentum $p$. Starting at time $t = 0$, a force $F = kt$ acts in the same direction on the moving particle during time interval $T$ so that its momentum changes from $p$ to $3p$. Here $k$ is a constant. The value of $T$ is : (JEE Main 11 Jan. 2019 II)",
+      options: [
+        "$2 \sqrt{k/p}$",
+        "$2 \sqrt{p/k}$",
+        "$\sqrt{2k/p}$",
+        "$\sqrt{2p/k}$"
+      ],
+      answer: 1,
+      explanation: "**Detailed Solution:**\n\n**1. Change in momentum is integral of force:**\n$\Delta p = \int_0^T F dt = \int_0^T kt dt$\n\n**2. Substitute given limits:**\n$3p - p = k \left[\frac{t^2}{2}\right]_0^T$\n$2p = \frac{kT^2}{2}$\n\n**3. Solve for $T$:**\n$T^2 = \frac{4p}{k} \implies T = 2 \sqrt{\frac{p}{k}}$"
+    },
+    {
+      id: "nlm-pyq-q36",
+      question: "A particle of mass $m$ is acted upon by a force $F$ given by the empirical law $F = (R / t^2) v(t)$. If this law is to be tested experimentally by observing the motion starting from rest, the best way is to plot : (JEE Main Online April 10, 2016)",
+      options: [
+        "$\log v(t)$ against $1/t$",
+        "$v(t)$ against $t^2$",
+        "$\log v(t)$ against $1/t^2$",
+        "$\log v(t)$ against $t$"
+      ],
+      answer: 0,
+      explanation: "**Detailed Solution:**\n\n**1. Rewrite force in terms of acceleration:**\n$m \frac{dv}{dt} = \frac{R}{t^2} v$\n\n**2. Separate variables:**\n$\frac{dv}{v} = \frac{R}{m} \frac{dt}{t^2}$\n\n**3. Integrate:**\n$\int \frac{dv}{v} = \frac{R}{m} \int t^{-2} dt$\n$\ln v = -\frac{R}{m t} + C$\n\n**4. Convert to base-10 logarithm:**\n$2.303 \log v = -\frac{R}{m} \left(\frac{1}{t}\right) + C$\n$\log v = -\frac{R}{2.303 m} \left(\frac{1}{t}\right) + C'$\nThis matches the linear equation $y = mx + c$, so plotting $\log v(t)$ against $1/t$ yields a straight line."
+    },
+    {
+      id: "nlm-pyq-q37",
+      question: "A body of mass $5\text{ kg}$ under the action of constant force $\vec{F} = F_x\hat{i} + F_y\hat{j}$ has velocity at $t = 0\text{ s}$ as $\vec{v} = (6\hat{i} - 2\hat{j})\text{ m/s}$ and at $t = 10\text{ s}$ as $\vec{v} = +6\hat{j}\text{ m/s}$. The force $\vec{F}$ is: (JEE Main Online April 11, 2014)",
+      options: [
+        "$(-3\hat{i} + 4\hat{j})\text{ N}$",
+        "$(-3/5\hat{i} + 4/5\hat{j})\text{ N}$",
+        "$(3\hat{i} - 4\hat{j})\text{ N}$",
+        "$(3/5\hat{i} - 4/5\hat{j})\text{ N}$"
+      ],
+      answer: 0,
+      explanation: "**Detailed Solution:**\n\n**1. Identify initial and final velocities:**\n$\vec{u} = 6\hat{i} - 2\hat{j}$\n$\vec{v} = 0\hat{i} + 6\hat{j}$\n$t = 10\text{ s}$\n\n**2. Calculate acceleration:**\n$\vec{a} = \frac{\vec{v} - \vec{u}}{t} = \frac{(0 - 6)\hat{i} + (6 - (-2))\hat{j}}{10} = \frac{-6\hat{i} + 8\hat{j}}{10} = -0.6\hat{i} + 0.8\hat{j}\text{ ms}^{-2}$\n\n**3. Calculate force:**\n$\vec{F} = m\vec{a} = 5(-0.6\hat{i} + 0.8\hat{j}) = -3\hat{i} + 4\hat{j}\text{ N}$"
     }
-  ]
-};
 """
 
-target = '    }\n  ]\n};\nexport default pyq;'
-idx = content.rfind(target)
+pyq = pyq.replace("  ]\n};\n\nexport default pyq;", ",\n" + new_qs + "  ]\n};\n\nexport default pyq;")
 
-if idx != -1:
-    content = content[:idx] + new_questions + '\nexport default pyq;\n'
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(content)
-else:
-    print("Target string not found in content!")
-    print(content[-50:])
+# In order to make it completely correct and not have to escape all the `\` again,
+# I used a raw string in python `r"""..."""`. This means \n is literally \ and n. 
+# And \t is literally \ and t. So it translates directly into correct JS string escapes.
+# Wait, if I write \n directly to the file, it will be `\n` in JS, which means newline!
+# But in JSON/TS, `\n` inside a string literal means a newline character, so it's correct!
+# Let's write to file.
+with open("src/questions/physics/newtons-laws-of-motion/pyq.ts", "w") as f:
+    f.write(pyq)

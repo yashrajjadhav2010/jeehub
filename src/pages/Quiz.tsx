@@ -7,15 +7,15 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import { QuizSet } from '../types';
-import { loadQuizSet } from '../lib/dataService';
+import { QuizSet, SubjectId } from '../types';
+import { loadQuizSet, getAllData } from '../lib/dataService';
 import { solveDoubt } from '../services/aiService';
 import { cn } from '../lib/utils';
 import { checkAILimit, incrementAIUsage } from '../lib/aiUsage';
 import { useUser } from '@clerk/clerk-react';
 
 export default function Quiz() {
-  const { user } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const { subjectId, chapterId, setId } = useParams<{ subjectId: string; chapterId: string; setId: string }>();
   const navigate = useNavigate();
   
@@ -89,7 +89,19 @@ export default function Quiz() {
 
   useEffect(() => {
     async function loadData() {
+      if (!isLoaded) return; // Wait for auth to load
+
       if (subjectId && chapterId && setId) {
+        // Enforce login for sets other than the first
+        const allData = await getAllData();
+        const chapterSets = allData[subjectId as SubjectId]?.find(c => c.id === chapterId)?.sets || [];
+        const setIdx = chapterSets.findIndex(s => s.id === setId);
+        
+        if (setIdx > 0 && !isSignedIn) {
+          navigate('/sign-in');
+          return;
+        }
+
         const data = await loadQuizSet(subjectId, chapterId, setId);
         if (data) {
           setQuizSet(data);
@@ -130,7 +142,7 @@ export default function Quiz() {
       setLoading(false);
     }
     loadData();
-  }, [subjectId, chapterId, setId]);
+  }, [subjectId, chapterId, setId, isLoaded, isSignedIn, navigate]);
 
   // Save session state to localStorage
   useEffect(() => {

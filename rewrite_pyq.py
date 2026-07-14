@@ -1,4 +1,5 @@
-import { QuizSet } from '../../../types';
+with open("src/questions/physics/newtons-laws-of-motion/pyq.ts", "w") as f:
+    f.write(r"""import { QuizSet } from '../../../types';
 
 const pyq: QuizSet = {
   id: "pyq",
@@ -455,3 +456,4 @@ const pyq: QuizSet = {
 };
 
 export default pyq;
+""")

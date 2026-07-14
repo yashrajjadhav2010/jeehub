@@ -37,58 +37,56 @@ export default function Login() {
         .custom-clerk-btn:hover::after {
           transform: translateX(4px);
         }
-      `}</style>
-
-      {/* Main Card Container */}
+      `}</style>      {/* Main Card Container */}
       <div 
-        className="w-full h-full sm:h-auto sm:min-h-[680px] sm:max-w-[420px] sm:rounded-[40px] bg-white sm:shadow-2xl sm:shadow-blue-900/10 overflow-hidden flex flex-col relative z-10 border-0 sm:border border-slate-100/50"
+        className="w-full h-full sm:h-auto sm:min-h-[680px] sm:max-w-[420px] lg:max-w-[1000px] lg:min-h-[600px] lg:flex-row sm:rounded-[40px] lg:rounded-3xl bg-white sm:shadow-2xl sm:shadow-blue-900/10 overflow-hidden flex flex-col relative z-10 border-0 sm:border border-slate-100/50"
       >
         
-        {/* Curvy Blue Header */}
-        <div className="relative bg-[#1e40af] w-full pt-12 pb-24 px-8 shrink-0">
+        {/* Left Side / Top Header */}
+        <div className="relative bg-[#1e40af] w-full lg:w-1/2 pt-12 pb-24 lg:pb-12 px-8 shrink-0 flex flex-col justify-center">
           
           {/* Back Button */}
-          <Link to="/" className="absolute top-8 right-6 w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-700 shadow-md hover:bg-slate-50 transition-colors z-20">
+          <Link to="/" className="absolute top-8 left-6 lg:left-8 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-colors z-20">
             <ArrowLeft size={20} strokeWidth={2.5} />
           </Link>
           
-          <div className="relative z-20 mt-2">
+          <div className="relative z-20 mt-12 lg:mt-0">
             <motion.h1 
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-white text-[32px] font-extrabold tracking-tight mb-2"
+              className="text-white text-[32px] lg:text-[44px] font-extrabold tracking-tight mb-4"
             >
-              Log In
+              Welcome Back
             </motion.h1>
             <motion.p 
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-blue-100 text-sm max-w-[180px] leading-relaxed font-medium"
+              className="text-blue-100 text-base lg:text-lg max-w-[280px] leading-relaxed font-medium"
             >
-              Experience a better learning environment
+              Experience a better learning environment. Log in to access your mock tests and personalized content.
             </motion.p>
           </div>
           
-          {/* Background Wavy SVGs */}
-          <div className="absolute bottom-0 left-0 right-0 pointer-events-none translate-y-[1px]">
+          {/* Background Wavy SVGs (Mobile Only) */}
+          <div className="absolute bottom-0 left-0 right-0 pointer-events-none translate-y-[1px] lg:hidden">
             <motion.svg 
               animate={{ x: [0, -20, 0] }}
               transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-              viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[150%] h-auto md:w-[150%] opacity-30 absolute bottom-0"
+              viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[150%] h-auto opacity-30 absolute bottom-0"
             >
               <path d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="white"/>
             </motion.svg>
             <motion.svg 
               animate={{ x: [0, 15, 0] }}
               transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
-              viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[120%] h-auto md:w-[150%] absolute bottom-0 opacity-60"
+              viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[120%] h-auto absolute bottom-0 opacity-60"
             >
               <path d="M0,64L48,90.7C96,117,192,171,288,186.7C384,203,480,181,576,149.3C672,117,768,75,864,74.7C960,75,1056,117,1152,144C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="white"/>
             </motion.svg>
-            <svg viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto absolute bottom-0">
-               <path d="M0,160L60,149.3C120,139,240,117,360,112C480,107,600,117,720,144C840,171,960,213,1080,213.3C1200,213,1320,171,1380,149.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" fill="white"/>
+            <svg viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto absolute bottom-0"> 
+              <path d="M0,160L60,149.3C120,139,240,117,360,112C480,107,600,117,720,144C840,171,960,213,1080,213.3C1200,213,1320,171,1380,149.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" fill="white"/>
             </svg>
           </div>
         </div>
@@ -97,12 +95,12 @@ export default function Login() {
         <motion.div 
           animate={{ y: [0, -12, 0] }}
           transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          className="absolute top-[170px] left-0 right-0 flex justify-center pointer-events-none z-30"
+          className="absolute top-[170px] lg:top-auto lg:bottom-12 lg:left-[10%] left-0 right-0 lg:right-auto flex justify-center pointer-events-none z-30"
         >
           <img 
             src="https://illustrations.popsy.co/blue/studying.svg" 
             alt="Learning Illustration" 
-            className="w-48 h-48 sm:w-56 sm:h-56 object-contain drop-shadow-sm"
+            className="w-48 h-48 sm:w-56 sm:h-56 lg:w-[300px] lg:h-[300px] object-contain drop-shadow-sm"
           />
         </motion.div>
 
@@ -111,7 +109,7 @@ export default function Login() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex-1 bg-white px-8 pt-[120px] pb-8 flex flex-col z-20 custom-scrollbar overflow-y-auto"
+          className="flex-1 lg:w-1/2 bg-white px-8 pt-[120px] lg:pt-16 pb-8 flex flex-col justify-center items-center z-20 custom-scrollbar overflow-y-auto"
         >
           <SignIn 
             routing="path" 
@@ -124,8 +122,8 @@ export default function Login() {
                 logoPlacement: "none",
               },
               elements: {
-                rootBox: "w-full",
-                card: "shadow-none w-full max-w-full bg-transparent p-0 flex flex-col gap-4",
+                rootBox: "w-full max-w-[360px]",
+                card: "shadow-none w-full bg-transparent p-0 flex flex-col gap-4",
                 headerTitle: "hidden",
                 headerSubtitle: "hidden",
                 logoBox: "hidden",
