@@ -40,13 +40,42 @@ app.use((req, res, next) => {
 
 // Health check
 app.get("/api/health", (req, res) => {
-  const hasEnvKey = !!process.env.GEMINI_API_KEY;
+  const hasEnvKey = !!process.env.GEMINI_API_KEY || !!process.env.GROQ_API_KEY;
   res.json({ 
     status: "ok", 
     env: process.env.NODE_ENV,
     keyMode: hasEnvKey ? "environment" : "missing",
     active: true
   });
+});
+
+// Proxy route for Groq API
+app.post("/api/groq/chat", async (req, res) => {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: "GROQ_API_KEY environment variable is missing" });
+  }
+  
+  try {
+    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(req.body)
+    });
+    
+    if (!groqRes.ok) {
+      throw new Error(`Groq API error: ${groqRes.statusText}`);
+    }
+    
+    const data = await groqRes.json();
+    res.json(data);
+  } catch (err: any) {
+    console.error("Groq Proxy Error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // API route for solving doubts

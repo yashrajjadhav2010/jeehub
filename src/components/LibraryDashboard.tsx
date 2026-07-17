@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Calculator, Atom, Beaker, Zap, Library, ScrollText, Network } from 'lucide-react';
+import { Calculator, Atom, Beaker, Zap, Library, ScrollText, Network, Video } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -43,10 +43,10 @@ const books = [
   },
   {
     id: 'information',
-    title: 'Information',
-    category: 'Bulletins',
-    type: 'Updates',
-    icon: Zap,
+    title: 'Platform Manual',
+    category: 'Guides & Tools',
+    type: 'Documentation',
+    icon: Video,
     color: 'bg-[#f6a0b9]',
     lightBg: 'bg-[#fceef2]',
     bookmark: 'bg-[#f5c64b]',
@@ -86,7 +86,13 @@ export default function LibraryDashboard() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.1 }}
             className="flex flex-col items-center gap-4 group cursor-pointer"
-            onClick={() => navigate('/study', { state: { subject: book.title } })}
+            onClick={() => {
+              if (book.id === 'information') {
+                navigate('/documentation');
+              } else {
+                navigate('/study', { state: { subject: book.title } });
+              }
+            }}
           >
             <div className={cn("relative w-full aspect-square rounded-[2rem] sm:rounded-[3rem] p-4 sm:p-6 flex items-center justify-center transition-all duration-500 group-hover:-translate-y-4 border-[3px] sm:border-4 box-border border-transparent shadow-md hover:shadow-2xl hover:shadow-emerald-900/10", book.lightBg)}>
                {/* Bookshelf Base (shadow effect for visual anchoring) */}

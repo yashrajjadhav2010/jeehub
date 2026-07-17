@@ -456,3 +456,30 @@ html.dark-mode .bg-primary iframe,
 html.dark-mode .bg-primary svg:not(.lucide) {
   filter: none;
 }
+
+/* Store FX */
+html.focus-shield-active .motivational-banner,
+html.focus-shield-active [href="/doubt-solver"].group {
+  display: none !important;
+}
+
+/* Avatar Holo Ring FX */
+.holo-avatar-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 340deg, rgba(245, 158, 11, 0.8) 360deg);
+  animation: spin-slow 4s linear infinite;
+  z-index: 0;
+}
+.holo-avatar-ring::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: white;
+  border-radius: 50%;
+  z-index: 1;
+}
+html.dark-mode .holo-avatar-ring::before {
+  background: black;
+}

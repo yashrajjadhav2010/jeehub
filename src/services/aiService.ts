@@ -1,21 +1,13 @@
 import { SubjectId } from "../types";
 
-declare global {
-  interface Window {
-    GROQ_API_KEY: string;
-  }
-}
+
 
 export async function getTopicSuggestions(subject?: string, performance?: string) {
   try {
-    const apiKey = window.GROQ_API_KEY;
-    if (!apiKey) throw new Error("API key not found in window object.");
-
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("/api/groq/chat", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
@@ -68,8 +60,7 @@ export async function getTopicSuggestions(subject?: string, performance?: string
 
 export async function generateStudyPlanAI(stats: any, radarData: any, errorTopics: string[] = []) {
   try {
-    const apiKey = window.GROQ_API_KEY;
-    if (!apiKey) throw new Error("API key not found in window object.");
+    
 
     const systemPrompt = "You are an expert, personalized study planner and mentor for JEE Main & Advanced students. Your objective is to create a highly effective proper 7-day study plan. The plan must balance rigorous revisions, fixing conceptual weaknesses (based on incorrect topics), regular practice, and mock tests to ensure actual performance improvements. Incorporate JEE-specific strategies (like PYQ solving, active recall, block strategy). Output a JSON object with a 'weekPlan' array containing exactly 7 objects. Each object should have 'day' (e.g. 'Monday'), 'focus' (e.g. 'Physics - Kinematics'), 'tasks' (array of strings, specific tasks for the day including solving, revising, finding doubt solutions), and 'rationale' (a detailed reason why you chose this, relating it to the JEE journey).";
 
@@ -80,12 +71,9 @@ Topics where the student got questions INCORRECT conceptually recently: ${errorT
 
 Build a proper weekly planner that aggressively targets the incorrect conceptually weak topics first, allocates time for strong topic revisions, and balances theory with mock test practice overall. Keep it intensely specific and highly actionable.`;
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("/api/groq/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         messages: [
@@ -120,8 +108,7 @@ Build a proper weekly planner that aggressively targets the incorrect conceptual
 
 export async function solveDoubt(messages: any[], context?: string) {
   try {
-    const apiKey = window.GROQ_API_KEY;
-    if (!apiKey) throw new Error("API key not found in window object.");
+    
 
     const AI_NAME = "AXIOM";
     const rankPredictorData = `
@@ -212,12 +199,9 @@ Keep it professional, structured, highly motivating, and visually clean.`;
 
     const modelName = hasImage ? "meta-llama/llama-4-scout-17b-16e-instruct" : "llama-3.3-70b-versatile";
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("/api/groq/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: modelName,
         messages: [

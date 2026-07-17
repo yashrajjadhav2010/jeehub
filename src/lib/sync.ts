@@ -66,10 +66,23 @@ export const syncToFirebase = async (userId: string) => {
   
   try {
     const userDocRef = doc(db, 'user_data', userId);
-    await setDoc(userDocRef, {
+    
+    const updatePayload: any = {
       data,
       updated_at: serverTimestamp()
-    }, { merge: true });
+    };
+    
+    const operatorName = window.localStorage.getItem('operatorName');
+    if (operatorName) {
+      updatePayload.name = operatorName;
+    }
+    
+    if (userId.startsWith('guest_')) {
+      updatePayload.email = 'Guest User';
+      updatePayload.isGuest = true;
+    }
+    
+    await setDoc(userDocRef, updatePayload, { merge: true });
   } catch (error: any) {
     console.error('Failed to sync to Firebase:', error.message || error);
   }

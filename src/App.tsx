@@ -76,6 +76,19 @@ function Navbar() {
   const location = useLocation();
   const { user } = useUser();
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'yashrajjadhav2010@gmail.com';
+  
+  const [activeRewards, setActiveRewards] = useState<string[]>([]);
+  
+  useEffect(() => {
+    const updateRewards = () => {
+      try {
+        setActiveRewards(JSON.parse(localStorage.getItem('active_rewards') || '[]'));
+      } catch (e) {}
+    };
+    updateRewards();
+    window.addEventListener('rewards_updated', updateRewards);
+    return () => window.removeEventListener('rewards_updated', updateRewards);
+  }, []);
 
   let operatorName = "Candidate";
   let operatorPfp: string | null = null;
@@ -151,7 +164,14 @@ function Navbar() {
                   </Link>
                 </SignedOut>
                 <SignedIn>
-                  <UserButton />
+                  <div className="relative flex items-center justify-center p-1">
+                    {activeRewards.includes('premium_avatar') && (
+                      <div className="holo-avatar-ring pointer-events-none" />
+                    )}
+                    <div className="relative z-10">
+                      <UserButton />
+                    </div>
+                  </div>
                 </SignedIn>
               </div>
               <Link
@@ -412,6 +432,20 @@ function Layout({ children }: { children: React.ReactNode }) {
         
         setShowNameModal(false);
         setKey((prev) => prev + 1);
+      } else if (isSignedIn === false) {
+        let guestId = window.localStorage.getItem('guestId');
+        if (!guestId) {
+          guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
+          window.localStorage.setItem('guestId', guestId);
+        }
+        
+        try {
+          const { setupStorageInterceptor, syncToFirebase } = await import('./lib/sync');
+          setupStorageInterceptor(guestId);
+          await syncToFirebase(guestId);
+        } catch (e) {
+          console.error("Failed to setup guest sync", e);
+        }
       }
       setIsDataReady(true);
     };
@@ -455,9 +489,21 @@ function Layout({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const handleNameComplete = () => {
+  const handleNameComplete = async () => {
     setShowNameModal(false);
     setKey((prev) => prev + 1); // Refresh layout components that depend on localstorage
+    
+    if (isSignedIn === false) {
+      const guestId = window.localStorage.getItem('guestId');
+      if (guestId) {
+        try {
+          const { syncToFirebase } = await import('./lib/sync');
+          await syncToFirebase(guestId);
+        } catch (e) {
+          console.error("Failed to sync guest name", e);
+        }
+      }
+    }
   };
 
   if (isSignedIn !== undefined && !isDataReady && isSignedIn) {
@@ -643,15 +689,27 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   useEffect(() => {
-    try {
-      const prefs = JSON.parse(localStorage.getItem("systemPrefs") || "{}");
-      if (prefs.darkMode) {
-        document.documentElement.classList.add("dark-mode");
-      } else {
-        document.documentElement.classList.remove("dark-mode");
-      }
-    } catch (e) {}
+    const applyStoreEffects = () => {
+      try {
+        const active = JSON.parse(localStorage.getItem('active_rewards') || '[]');
+        const prefs = JSON.parse(localStorage.getItem("systemPrefs") || "{}");
+        
+        if (active.includes('dark_mode_extreme') || prefs.darkMode) {
+          document.documentElement.classList.add("dark-mode");
+        } else {
+          document.documentElement.classList.remove("dark-mode");
+        }
 
+        if (active.includes('focus_shield')) {
+          document.documentElement.classList.add("focus-shield-active");
+        } else {
+          document.documentElement.classList.remove("focus-shield-active");
+        }
+      } catch (e) {}
+    };
+
+    applyStoreEffects();
+    window.addEventListener('rewards_updated', applyStoreEffects);
 
     // Track total site visits
     const recordVisit = async () => {
@@ -675,6 +733,10 @@ export default function App() {
       }
     };
     recordVisit();
+
+    return () => {
+      window.removeEventListener('rewards_updated', applyStoreEffects);
+    };
   }, []);
 
   return (
