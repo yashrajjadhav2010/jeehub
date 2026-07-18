@@ -23,21 +23,13 @@ export default function Result() {
     setExplainingIds(prev => [...prev, q.id]);
     
     try {
-      const res = await fetch('/api/groq/chat', {
+      const res = await fetch('/api/explain', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [
-            {
-              role: 'system',
-              content: "You are Axiom, an expert JEE preparation AI. Explain the step-by-step solution mathematically and logically. Provide the final answer at the end clearly. Keep your response in Markdown, using LaTeX formatting (Use SINGLE $ for inline math like $x^2$, and DOUBLE $$ for block math like $$x^2+y^2=z^2$$). IMPORTANT: Ensure all LaTeX environments like \\begin{cases} are properly closed with \\end{cases} and avoid syntax errors. Keep it concise and instructional. Do not show code, just text with math formulas."
-            },
-            {
-              role: 'user',
-              content: `Question: ${q.question}\nOptions: ${JSON.stringify(q.options || [])}\nCorrect Answer Index: ${q.answer}`
-            }
-          ]
+          question: q.question,
+          options: q.options || [],
+          answer: q.answer
         })
       });
       
@@ -47,7 +39,7 @@ export default function Result() {
           if (!prev) return prev;
           const newResult = { ...prev };
           const newQuestions = [...newResult.quizSet.questions];
-          newQuestions[i] = { ...newQuestions[i], explanation: data.choices?.[0]?.message?.content || "Explanation could not be generated." };
+          newQuestions[i] = { ...newQuestions[i], explanation: data.explanation };
           newResult.quizSet = { ...newResult.quizSet, questions: newQuestions };
           return newResult;
         });
