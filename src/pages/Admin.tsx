@@ -369,8 +369,8 @@ export default function Admin() {
     setSaveMessage('');
   };
   
-  const handleSaveSet = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveSet = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!newSet.title || !newSet.chapter || !newSet.description || questions.length === 0) return;
     
     // validate questions
@@ -391,6 +391,7 @@ export default function Admin() {
       const formattedQs = questions.map((q, index) => ({
         id: (q as any).id || `q_${index}_${Date.now()}`,
         question: q.text,
+        diagramUrl: (q as any).diagramUrl || '',
         options: q.options,
         answer: q.correctOptionIndex,
         explanation: q.explanation || '',
@@ -486,6 +487,7 @@ export default function Admin() {
           const formattedQs = (quizSet.questions || []).map((q: any, index: number) => ({
             id: q.id || `${setId}_q_${index}`,
             question: q.question || q.text || '',
+            diagramUrl: q.diagramUrl || '',
             options: q.options || [],
             answer: q.answer !== undefined ? q.answer : (q.correctOptionIndex !== undefined ? q.correctOptionIndex : 0),
             explanation: q.explanation || '',
@@ -982,6 +984,19 @@ export default function Admin() {
                           />
                         </div>
                       </div>
+                      
+                      {editingSet && (
+                        <div className="mt-4 pt-4 border-t border-emerald-50 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => handleSaveSet()}
+                            disabled={savingSet}
+                            className="px-4 py-2 bg-emerald-50 text-primary border border-emerald-200 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-100 transition-all flex items-center gap-2"
+                          >
+                            {savingSet ? 'Saving...' : <><Save size={14} /> Update Test Set</>}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

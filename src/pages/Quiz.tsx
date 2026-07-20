@@ -26,6 +26,7 @@ export default function Quiz() {
   const [visited, setVisited] = useState<Record<number, boolean>>({ 0: true });
    const [timeLeft, setTimeLeft] = useState(0);
   const [questionTime, setQuestionTime] = useState(0);
+  const [questionTimes, setQuestionTimes] = useState<Record<string, number>>({});
   const [isFinished, setIsFinished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showSolution, setShowSolution] = useState(false);
@@ -129,10 +130,14 @@ export default function Quiz() {
               setVisited(parsed.visited);
               setMarkedForReview(parsed.markedForReview);
               setSolutionViewed(parsed.solutionViewed);
+              if (parsed.questionTimes) {
+                setQuestionTimes(parsed.questionTimes);
+              }
               setIsStarted(true); // Auto-resume if session exists
             } catch (e) {
               console.error("Error parsing saved session", e);
-              const defaultDuration = subjectId === 'mock-tests' ? 10800 : (subjectId === 'pyq' ? 0 : data.questions.length * 90);
+              const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+              const defaultDuration = subjectId === 'mock-tests' ? 10800 : (isUnlimitedTime ? 0 : data.questions.length * 90);
               setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
               const initialAnswers = data.questions.reduce((acc, q) => {
                 acc[q.id] = null;
@@ -141,7 +146,8 @@ export default function Quiz() {
               setAnswers(initialAnswers);
             }
           } else {
-            const defaultDuration = subjectId === 'mock-tests' ? 10800 : (subjectId === 'pyq' ? 0 : data.questions.length * 90);
+            const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+            const defaultDuration = subjectId === 'mock-tests' ? 10800 : (isUnlimitedTime ? 0 : data.questions.length * 90);
             setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
             const initialAnswers = data.questions.reduce((acc, q) => {
               acc[q.id] = null;
@@ -166,7 +172,8 @@ export default function Quiz() {
         currentIdx,
         visited,
         markedForReview,
-        solutionViewed
+        solutionViewed,
+        questionTimes
       };
       localStorage.setItem(sessionKey, JSON.stringify(sessionData));
     }
@@ -174,19 +181,26 @@ export default function Quiz() {
       const sessionKey = `quiz_session_${subjectId}_${chapterId}_${setId}`;
       localStorage.removeItem(sessionKey);
     }
-  }, [answers, timeLeft, currentIdx, visited, markedForReview, solutionViewed, isStarted, isFinished, subjectId, chapterId, setId]);
+  }, [answers, timeLeft, currentIdx, visited, markedForReview, solutionViewed, questionTimes, isStarted, isFinished, subjectId, chapterId, setId]);
 
   useEffect(() => {
     if (isFinished || !isStarted) return;
-    const isPyq = subjectId === 'pyq';
-    if (!isPyq && timeLeft <= 0) return;
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+    if (!isUnlimitedTime && timeLeft <= 0) return;
     
     const timer = setInterval(() => {
-      setTimeLeft((prev) => isPyq ? prev + 1 : prev - 1);
+      setTimeLeft((prev) => isUnlimitedTime ? prev + 1 : prev - 1);
       setQuestionTime((prev) => prev + 1);
+      if (quizSet?.questions[currentIdx]) {
+        const qId = quizSet.questions[currentIdx].id;
+        setQuestionTimes((prev) => ({
+          ...prev,
+          [qId]: (prev[qId] || 0) + 1
+        }));
+      }
     }, 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isFinished, isStarted, subjectId]);
+  }, [timeLeft, isFinished, isStarted, subjectId, setId, currentIdx, quizSet]);
 
   const exitFullScreen = () => {
     if (document.fullscreenElement && document.exitFullscreen) {
@@ -197,23 +211,26 @@ export default function Quiz() {
   const handleFinish = useCallback(() => {
     setIsFinished(true);
     exitFullScreen();
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
     const results = {
       subjectId,
       chapterId,
       setId,
       answers,
-      timeTaken: subjectId === 'pyq' ? timeLeft : (quizSet?.duration ? quizSet.duration * 60 : (subjectId === 'mock-tests' ? 10800 : (quizSet?.questions.length || 0) * 90)) - timeLeft,
+      timeTaken: isUnlimitedTime ? timeLeft : (quizSet?.duration ? quizSet.duration * 60 : (subjectId === 'mock-tests' ? 10800 : (quizSet?.questions.length || 0) * 90)) - timeLeft,
+      questionTimes,
       quizSet
     };
     localStorage.setItem('lastQuizResult', JSON.stringify(results));
     navigate('/result');
-  }, [answers, timeLeft, quizSet, subjectId, chapterId, setId, navigate]);
+  }, [answers, timeLeft, quizSet, subjectId, chapterId, setId, questionTimes, navigate]);
 
   useEffect(() => {
-    if (isStarted && !isFinished && timeLeft === 0 && quizSet && subjectId !== 'pyq') {
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+    if (isStarted && !isFinished && timeLeft === 0 && quizSet && !isUnlimitedTime) {
       handleFinish();
     }
-  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet, subjectId]);
+  }, [timeLeft, isStarted, isFinished, handleFinish, quizSet, subjectId, setId]);
 
   useEffect(() => {
     setQuestionTime(0);
@@ -363,7 +380,7 @@ export default function Quiz() {
            )}
            <div className="flex justify-between items-center">
              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Estimated Duration</span>
-             <span className="text-sm font-bold uppercase">{subjectId === 'pyq' ? 'No Time Limit' : formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)}</span>
+             <span className="text-sm font-bold uppercase">{subjectId === 'pyq' || setId === 'ranker-set' ? 'No Time Limit' : formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)}</span>
            </div>
         </div>
 
@@ -402,6 +419,7 @@ export default function Quiz() {
   // Extract exam tag (e.g., JEE Main 2024)
   let _qText = currentQuestion?.question || (currentQuestion as any)?.text || "";
   let _eText = currentQuestion?.explanation || "";
+  let _diagramUrl = (currentQuestion as any)?.diagramUrl || "";
   let _examTag = null;
 
   const qMatch = _qText ? _qText.match(/\s*\((JEE[^)]+)\)\s*$/i) : null;
@@ -594,6 +612,11 @@ export default function Quiz() {
                       >
                         {_qText}
                       </ReactMarkdown>
+                      {_diagramUrl && (
+                        <div className="mt-8 rounded-3xl overflow-hidden border border-emerald-100 shadow-sm">
+                          <img src={_diagramUrl} alt="Question Diagram" className="w-full max-w-2xl mx-auto block" referrerPolicy="no-referrer" />
+                        </div>
+                      )}
                    </div>
 
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
@@ -1123,7 +1146,7 @@ export default function Quiz() {
                 <div className="flex justify-between items-center bg-emerald-50/50 px-4 py-3 rounded-xl border border-emerald-100">
                   <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900/60">Duration</span>
                   <span className="text-sm font-black text-emerald-950">
-                    {quizSet ? (subjectId === 'pyq' ? 'No Time Limit' : formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)) : "N/A"}
+                    {quizSet ? (subjectId === 'pyq' || setId === 'ranker-set' ? 'No Time Limit' : formatTime(quizSet.duration ? quizSet.duration * 60 : quizSet.questions.length * 90)) : "N/A"}
                   </span>
                 </div>
 

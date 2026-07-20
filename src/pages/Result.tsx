@@ -155,11 +155,33 @@ export default function Result() {
 
   const { quizSet } = result;
 
-  const attemptCount = result.correct + result.wrong;
-  const timePerAttemptMin = attemptCount > 0 ? (result.timeTaken / 60) / attemptCount : 0;
-  const timeCorrectMin = Number((result.correct * timePerAttemptMin).toFixed(2));
-  const timeIncorrectMin = Number((result.wrong * timePerAttemptMin).toFixed(2));
-  const timeSkippedMin = 0;
+  let timeCorrectMin = 0;
+  let timeIncorrectMin = 0;
+  let timeSkippedMin = 0;
+
+  if (result.questionTimes) {
+    quizSet.questions.forEach((q) => {
+      const timeSpent = (result.questionTimes[q.id] || 0) / 60;
+      const selected = result.answers[q.id];
+      if (selected === null || selected === undefined) {
+        timeSkippedMin += timeSpent;
+      } else if (selected === q.answer) {
+        timeCorrectMin += timeSpent;
+      } else {
+        timeIncorrectMin += timeSpent;
+      }
+    });
+    timeCorrectMin = Number(timeCorrectMin.toFixed(2));
+    timeIncorrectMin = Number(timeIncorrectMin.toFixed(2));
+    timeSkippedMin = Number(timeSkippedMin.toFixed(2));
+  } else {
+    const attemptCount = result.correct + result.wrong;
+    const timePerAttemptMin = attemptCount > 0 ? (result.timeTaken / 60) / attemptCount : 0;
+    timeCorrectMin = Number((result.correct * timePerAttemptMin).toFixed(2));
+    timeIncorrectMin = Number((result.wrong * timePerAttemptMin).toFixed(2));
+    timeSkippedMin = 0;
+  }
+
   const totalTimeMin = (result.timeTaken / 60).toFixed(2);
   const totalAllocatedTimeMin = quizSet.questions.length * 1.5;
 
@@ -383,6 +405,11 @@ export default function Result() {
                             <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                               {q.question}
                             </ReactMarkdown>
+                            {q.diagramUrl && (
+                              <div className="mt-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-sm">
+                                <img src={q.diagramUrl} alt="Question Diagram" className="w-full max-w-lg block" referrerPolicy="no-referrer" />
+                              </div>
+                            )}
                           </div>
                         </h4>
                         
