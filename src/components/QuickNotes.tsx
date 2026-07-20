@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { StickyNote, X, Plus, Trash2, Edit2, Check, Download } from "lucide-react";
 import { cn } from "../lib/utils";
 import { jsPDF } from "jspdf";
+import { useUser } from "@clerk/clerk-react";
 
 interface Note {
   id: string;
@@ -13,6 +14,8 @@ interface Note {
 
 export function QuickNotes() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isSignedIn } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
@@ -106,6 +109,11 @@ export function QuickNotes() {
   };
 
   const downloadNotesPDF = () => {
+    if (!isSignedIn) {
+      setIsOpen(false);
+      navigate('/sign-in');
+      return;
+    }
     if (notes.length === 0) return;
 
     const doc = new jsPDF();

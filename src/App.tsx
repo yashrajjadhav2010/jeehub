@@ -689,6 +689,25 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   useEffect(() => {
+    // Time tracking logic
+    let interval: NodeJS.Timeout;
+    try {
+      const storedTime = localStorage.getItem('totalTimeSpent');
+      if (!storedTime) {
+        localStorage.setItem('totalTimeSpent', '0');
+      }
+      interval = setInterval(() => {
+        const currentTime = parseInt(localStorage.getItem('totalTimeSpent') || '0', 10);
+        localStorage.setItem('totalTimeSpent', (currentTime + 1).toString());
+      }, 60000); // 1 minute
+    } catch (e) {
+      console.error('Time tracking error', e);
+    }
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     const applyStoreEffects = () => {
       try {
         const active = JSON.parse(localStorage.getItem('active_rewards') || '[]');

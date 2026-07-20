@@ -125,7 +125,9 @@ export default function ChapterSelection() {
         <div className="max-w-4xl mx-auto space-y-4">
           <AnimatePresence>
             {selectedChapter.sets.map((set, idx) => {
-              const isLocked = idx > 0 && !isSignedIn;
+              const currentSetKey = `${subjectId}_${selectedChapter.id}_${set.id}`;
+              const guestSet = localStorage.getItem('guest_attempted_set');
+              const isLocked = !isSignedIn && (guestSet ? guestSet !== currentSetKey : idx > 0);
               return (
               <motion.div
                 key={set.id}

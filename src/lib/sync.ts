@@ -18,7 +18,8 @@ export const syncKeys = [
   'jee_tapasya_quick_notes',
   'coins',
   'referralCode',
-  'referredBy'
+  'referredBy',
+  'totalTimeSpent'
 ];
 
 let originalSetItem: any = null;

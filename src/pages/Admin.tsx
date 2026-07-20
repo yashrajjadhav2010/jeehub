@@ -66,6 +66,7 @@ export default function Admin() {
   // Active Tab
   const [activeTab, setActiveTab] = useState<'dashboard' | 'manage_sets' | 'create_set' | 'manage_notes' | 'users' | 'reports' | 'surveys'>('dashboard');
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [userFilter, setUserFilter] = useState<'registered' | 'guest'>('registered');
 
   const fetchStats = async () => {
     try {
@@ -87,7 +88,14 @@ export default function Admin() {
         let totalSolved = 0;
         let correctAnswers = 0;
         let streak = 0;
+        let timeSpent = 0;
         let errorBookData = [];
+
+        if (data?.data?.totalTimeSpent) {
+          try {
+            timeSpent = parseInt(data.data.totalTimeSpent, 10);
+          } catch(e) {}
+        }
 
         if (data?.data?.errorBook) {
           try {
@@ -116,6 +124,7 @@ export default function Admin() {
           id: doc.id,
           email: data.email || 'Unknown Email',
           name: data.name || 'Unknown User',
+          isGuest: data.isGuest || doc.id.startsWith('guest_') || data.email === 'Guest User',
           errors: userErrors,
           errorBookData,
           score: userScore,
@@ -123,6 +132,7 @@ export default function Admin() {
           totalSolved: totalSolved,
           correctAnswers: correctAnswers,
           streak: streak,
+          timeSpent: timeSpent,
           lastActive: data.updated_at ? new Date(data.updated_at.seconds * 1000).toLocaleString() : 'Unknown'
         });
       });
@@ -1229,6 +1239,10 @@ export default function Admin() {
                     <div className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-1">Correct Answers</div>
                     <div className="text-xl font-black text-emerald-600">{selectedUser.correctAnswers}</div>
                   </div>
+                  <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 mb-1">Time Spent</div>
+                    <div className="text-xl font-black text-blue-500">{selectedUser.timeSpent}m</div>
+                  </div>
                 </div>
 
                 <h3 className="text-lg font-black text-emerald-950 uppercase tracking-tight mb-4">Error Breakdown (Topics with most mistakes)</h3>
@@ -1256,10 +1270,26 @@ export default function Admin() {
               </div>
             ) : (
               <>
-                <h2 className="text-xl font-black text-emerald-950 uppercase tracking-tight mb-6 flex items-center gap-3">
-                  <Users className="text-primary" size={24} /> 
-                  User Profiles
-                </h2>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                  <h2 className="text-xl font-black text-emerald-950 uppercase tracking-tight flex items-center gap-3">
+                    <Users className="text-primary" size={24} /> 
+                    User Profiles
+                  </h2>
+                  <div className="flex bg-emerald-50/50 p-1 rounded-xl">
+                    <button
+                      onClick={() => setUserFilter('registered')}
+                      className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${userFilter === 'registered' ? 'bg-white text-emerald-900 shadow-sm' : 'text-emerald-900/40 hover:text-emerald-900/60'}`}
+                    >
+                      Registered
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('guest')}
+                      className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${userFilter === 'guest' ? 'bg-white text-emerald-900 shadow-sm' : 'text-emerald-900/40 hover:text-emerald-900/60'}`}
+                    >
+                      Guests
+                    </button>
+                  </div>
+                </div>
                 
                 {/* Desktop Table */}
                 <div className="hidden sm:block overflow-x-auto">
@@ -1271,17 +1301,18 @@ export default function Admin() {
                         <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Score</th>
                         <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Attempted</th>
                         <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Correct</th>
+                        <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Time</th>
                         <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Errors</th>
                         <th className="py-4 px-4 text-xs font-black uppercase tracking-widest text-emerald-900/40">Last Active</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {usersList.length === 0 ? (
+                      {usersList.filter(u => userFilter === 'guest' ? u.isGuest : !u.isGuest).length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="py-8 text-center text-emerald-900/40 font-medium">No users found or still loading...</td>
+                          <td colSpan={8} className="py-8 text-center text-emerald-900/40 font-medium">No users found or still loading...</td>
                         </tr>
                       ) : (
-                        usersList.map((u, i) => (
+                        usersList.filter(u => userFilter === 'guest' ? u.isGuest : !u.isGuest).map((u, i) => (
                           <tr key={i} onClick={() => setSelectedUser(u)} className="border-b border-emerald-50 hover:bg-emerald-50 cursor-pointer transition-colors">
                             <td className="py-4 px-4">
                               <div className="font-bold text-emerald-950">{u.name}</div>
@@ -1291,6 +1322,7 @@ export default function Admin() {
                             <td className="py-4 px-4 font-bold text-primary">{u.score}</td>
                             <td className="py-4 px-4 font-bold text-indigo-500">{u.totalSolved}</td>
                             <td className="py-4 px-4 font-bold text-emerald-600">{u.correctAnswers}</td>
+                            <td className="py-4 px-4 font-bold text-blue-500">{u.timeSpent}m</td>
                             <td className="py-4 px-4 font-bold text-red-500">{u.errors}</td>
                             <td className="py-4 px-4 text-sm text-emerald-900/60">{u.lastActive}</td>
                           </tr>
@@ -1302,10 +1334,10 @@ export default function Admin() {
 
             {/* Mobile Cards for comfortable user experience */}
             <div className="sm:hidden space-y-4">
-              {usersList.length === 0 ? (
+              {usersList.filter(u => userFilter === 'guest' ? u.isGuest : !u.isGuest).length === 0 ? (
                 <div className="text-center text-emerald-900/40 py-8">No users found or still loading...</div>
               ) : (
-                usersList.map((u, i) => (
+                usersList.filter(u => userFilter === 'guest' ? u.isGuest : !u.isGuest).map((u, i) => (
                   <div key={i} onClick={() => setSelectedUser(u)} className="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100/50 space-y-2 cursor-pointer hover:bg-emerald-50">
                     <div className="flex justify-between items-start">
                       <div>
@@ -1327,6 +1359,10 @@ export default function Admin() {
                       <div>
                         <span className="text-emerald-900/40 font-bold uppercase tracking-wider block">Correct</span>
                         <span className="font-bold text-emerald-600">{u.correctAnswers}</span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-emerald-900/40 font-bold uppercase tracking-wider block">Time Spent</span>
+                        <span className="font-bold text-blue-500">{u.timeSpent} mins</span>
                       </div>
                     </div>
                     <div className="text-[10px] text-emerald-900/40 pt-1 text-right border-t border-emerald-50/50 flex justify-between">

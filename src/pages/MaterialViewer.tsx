@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "motion/react";
 import { jsPDF } from "jspdf";
 import {
@@ -1938,12 +1939,29 @@ const FlashcardViewer = ({ content }: { content: string }) => {
 
 export default function MaterialViewer() {
   const { materialId } = useParams();
+  const navigate = useNavigate();
+  const { isSignedIn, isLoaded } = useUser();
   const [data, setData] = useState<MaterialData | null>(null);
   const [viewMode, setViewMode] = useState<"notes" | "flashcards">("notes");
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportDescription, setReportDescription] = useState('');
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      navigate('/sign-in');
+    }
+  }, [isLoaded, isSignedIn, navigate]);
+
+  if (!isLoaded || !isSignedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-emerald-900/40">Authenticating Operator...</span>
+      </div>
+    );
+  }
 
   const handleReportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
