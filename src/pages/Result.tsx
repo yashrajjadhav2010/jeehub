@@ -158,6 +158,8 @@ export default function Result() {
   let timeCorrectMin = 0;
   let timeIncorrectMin = 0;
   let timeSkippedMin = 0;
+  
+  const attemptCount = result.correct + result.wrong;
 
   if (result.questionTimes) {
     quizSet.questions.forEach((q) => {
@@ -175,7 +177,6 @@ export default function Result() {
     timeIncorrectMin = Number(timeIncorrectMin.toFixed(2));
     timeSkippedMin = Number(timeSkippedMin.toFixed(2));
   } else {
-    const attemptCount = result.correct + result.wrong;
     const timePerAttemptMin = attemptCount > 0 ? (result.timeTaken / 60) / attemptCount : 0;
     timeCorrectMin = Number((result.correct * timePerAttemptMin).toFixed(2));
     timeIncorrectMin = Number((result.wrong * timePerAttemptMin).toFixed(2));
