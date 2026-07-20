@@ -136,9 +136,10 @@ export default function Quiz() {
               setIsStarted(true); // Auto-resume if session exists
             } catch (e) {
               console.error("Error parsing saved session", e);
-              const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+              const checkTitle = quizSet?.title || (typeof data !== 'undefined' ? data.title : '');
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set' || checkTitle?.toLowerCase().includes('ranker');
               const defaultDuration = subjectId === 'mock-tests' ? 10800 : (isUnlimitedTime ? 0 : data.questions.length * 90);
-              setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
+              setTimeLeft((data.duration && !isUnlimitedTime) ? data.duration * 60 : defaultDuration);
               const initialAnswers = data.questions.reduce((acc, q) => {
                 acc[q.id] = null;
                 return acc;
@@ -146,9 +147,10 @@ export default function Quiz() {
               setAnswers(initialAnswers);
             }
           } else {
-            const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+            const checkTitle = quizSet?.title || (typeof data !== 'undefined' ? data.title : '');
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set' || checkTitle?.toLowerCase().includes('ranker');
             const defaultDuration = subjectId === 'mock-tests' ? 10800 : (isUnlimitedTime ? 0 : data.questions.length * 90);
-            setTimeLeft(data.duration ? data.duration * 60 : defaultDuration);
+            setTimeLeft((data.duration && !isUnlimitedTime) ? data.duration * 60 : defaultDuration);
             const initialAnswers = data.questions.reduce((acc, q) => {
               acc[q.id] = null;
               return acc;
@@ -185,7 +187,8 @@ export default function Quiz() {
 
   useEffect(() => {
     if (isFinished || !isStarted) return;
-    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+    const checkTitle = quizSet?.title || (typeof data !== 'undefined' ? data.title : '');
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set' || checkTitle?.toLowerCase().includes('ranker');
     if (!isUnlimitedTime && timeLeft <= 0) return;
     
     const timer = setInterval(() => {
@@ -211,7 +214,8 @@ export default function Quiz() {
   const handleFinish = useCallback(() => {
     setIsFinished(true);
     exitFullScreen();
-    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+    const checkTitle = quizSet?.title || (typeof data !== 'undefined' ? data.title : '');
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set' || checkTitle?.toLowerCase().includes('ranker');
     const results = {
       subjectId,
       chapterId,
@@ -226,7 +230,8 @@ export default function Quiz() {
   }, [answers, timeLeft, quizSet, subjectId, chapterId, setId, questionTimes, navigate]);
 
   useEffect(() => {
-    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set';
+    const checkTitle = quizSet?.title || (typeof data !== 'undefined' ? data.title : '');
+    const isUnlimitedTime = subjectId === 'pyq' || setId === 'ranker-set' || checkTitle?.toLowerCase().includes('ranker');
     if (isStarted && !isFinished && timeLeft === 0 && quizSet && !isUnlimitedTime) {
       handleFinish();
     }
