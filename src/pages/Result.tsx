@@ -69,8 +69,8 @@ export default function Result() {
 
       quizSet.questions.forEach((q: any) => {
         const selected = answers[q.id];
-        if (selected === null) skipped++;
-        else if (selected === q.answer) correct++;
+        if (selected === null || selected === undefined || selected === '') skipped++;
+        else if (String(selected).trim() === String(q.answer).trim()) correct++;
         else {
           wrong++;
           if (!errorBook.find((item: any) => item.id === q.id)) {
