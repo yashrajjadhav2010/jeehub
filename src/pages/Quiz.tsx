@@ -22,7 +22,7 @@ export default function Quiz() {
   
   const [quizSet, setQuizSet] = useState<QuizSet | null>(null);
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number | null>>({});
+  const [answers, setAnswers] = useState<Record<string, number | string | null>>({});
   const [markedForReview, setMarkedForReview] = useState<Record<string, boolean>>({});
   const [visited, setVisited] = useState<Record<number, boolean>>({ 0: true });
    const [timeLeft, setTimeLeft] = useState(0);
@@ -409,18 +409,19 @@ export default function Quiz() {
   // Extract exam tag (e.g., JEE Main 2024)
   let _qText = currentQuestion?.question || (currentQuestion as any)?.text || "";
   let _eText = currentQuestion?.explanation || "";
-  let _diagramUrl = (currentQuestion as any)?.diagramUrl || "";
-  let _examTag = null;
+  let _diagramUrl = currentQuestion?.diagramUrl || (currentQuestion as any)?.diagram || "";
+  let _examTag = currentQuestion?.year || (currentQuestion as any)?.examTag || null;
 
   const qMatch = _qText ? _qText.match(/\s*\((JEE[^)]+)\)\s*$/i) : null;
   if (qMatch) {
-    _examTag = qMatch[1];
+    _examTag = _examTag || qMatch[1];
     _qText = _qText.replace(qMatch[0], '');
   }
 
   const examRefMatch = _qText ? _qText.match(/\*?\*?Exam Reference:\*?\*?\s*(JEE[^\n*]+)/i) : null;
-  if (examRefMatch && !_examTag) {
-    _examTag = examRefMatch[1].trim();
+  if (examRefMatch) {
+    _examTag = _examTag || examRefMatch[1].trim();
+    _qText = _qText.replace(examRefMatch[0], '');
   }
 
   if (_eText) {
@@ -619,24 +620,79 @@ export default function Quiz() {
                         <div className="flex flex-col items-start gap-4 col-span-1 sm:col-span-2">
                           <label className="text-sm font-black uppercase tracking-widest text-emerald-800">Numerical Value Answer</label>
                           <input 
-                            type="number"
+                            type="text"
+                            inputMode="decimal"
                             disabled={solutionViewed[currentQuestion.id]}
-                            value={answers[currentQuestion.id] === null ? '' : answers[currentQuestion.id]}
+                            value={answers[currentQuestion.id] === null || answers[currentQuestion.id] === undefined ? '' : answers[currentQuestion.id]}
                             onChange={(e) => {
                               if (!solutionViewed[currentQuestion.id]) {
-                                const val = e.target.value === '' ? null : Number(e.target.value);
-                                setAnswers(prev => ({ ...prev, [currentQuestion.id]: val }));
+                                const val = e.target.value.trim();
+                                setAnswers(prev => ({ ...prev, [currentQuestion.id]: val === '' ? null : val }));
                               }
                             }}
                             className={cn(
-                              "w-full max-w-sm px-6 py-4 bg-white border-2 rounded-2xl md:rounded-[2rem] text-xl font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all",
+                              "w-full max-w-sm px-6 py-4 bg-white border-2 rounded-2xl md:rounded-[2rem] text-xl font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all font-mono",
                               solutionViewed[currentQuestion.id] 
-                                ? (answers[currentQuestion.id] === currentQuestion.answer ? "border-emerald-500 bg-emerald-50" : "border-red-500 bg-red-50")
+                                ? (String(answers[currentQuestion.id]).trim() === String(currentQuestion.answer).trim() ? "border-emerald-500 bg-emerald-50" : "border-red-500 bg-red-50")
                                 : "border-emerald-100 focus:border-emerald-500 hover:border-emerald-200"
                             )}
-                            placeholder="Enter your integer answer"
+                            placeholder="Type or click keypad below"
                           />
-                          {showSolution && answers[currentQuestion.id] !== currentQuestion.answer && (
+
+                          {/* NTA-style Virtual Numeric Keypad */}
+                          <div className="p-4 bg-emerald-50/60 border border-emerald-100 rounded-2xl max-w-sm w-full shadow-inner">
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-900/60">NTA Virtual Keypad</span>
+                              <span className="text-[9px] font-bold text-emerald-600 bg-emerald-100/70 px-2 py-0.5 rounded">Numerical Entry</span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                              {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '-'].map((key) => (
+                                <button
+                                  key={key}
+                                  type="button"
+                                  disabled={solutionViewed[currentQuestion.id]}
+                                  onClick={() => {
+                                    if (solutionViewed[currentQuestion.id]) return;
+                                    const currentVal = answers[currentQuestion.id] === null || answers[currentQuestion.id] === undefined ? '' : String(answers[currentQuestion.id]);
+                                    if (key === '-' && currentVal.length > 0) return;
+                                    if (key === '.' && currentVal.includes('.')) return;
+                                    setAnswers(prev => ({ ...prev, [currentQuestion.id]: currentVal + key }));
+                                  }}
+                                  className="h-11 bg-white hover:bg-primary hover:text-white border border-emerald-200 rounded-xl font-black text-lg text-emerald-950 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                >
+                                  {key}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 mt-2">
+                              <button
+                                type="button"
+                                disabled={solutionViewed[currentQuestion.id]}
+                                onClick={() => {
+                                  if (solutionViewed[currentQuestion.id]) return;
+                                  const currentVal = answers[currentQuestion.id] === null || answers[currentQuestion.id] === undefined ? '' : String(answers[currentQuestion.id]);
+                                  const newVal = currentVal.slice(0, -1);
+                                  setAnswers(prev => ({ ...prev, [currentQuestion.id]: newVal === '' ? null : newVal }));
+                                }}
+                                className="h-10 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-xs uppercase tracking-wider text-amber-900 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                              >
+                                Backspace
+                              </button>
+                              <button
+                                type="button"
+                                disabled={solutionViewed[currentQuestion.id]}
+                                onClick={() => {
+                                  if (solutionViewed[currentQuestion.id]) return;
+                                  setAnswers(prev => ({ ...prev, [currentQuestion.id]: null }));
+                                }}
+                                className="h-10 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl font-bold text-xs uppercase tracking-wider text-red-700 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                              >
+                                Clear
+                              </button>
+                            </div>
+                          </div>
+
+                          {showSolution && String(answers[currentQuestion.id]).trim() !== String(currentQuestion.answer).trim() && (
                             <div className="px-4 py-2 bg-emerald-500/10 text-emerald-700 rounded-xl text-sm font-bold border border-emerald-500/20">
                               Correct Answer: {currentQuestion.answer}
                             </div>
