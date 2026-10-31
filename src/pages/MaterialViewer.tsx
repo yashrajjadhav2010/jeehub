@@ -266,10 +266,10 @@ Minimum velocity needed to escape Earth's gravity.
 
 ### Class 11 Mathematics | JEE Main + Advanced
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 1. BASIC CONCEPTS
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ━━━━━━━━━━
 
 **1.1 Inclination of a Line**
 
@@ -299,9 +299,9 @@ Special cases:
 * Positive slope: Line rises from left to right.
 * Negative slope: Line falls from left to right.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 2. EQUATIONS OF A STRAIGHT LINE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 **2.1 Slope-Intercept Form**
 
@@ -360,9 +360,9 @@ d = |C|/√(A² + B²)
 
 **Important:** Every straight line can be represented in general form.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 3. ANGLE BETWEEN TWO LINES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 If slopes are m₁ and m₂:
 
@@ -394,9 +394,9 @@ Angle between them:
 
 tan θ = |(A₁B₂ - A₂B₁)/(A₁A₂ + B₁B₂)|
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 4. PARALLEL AND PERPENDICULAR LINES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 **Parallel Lines**
 
@@ -426,9 +426,9 @@ A(x - x₁) + B(y - y₁) = 0
 
 B(x - x₁) - A(y - y₁) = 0
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 5. DISTANCE FORMULAS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 **5.1 Distance of a Point from a Line**
 
@@ -458,9 +458,9 @@ IMPORTANT: Coefficients of x and y must be identical before applying the formula
 
 d = √[(x₂ - x₁)² + (y₂ - y₁)²]
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 6. FAMILY OF STRAIGHT LINES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 **6.1 Lines Passing Through Intersection of Two Lines**
 
@@ -486,9 +486,9 @@ Ax + By + λ = 0
 
 Bx - Ay + λ = 0
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 7. CONCURRENCY OF THREE LINES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 Three lines:
 
@@ -504,9 +504,9 @@ They are concurrent if:
 | A₂  B₂  C₂ | = 0
 | A₃  B₃  C₃ |
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 8. ANGLE BISECTORS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 For two lines:
 
@@ -525,9 +525,9 @@ There are two angle bisectors:
 
 Both bisectors are mutually perpendicular.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 9. IMPORTANT RESULTS RELATED TO COORDINATE GEOMETRY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 **9.1 Centroid of a Triangle**
 
@@ -555,9 +555,9 @@ Point of intersection of internal angle bisectors.
 
 Point of intersection of perpendicular bisectors of the sides.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 10. IMPORTANT JEE SPECIAL RESULTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 **10.1 Area of Triangle**
 
@@ -607,9 +607,9 @@ Reflection P':
 
 P' = (x₁-2AD, y₁-2BD)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 11. SHIFTING OF ORIGIN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 If the origin is shifted to (h,k), the new coordinates are (X,Y).
 
@@ -625,9 +625,9 @@ New equation:
 
 AX + BY + Ah + Bk + C = 0
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 12. IMPORTANT JEE SHORTCUTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 1. Slope of a line perpendicular to another line:
 
@@ -669,9 +669,9 @@ y = -x
 
 |C|/√(A²+B²)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 13. JEE EXAM IMPORTANT POINTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 * Never use slope formula directly for a vertical line.
 * In normal form, p is always non-negative when α is chosen appropriately.
@@ -683,9 +683,9 @@ y = -x
 * For a family of lines passing through the intersection of two lines, use L₁+λL₂=0.
 * A determinant equal to zero is a powerful test for collinearity and concurrency.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 14. MOST IMPORTANT TOPICS FOR JEE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━
 
 HIGH PRIORITY:
 
