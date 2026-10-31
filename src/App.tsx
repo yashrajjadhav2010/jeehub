@@ -67,7 +67,24 @@ function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    const rafId = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    });
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }, 60);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timer);
+    };
   }, [pathname]);
 
   return null;
@@ -583,10 +600,14 @@ function Layout({ children }: { children: React.ReactNode }) {
       </main>
 
       {!isCleanLayout && (
-        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32 sm:pb-8 border-t border-emerald-50 w-full mt-auto">
+        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32 sm:pb-8 border-t border-emerald-50 w-full mt-auto relative z-20">
           <div className="flex flex-col items-center justify-center w-full gap-8">
             <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-6">
-              <div className="flex items-center gap-3 relative cursor-default shrink-0">
+              <Link 
+                to="/" 
+                onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}
+                className="flex items-center gap-3 relative cursor-pointer shrink-0"
+              >
                 <img
                   src="/JT_LOGO.png"
                   alt="JEE Tapasya Logo"
@@ -596,25 +617,39 @@ function Layout({ children }: { children: React.ReactNode }) {
                   JEE <span className="text-primary not-italic">TAPASYA</span>
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full animate-[shimmer_2s_infinite] z-10 pointer-events-none" />
                 </span>
-              </div>
+              </Link>
 
-              <div className="flex justify-center items-center gap-x-6 gap-y-4 text-center flex-wrap">
-
+              <div className="flex justify-center items-center gap-x-2 sm:gap-x-4 gap-y-2 text-center flex-wrap">
                 <Link
                   to="/documentation"
-                  className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors"
+                  onClick={() => {
+                    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                  }}
+                  className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-emerald-900/60 hover:text-primary transition-all px-3 py-2 rounded-xl hover:bg-emerald-50 active:scale-95 cursor-pointer"
                 >
                   Documentation
                 </Link>
                 <Link
                   to="/privacy"
-                  className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors"
+                  onClick={() => {
+                    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                  }}
+                  className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-emerald-900/60 hover:text-primary transition-all px-3 py-2 rounded-xl hover:bg-emerald-50 active:scale-95 cursor-pointer"
                 >
                   Privacy
                 </Link>
+                <Link
+                  to="/terms"
+                  onClick={() => {
+                    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                  }}
+                  className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-emerald-900/60 hover:text-primary transition-all px-3 py-2 rounded-xl hover:bg-emerald-50 active:scale-95 cursor-pointer"
+                >
+                  Terms
+                </Link>
                 <a
                   href="mailto:jeetapasya@gmail.com"
-                  className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 hover:text-primary transition-colors"
+                  className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-emerald-900/60 hover:text-primary transition-all px-3 py-2 rounded-xl hover:bg-emerald-50 active:scale-95"
                 >
                   Contact Terminal
                 </a>
@@ -811,6 +846,7 @@ export default function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/sign-in/*" element={<Login />} />
             <Route path="/sign-up/*" element={<Register />} />
             <Route path="/subjects" element={<Subjects />} />
