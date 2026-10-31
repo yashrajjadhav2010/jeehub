@@ -44,8 +44,8 @@ const books = [
   {
     id: 'information',
     title: 'Platform Manual',
-    category: 'Guides & Tools',
-    type: 'Documentation',
+    category: 'Video Tour & Guide',
+    type: 'Video Walkthrough',
     icon: Video,
     color: 'bg-[#f6a0b9]',
     lightBg: 'bg-[#fceef2]',
