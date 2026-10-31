@@ -15,6 +15,10 @@ export default function Study() {
        { id: 'laws-of-motion', title: 'Laws of Motion', subject: 'Physics', type: 'Formula Sheet', time: 'Updated', icon: Target, iconColor: 'text-amber-500', iconBg: 'bg-amber-50', iconBorder: 'border-amber-100' },
     ],
     'short-notes': [
+       { id: 'straight-lines-short-notes', title: 'Straight Lines', subject: 'Mathematics', type: 'Revision Notes', time: 'Latest', icon: PenTool, iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50', iconBorder: 'border-emerald-100' },
+       { id: 'circles-short-notes', title: 'Circles & Conics', subject: 'Mathematics', type: 'Revision Notes', time: 'Latest', icon: Compass, iconColor: 'text-rose-600', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
+       { id: 'chemical-bonding-short-notes', title: 'Chemical Bonding', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Network, iconColor: 'text-pink-600', iconBg: 'bg-pink-50', iconBorder: 'border-pink-100' },
+       { id: 'quadratic-equations-short-notes', title: 'Quadratic Equations', subject: 'Mathematics', type: 'Revision Notes', time: 'Latest', icon: Calculator, iconColor: 'text-indigo-600', iconBg: 'bg-indigo-50', iconBorder: 'border-indigo-100' },
        { id: 'unit-and-dimension', title: 'Unit & Dimension', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: TriangleRight, iconColor: 'text-lime-500', iconBg: 'bg-lime-50', iconBorder: 'border-lime-100' },
        { id: 'periodic-properties', title: 'Periodic Properties', subject: 'Chemistry', type: 'Revision Notes', time: 'Latest', icon: Beaker, iconColor: 'text-fuchsia-500', iconBg: 'bg-fuchsia-50', iconBorder: 'border-fuchsia-100' },
        { id: 'vectors-short-notes', title: 'Vector & Calculus', subject: 'Mathematics/Physics', type: 'Revision Notes', time: 'Latest', icon: Compass, iconColor: 'text-sky-500', iconBg: 'bg-sky-50', iconBorder: 'border-sky-100' },
@@ -24,6 +28,8 @@ export default function Study() {
        { id: 'waves', title: 'Waves', subject: 'Physics', type: 'Revision Notes', time: 'Latest', icon: Waves, iconColor: 'text-cyan-500', iconBg: 'bg-cyan-50', iconBorder: 'border-cyan-100' },
     ],
     'mind-maps': [
+       { id: 'straight-lines-mindmap', title: 'Straight Lines', subject: 'Mathematics', type: 'Mind Map', time: 'Latest', icon: PenTool, iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50', iconBorder: 'border-emerald-100' },
+       { id: 'circles-mindmap', title: 'Circles', subject: 'Mathematics', type: 'Mind Map', time: 'Latest', icon: Compass, iconColor: 'text-rose-600', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
        { id: 'kinematics-mindmap', title: 'Kinematics', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Activity, iconColor: 'text-rose-500', iconBg: 'bg-rose-50', iconBorder: 'border-rose-100' },
        { id: 'laws-of-motion-mindmap', title: 'Laws of Motion', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: Target, iconColor: 'text-amber-500', iconBg: 'bg-amber-50', iconBorder: 'border-amber-100' },
        { id: 'unit-dimension-mindmap', title: 'Unit & Dimension', subject: 'Physics', type: 'Mind Map', time: 'Latest', icon: TriangleRight, iconColor: 'text-lime-500', iconBg: 'bg-lime-50', iconBorder: 'border-lime-100' },

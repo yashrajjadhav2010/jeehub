@@ -128,6 +128,7 @@ function ErrorBookContent() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showSolution, setShowSolution] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   useEffect(() => {
     setErrorBook(parseStoredErrorBook());
@@ -165,15 +166,14 @@ function ErrorBookContent() {
   const activeQuestion = filteredErrorBook[safeIndex] || null;
 
   const handleClear = () => {
-    if (window.confirm("Are you sure you want to clear your Error Book?")) {
-      try {
-        localStorage.removeItem('errorBook');
-      } catch (e) {}
-      setErrorBook([]);
-      setCurrentIndex(0);
-      setSelectedAnswer(null);
-      setShowSolution(false);
-    }
+    try {
+      localStorage.removeItem('errorBook');
+    } catch (e) {}
+    setErrorBook([]);
+    setCurrentIndex(0);
+    setSelectedAnswer(null);
+    setShowSolution(false);
+    setShowClearConfirm(false);
   };
 
   const handleRemoveCurrent = () => {
@@ -286,15 +286,32 @@ function ErrorBookContent() {
               })}
             </div>
           )}
-          {errorBook.length > 0 && (
+          {errorBook.length > 0 && !showClearConfirm && (
             <button 
-              onClick={handleClear}
+              onClick={() => setShowClearConfirm(true)}
               className="px-4 py-3 sm:py-2 bg-red-50 text-red-600 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-red-100 transition-colors border border-red-100 flex items-center justify-center gap-2 shrink-0"
               title="Clear all saved errors"
             >
               <Trash2 size={14} className="hidden sm:block" /> 
               <span>Clear All</span>
             </button>
+          )}
+          {showClearConfirm && (
+            <div className="flex items-center gap-2 bg-red-50 border border-red-200 p-1.5 rounded-xl shrink-0 animate-in fade-in">
+              <span className="text-[11px] font-bold text-red-700 px-2">Clear all?</span>
+              <button
+                onClick={handleClear}
+                className="px-2.5 py-1 bg-red-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-red-700 transition-colors"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="px-2.5 py-1 bg-white text-slate-600 border border-slate-200 rounded-lg text-[10px] font-bold hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -382,7 +399,7 @@ function ErrorBookContent() {
           {/* Problem Card */}
           <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-emerald-100 shadow-xl shadow-emerald-900/5 relative">
             {/* Question Text */}
-            <div className="prose prose-emerald max-w-none mb-8 text-base md:text-xl font-medium text-slate-900 leading-relaxed selection:bg-primary/20">
+            <div className="prose prose-emerald max-w-none mb-6 text-base md:text-xl font-medium text-slate-900 leading-relaxed selection:bg-primary/20">
               <ReactMarkdown 
                 remarkPlugins={[remarkMath, remarkGfm]} 
                 rehypePlugins={[[rehypeKatex, { throwOnError: false, strict: false }]]}
@@ -390,6 +407,20 @@ function ErrorBookContent() {
                 {questionText}
               </ReactMarkdown>
             </div>
+
+            {/* Attached Diagram / Illustration */}
+            {activeQuestion?.diagramUrl && (
+              <div className="mb-6 flex justify-center">
+                <div className="max-w-md w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col items-center shadow-xs">
+                  <img
+                    src={activeQuestion.diagramUrl}
+                    alt="Problem Diagram"
+                    className="max-h-72 w-auto object-contain rounded-xl"
+                  />
+                  <span className="text-[10px] text-slate-500 font-medium mt-1.5 uppercase tracking-wider">Figure attached to problem</span>
+                </div>
+              </div>
+            )}
 
             {/* MCQ Options or Numerical Banner */}
             {isMCQ ? (
@@ -480,14 +511,7 @@ function ErrorBookContent() {
                 <div className="w-full sm:w-auto">
                   {!showSolution ? (
                     <button 
-                      onClick={() => {
-                        if (isMCQ && selectedAnswer === null) {
-                          alert("Please select an option first to test yourself, or click again to reveal the explanation.");
-                          setShowSolution(true);
-                          return;
-                        }
-                        setShowSolution(true);
-                      }}
+                      onClick={() => setShowSolution(true)}
                       className="w-full sm:w-auto px-7 py-3.5 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-[0.15em] shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-[1.01] transition-all"
                     >
                       {isMCQ && selectedAnswer !== null ? "Verify Selection" : "Reveal Solution"}

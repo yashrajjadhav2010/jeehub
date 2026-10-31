@@ -28,6 +28,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { cn } from "../lib/utils";
+import { additionalMaterials } from "../data/additionalMaterials";
 
 interface MaterialData {
   id: string;
@@ -39,6 +40,7 @@ interface MaterialData {
 }
 
 const mockDb: Record<string, MaterialData> = {
+  ...additionalMaterials,
   "rotational-motion-short-notes": {
     id: "rotational-motion-short-notes",
     title: "Rotational Motion",
@@ -254,6 +256,469 @@ Minimum velocity needed to escape Earth's gravity.
 * Work done by centripetal force = 0.
 * Mechanical energy is conserved only when non-conservative forces are absent.
 * P = Fv when force and velocity are along the same direction.`,
+  },
+  "straight-lines-short-notes": {
+    id: "straight-lines-short-notes",
+    title: "Straight Lines - JEE Short Notes",
+    subject: "Mathematics",
+    category: "Revision Notes",
+    content: `# CHAPTER: STRAIGHT LINES
+
+### Class 11 Mathematics | JEE Main + Advanced
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. BASIC CONCEPTS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**1.1 Inclination of a Line**
+
+* The angle made by a line with the positive direction of the X-axis, measured anticlockwise, is called its inclination.
+* Denoted by θ.
+* Range: 0° ≤ θ < 180°.
+
+**1.2 Slope of a Line (m)**
+
+Slope represents the tangent of the angle of inclination.
+
+m = tan θ
+
+For two points A(x₁, y₁) and B(x₂, y₂):
+
+m = (y₂ - y₁)/(x₂ - x₁)
+
+Special cases:
+
+* Horizontal line: m = 0
+* Vertical line: Slope is undefined.
+* Parallel to X-axis: θ = 0°
+* Parallel to Y-axis: θ = 90°
+
+**Important:**
+
+* Positive slope: Line rises from left to right.
+* Negative slope: Line falls from left to right.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. EQUATIONS OF A STRAIGHT LINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**2.1 Slope-Intercept Form**
+
+y = mx + c
+
+Where:
+
+* m = Slope
+* c = Y-intercept
+
+**2.2 Point-Slope Form**
+
+y - y₁ = m(x - x₁)
+
+Line passing through (x₁, y₁) with slope m.
+
+**2.3 Two-Point Form**
+
+(y - y₁)/(y₂ - y₁) = (x - x₁)/(x₂ - x₁)
+
+Line passing through two given points.
+
+**2.4 Intercept Form**
+
+x/a + y/b = 1
+
+Where:
+
+* a = X-intercept
+* b = Y-intercept
+
+**2.5 Normal Form**
+
+x cos α + y sin α = p
+
+Where:
+
+* p = Perpendicular distance from origin.
+* α = Angle made by perpendicular with positive X-axis.
+
+**2.6 General Form**
+
+Ax + By + C = 0
+
+Slope:
+
+m = -A/B, B ≠ 0
+
+X-intercept = -C/A
+
+Y-intercept = -C/B
+
+Perpendicular distance from origin:
+
+d = |C|/√(A² + B²)
+
+**Important:** Every straight line can be represented in general form.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. ANGLE BETWEEN TWO LINES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If slopes are m₁ and m₂:
+
+tan θ = |(m₂ - m₁)/(1 + m₁m₂)|
+
+Where θ is the acute angle between the lines.
+
+Special Conditions:
+
+1. Parallel lines:
+
+m₁ = m₂
+
+2. Perpendicular lines:
+
+m₁m₂ = -1
+
+3. Coincident lines:
+
+A₁/A₂ = B₁/B₂ = C₁/C₂
+
+For general equations:
+
+L₁: A₁x + B₁y + C₁ = 0
+
+L₂: A₂x + B₂y + C₂ = 0
+
+Angle between them:
+
+tan θ = |(A₁B₂ - A₂B₁)/(A₁A₂ + B₁B₂)|
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. PARALLEL AND PERPENDICULAR LINES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Parallel Lines**
+
+For:
+A₁x + B₁y + C₁ = 0
+A₂x + B₂y + C₂ = 0
+
+Parallel condition:
+
+A₁B₂ - A₂B₁ = 0
+
+For distinct parallel lines:
+
+A₁/A₂ = B₁/B₂ ≠ C₁/C₂
+
+**Perpendicular Lines**
+
+Condition:
+
+A₁A₂ + B₁B₂ = 0
+
+**Line parallel to Ax + By + C = 0 through (x₁, y₁):**
+
+A(x - x₁) + B(y - y₁) = 0
+
+**Line perpendicular to Ax + By + C = 0 through (x₁, y₁):**
+
+B(x - x₁) - A(y - y₁) = 0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. DISTANCE FORMULAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**5.1 Distance of a Point from a Line**
+
+For point P(x₁, y₁) and line:
+
+Ax + By + C = 0
+
+Distance:
+
+d = |Ax₁ + By₁ + C|/√(A² + B²)
+
+**5.2 Distance Between Two Parallel Lines**
+
+Lines:
+
+Ax + By + C₁ = 0
+
+Ax + By + C₂ = 0
+
+Distance:
+
+d = |C₁ - C₂|/√(A² + B²)
+
+IMPORTANT: Coefficients of x and y must be identical before applying the formula.
+
+**5.3 Distance Between Two Points**
+
+d = √[(x₂ - x₁)² + (y₂ - y₁)²]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. FAMILY OF STRAIGHT LINES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**6.1 Lines Passing Through Intersection of Two Lines**
+
+If:
+
+L₁ = 0 and L₂ = 0
+
+Then the family of lines passing through their intersection is:
+
+L₁ + λL₂ = 0
+
+Where λ is an arbitrary real parameter.
+
+**6.2 Line Passing Through a Fixed Point**
+
+y - y₁ = m(x - x₁)
+
+**6.3 Family of Lines Parallel to a Given Line**
+
+Ax + By + λ = 0
+
+**6.4 Family of Lines Perpendicular to a Given Line**
+
+Bx - Ay + λ = 0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. CONCURRENCY OF THREE LINES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Three lines:
+
+A₁x + B₁y + C₁ = 0
+
+A₂x + B₂y + C₂ = 0
+
+A₃x + B₃y + C₃ = 0
+
+They are concurrent if:
+
+| A₁  B₁  C₁ |
+| A₂  B₂  C₂ | = 0
+| A₃  B₃  C₃ |
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. ANGLE BISECTORS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For two lines:
+
+L₁ = A₁x + B₁y + C₁ = 0
+
+L₂ = A₂x + B₂y + C₂ = 0
+
+Their angle bisectors are:
+
+L₁/√(A₁² + B₁²) = ± L₂/√(A₂² + B₂²)
+
+There are two angle bisectors:
+
+* Internal angle bisector.
+* External angle bisector.
+
+Both bisectors are mutually perpendicular.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. IMPORTANT RESULTS RELATED TO COORDINATE GEOMETRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**9.1 Centroid of a Triangle**
+
+For vertices A(x₁,y₁), B(x₂,y₂), C(x₃,y₃):
+
+G = ((x₁+x₂+x₃)/3, (y₁+y₂+y₃)/3)
+
+**9.2 Median**
+
+A median joins a vertex to the midpoint of the opposite side.
+
+**9.3 Altitude**
+
+An altitude is perpendicular to the opposite side.
+
+**9.4 Orthocentre**
+
+Point of intersection of all three altitudes.
+
+**9.5 Incentre**
+
+Point of intersection of internal angle bisectors.
+
+**9.6 Circumcentre**
+
+Point of intersection of perpendicular bisectors of the sides.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. IMPORTANT JEE SPECIAL RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**10.1 Area of Triangle**
+
+For three vertices:
+
+A(x₁,y₁), B(x₂,y₂), C(x₃,y₃)
+
+Area:
+
+Δ = ½ |x₁(y₂-y₃) + x₂(y₃-y₁) + x₃(y₁-y₂)|
+
+Collinearity condition:
+
+Area = 0
+
+**10.2 Three Points Are Collinear**
+
+(x₂-x₁)(y₃-y₁) - (y₂-y₁)(x₃-x₁) = 0
+
+**10.3 Section Formula**
+
+If point P divides AB internally in ratio m:n:
+
+P = ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n))
+
+Externally:
+
+P = ((mx₂-nx₁)/(m-n), (my₂-ny₁)/(m-n))
+
+**10.4 Midpoint Formula**
+
+M = ((x₁+x₂)/2, (y₁+y₂)/2)
+
+**10.5 Reflection of a Point About a Line**
+
+For point P(x₁,y₁) and line Ax+By+C=0:
+
+Let:
+
+D = (Ax₁+By₁+C)/(A²+B²)
+
+Foot of perpendicular H:
+
+H = (x₁-AD, y₁-BD)
+
+Reflection P':
+
+P' = (x₁-2AD, y₁-2BD)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11. SHIFTING OF ORIGIN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If the origin is shifted to (h,k), the new coordinates are (X,Y).
+
+x = X + h
+
+y = Y + k
+
+For a line:
+
+Ax + By + C = 0
+
+New equation:
+
+AX + BY + Ah + Bk + C = 0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12. IMPORTANT JEE SHORTCUTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Slope of a line perpendicular to another line:
+
+m₂ = -1/m₁
+
+2. Slope of a line parallel to another line:
+
+m₂ = m₁
+
+3. Equation through origin:
+
+y = mx
+
+4. Equation of X-axis:
+
+y = 0
+
+5. Equation of Y-axis:
+
+x = 0
+
+6. Line making equal intercepts on both axes:
+
+x + y = a
+
+7. Line through origin with inclination 45°:
+
+y = x
+
+8. Line through origin with inclination 135°:
+
+y = -x
+
+9. Distance between parallel lines:
+
+|C₁-C₂|/√(A²+B²)
+
+10. Distance of origin from line:
+
+|C|/√(A²+B²)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+13. JEE EXAM IMPORTANT POINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+* Never use slope formula directly for a vertical line.
+* In normal form, p is always non-negative when α is chosen appropriately.
+* Parallel lines have equal slopes but may have different intercepts.
+* Perpendicular lines have product of slopes equal to -1 only when both slopes are defined.
+* A₁x+B₁y+C₁=0 and A₂x+B₂y+C₂=0 are coincident only when all three coefficient ratios are equal.
+* In point-to-line distance formula, modulus is compulsory.
+* Before calculating distance between parallel lines, make the coefficients of x and y identical.
+* For a family of lines passing through the intersection of two lines, use L₁+λL₂=0.
+* A determinant equal to zero is a powerful test for collinearity and concurrency.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+14. MOST IMPORTANT TOPICS FOR JEE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HIGH PRIORITY:
+
+1. Slope and inclination.
+2. Different forms of equation of a line.
+3. Angle between two lines.
+4. Parallel and perpendicular conditions.
+5. Distance of point from line.
+6. Distance between parallel lines.
+7. Family of straight lines.
+8. Angle bisectors.
+9. Concurrency of lines.
+10. Reflection of a point about a line.
+
+PRACTICE STRATEGY:
+
+* First master all basic formulas.
+* Solve NCERT examples and exercises.
+* Practise JEE Main PYQs topic-wise.
+* Move towards JEE Advanced multi-concept questions.
+* Practise questions involving parameters and conditions.
+
+FINAL ADVICE:
+
+Straight Lines is a formula-rich chapter, but JEE Advanced tests your ability to combine multiple concepts. Do not just memorise formulas; understand their derivations and conditions of application.`,
+    flashcards: [
+      { front: "Slope of a line passing through (x₁, y₁) and (x₂, y₂)", back: "m = (y₂ - y₁) / (x₂ - x₁) = tan θ" },
+      { front: "Condition for two lines to be perpendicular", back: "m₁ · m₂ = -1  (or A₁A₂ + B₁B₂ = 0)" },
+      { front: "Perpendicular distance of (x₁, y₁) from Ax + By + C = 0", back: "d = |Ax₁ + By₁ + C| / √(A² + B²)" },
+      { front: "Distance between parallel lines Ax + By + C₁ = 0 and Ax + By + C₂ = 0", back: "d = |C₁ - C₂| / √(A² + B²)" },
+      { front: "Centroid of triangle with vertices (x₁, y₁), (x₂, y₂), (x₃, y₃)", back: "G = ((x₁+x₂+x₃)/3, (y₁+y₂+y₃)/3)" },
+      { front: "Reflection of point P(x₁, y₁) about Ax + By + C = 0", back: "P' = (x₁ - 2AD, y₁ - 2BD) where D = (Ax₁+By₁+C)/(A²+B²)" }
+    ]
   },
   "vectors-short-notes": {
     id: "vectors-short-notes",

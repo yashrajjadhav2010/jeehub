@@ -33,7 +33,6 @@ const ParticleEffect = () => {
 
 export default function Documentation() {
   const [activeSection, setActiveSection] = useState('overview');
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const navItems = [
     { id: 'overview', label: 'Platform Overview', icon: LayoutDashboard },
@@ -178,62 +177,36 @@ export default function Documentation() {
             Experience an AI-powered terminal designed to maximize your cognitive endurance and problem-solving speed.
           </motion.p>
 
-          {/* Abstract AI Video Placeholder */}
+          {/* Embedded YouTube Platform Tour Video */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
-            className="w-full max-w-3xl aspect-video rounded-[2rem] bg-emerald-950 relative overflow-hidden group cursor-pointer shadow-2xl shadow-emerald-900/20 mt-8 border border-emerald-900/50"
-            onClick={() => setIsVideoPlaying(!isVideoPlaying)}
+            className="w-full max-w-3xl aspect-video rounded-[2rem] bg-black relative overflow-hidden shadow-2xl shadow-emerald-950/30 mt-8 border-2 border-emerald-900/40"
           >
-            {/* Visualizer Effect */}
-            <div className="absolute inset-0 flex items-center justify-center">
-               <motion.div 
-                 animate={{ 
-                   scale: [1, 1.2, 1],
-                   opacity: [0.3, 0.6, 0.3]
-                 }}
-                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                 className="w-64 h-64 bg-primary rounded-full blur-[80px]"
-               />
-               <motion.div 
-                 animate={{ 
-                   rotate: 360,
-                   scale: [1, 1.1, 1]
-                 }}
-                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                 className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"
-               />
-            </div>
-            
-            {/* Playing State / Placeholder content */}
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm transition-all duration-500 group-hover:bg-black/20">
-               {!isVideoPlaying ? (
-                 <div className="flex flex-col items-center gap-4 transform transition-transform group-hover:scale-110">
-                   <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20">
-                     <PlayCircle size={40} className="text-white" />
-                   </div>
-                   <span className="text-white font-bold tracking-widest uppercase text-sm">Play Platform Tour</span>
-                 </div>
-               ) : (
-                 <div className="flex flex-col items-center justify-center text-white space-y-6">
-                    {/* Simulated "Video" Content */}
-                    <div className="flex gap-2 items-end h-16">
-                      {[...Array(10)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          className="w-3 bg-primary rounded-t-sm"
-                          animate={{ height: [10, Math.random() * 60 + 20, 10] }}
-                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.1 }}
-                        />
-                      ))}
-                    </div>
-                    <p className="font-mono text-emerald-400 tracking-widest text-xs uppercase animate-pulse">Initializing Neural Engine...</p>
-                    <button onClick={(e) => { e.stopPropagation(); setIsVideoPlaying(false); }} className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors backdrop-blur-md">Pause</button>
-                 </div>
-               )}
-            </div>
+            <iframe
+              className="w-full h-full border-0 rounded-[1.8rem]"
+              src="https://www.youtube.com/embed/5qOgNH5T9jc?si=Tv3zTTpQ859BjtTy"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
           </motion.div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-emerald-800/70 -mt-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80">
+              <PlayCircle size={14} className="text-primary" /> Official Platform Walkthrough
+            </span>
+            <a 
+              href="https://www.youtube.com/watch?v=5qOgNH5T9jc" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors underline underline-offset-4"
+            >
+              Open on YouTube
+            </a>
+          </div>
           
           <motion.div 
             initial={{ opacity: 0 }}
