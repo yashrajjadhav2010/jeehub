@@ -76,7 +76,7 @@ export default function PrivacyPolicy() {
       <section className="p-8 sm:p-10 border-2 border-dashed border-emerald-100 rounded-[2.5rem] text-center space-y-4 bg-emerald-50/30">
         <p className="text-emerald-900/40 font-bold text-[10px] uppercase tracking-[0.3em]">Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
         <p className="text-sm font-medium text-emerald-900/70 max-w-lg mx-auto">
-          For detailed inquiries regarding data handling, account deletion, or our privacy practices, please contact our Data Protection Officer at <span className="text-primary font-black block mt-2 sm:inline sm:mt-0">yashrajart1999@gmail.com</span>
+          For detailed inquiries regarding data handling, account deletion, or our privacy practices, please contact our Data Protection Officer at <span className="text-primary font-black block mt-2 sm:inline sm:mt-0">jeetapasya@gmail.com</span>
         </p>
       </section>
     </div>
